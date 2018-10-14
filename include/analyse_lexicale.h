@@ -5,7 +5,7 @@
 /* ********** STRUCTURES ********** */
 
 
-/* BITE
+/*
 LEXEME est la structure qui comprend un numero (correspondant au type du lexeme lu)
 et val la chaine de caractere correspondant a la valeur du lexeme
 */
@@ -16,7 +16,7 @@ typedef struct lexeme {
 
 
 /*
-L_LEXEME est une liste de struct LEXEME
+L_LEXEME est une liste de struct LEXEME wesh alors
 */
 
 typedef struct maillon {
