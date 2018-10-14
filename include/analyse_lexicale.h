@@ -5,7 +5,7 @@
 /* ********** STRUCTURES ********** */
 
 
-/* 
+/* BITE
 LEXEME est la structure qui comprend un numero (correspondant au type du lexeme lu)
 et val la chaine de caractere correspondant a la valeur du lexeme
 */
