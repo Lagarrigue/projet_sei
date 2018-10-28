@@ -153,6 +153,7 @@ L_LEXEME charge_word (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_BSS
 	return l ;
 }
 
+/* salut */ 
 
 L_LEXEME charge_byte (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_BSS* pl_bss, L_DATA* pl_data ) {
 	LEXEME lexeme = l->val ;
