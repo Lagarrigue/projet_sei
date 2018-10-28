@@ -1,0 +1,127 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+
+typedef struct {
+    	char nom_inst[512] ;
+    	int nb_op ;
+    	int num_decallage ; } INSTRUCTION ;
+
+typedef struct { 
+	INSTRUCTION* instruction ; } TAB_INSTRUCTION
+
+
+int hash(char* nom, int l) {
+    	int i=0;
+	int h=0;
+   	while(nom[i]!='\0') {
+        	h=h+nom[i];
+        	i++;
+	}
+    	return h%l;
+}
+
+/*format des fichiers : on met l'ensemble de champs à la suite que l'on sépare par une virgule ex ADD, 3, 3, 0*/
+TAB_INSTRUCTION lecture_dictionnaire ()  {
+   	FILE* fichier ;
+   	fichier=fopen("dictionnaire_instructions.txt","r") ;
+   	if (fichier==NULL) {
+        	perror("Erreur ouverture du fichier");
+    	}
+    	else {
+		puts("Ouverture en lecture reussie du fichier");
+        	char nom[512];
+        	int operandes=0 ;
+        	int decallage=0 ;
+        	int nb_instruction=0 ;
+        	int i ;
+        	int taille = 0;
+        	INSTRUCTION instruction;
+        	fscanf(fichier, "%d ", &(taille));
+		TAB_INSTRUCTION tab = calloc( taille , sizeof(tab)) ;
+		if ( tab == NULL ) {
+			puts ("Erreur d'allocation pour le tableau d'instructions") ;
+			return NULL ; } ;	
+        	for(i=0; i<taille ; i++) {
+        		fscanf(fichier, "%s %d %d ", nom, &(operandes), &(decallage)); /*espace après le dernier %d pour lire un caractère en plus (ici le \n)*/
+			instruction.nb_op = operandes ;
+        		instruction.num_decallage = decallage ;
+        		strcpy(instruction.nom_inst,nom) ;
+        		indice_tableau = hash(nom,longueur_table); /*changer taille tableau*/
+			tab[indice_tableau]=ajout_tete_dictionnaire(instruction, T[indice_tableau]);
+			initialisation_tab_char_dictionnaire(nom,512);
+        	}
+        	puts("------------------");
+    	}
+	puts("Dictionnaire cree avec succes");
+	return T;
+		/* Fermer le fichier */
+}
+
+
+int recherche_element(char mot[], L_INSTRUCTION* dicti, int longueur_table){
+    	int val_hash=0;
+    	val_hash=hash(mot, longueur_table);
+    	L_INSTRUCTION p;
+    	p=dicti[val_hash];
+    	while (p !=NULL){
+    	    if(strcmp(p->val.nom_inst,mot)==0){/*comparaison chaines à terminer*/
+    	        return 1;
+    	    }
+        p=p->suiv;
+        }
+        return 0;
+}
+
+
+
+typedef struct maillon {
+    INSTRUCTION val;
+    struct maillon* suiv ; }* L_INSTRUCTION;
+
+
+L_INSTRUCTION creer_liste_dictionnaire(void)
+{
+    return NULL;
+}
+
+int liste_est_vide_dictionnaire(L_INSTRUCTION L )
+{
+    return !L;
+}
+
+L_INSTRUCTION ajout_tete_dictionnaire(INSTRUCTION c, L_INSTRUCTION L)
+{
+    L_INSTRUCTION p=calloc(1,sizeof(*p));
+
+    if (p==NULL)
+    {
+        return NULL;
+    }
+    p->val=c;
+    p->suiv=L;
+    return p;
+}
+
+
+L_INSTRUCTION supprimer_tete_dictionnaire(L_INSTRUCTION L)
+{
+    if (!liste_est_vide_dictionnaire(L))
+    {
+        L_INSTRUCTION p;
+        p=L->suiv;
+        free(L);
+        return p;
+    }
+    else
+        return NULL;
+}
+
+void liberer_liste_dictionnaire(L_INSTRUCTION l)
+{
+    while(liste_est_vide_dictionnaire(l) != 0)
+    {
+        l=supprimer_tete_dictionnaire(l);
+    }
+}
