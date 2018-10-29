@@ -11,61 +11,95 @@ section :
 3 -> .data	
 */ 
 
-void init (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_BSS* pl_bss, L_DATA* pl_data) {
+void init (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_BSS* pl_bss, L_DATA* pl_data, L_SYMB* pl_symb, L_SYMB* pl_attente) {
 	enum {NL, VIRGULE, DEUX_PTS, COMMENTAIRE, REGISTRE, DIRECTIVE, SYMBOL_ALPHA, VALEUR_DEC, VALEUR_HEX, SYMBOL_ALPHA_NUM, SIGNE, GUILLEMETS, PARENTHESE} ;
 	while ( l != NULL ) {
 		switch (l->val.nom_type) {
-	
+			/* Les l->suiv = NULL ne sont pas géré => A FAIRE */
 			case DIRECTIVE :
 				if (strcmp(l->val.valeur,"space") == 0) {
 					l=charge_space (l, section , dec , pl_text , pl_bss , pl_data) ;
-					l=l->suiv ;				
 				}
 				else if (strcmp(l->val.valeur,"set") == 0) {
+					if ( section != 0 ) {
+						/* Erreur car .set ne peut etre que au debut */
+					}
 				}
 				else if (strcmp(l->val.valeur,"word") == 0) {
 					l = charge_word (l, section , dec , pl_text , pl_bss , pl_data) ;
-					l=l->suiv ;
 				}
 				else if (strcmp(l->val.valeur,"byte") == 0) {
+					l = charge_byte (l, section , dec , pl_text , pl_bss , pl_data) ;
 				}
 				else if (strcmp(l->val.valeur,"asciiz") == 0) {
+					l = charge_asciiz (l, section , dec , pl_text , pl_bss , pl_data) ;
 				}
 				else if (strcmp(l->val.valeur,"text") == 0) {
 					section = 1 ;
-					l=l->suiv ;
 				}
 				else if (strcmp(l->val.valeur,"bss") == 0) {
 					section = 2 ;
-					l=l->suiv ;
 				}
 				else if (strcmp(l->val.valeur,"data") == 0) {
 					section = 3 ;
-					l=l->suiv ;
 				}
 				else { /* Message d'erreur */
 				}
 				break ;
 	
 			case SYMBOL_ALPHA :
+				if (section != 1 ) { 
+				/* Erreur car les instructions doivent etre dans .text */
+				}
+				else {
+					/*					
+					** Fonction recherche_dico : doit retourner 0 si l'intruction n'existe pas, 
+					** sinon le nombre d'opérandes et le type d'intruction (R, I, J ou P)
+					**/ 	
+				}
 				break ;
 	
 			case DEUX_PTS :
+				if (section==0) /* Erreur */
 				break ;
 	
 			case NL :
-				init(l->suiv, section, dec, pl_text, pl_bss, pl_data );
 				break ;
 			
 			case COMMENTAIRE :
-				init(l->suiv, section, dec, pl_text, pl_bss, pl_data );
 				break ;
 		}
+	l=l->suiv ;
 	}	
 }
 
-/* FONCTIONS ANNEXES */
+/* CAS SYMBOLE */
+
+L_LEXEME charge_symbole (L_LEXEME l, int section, int** dec, L_SYMB* pl_attente) {
+	LEXEME lexeme = l->val ;
+	SYMB symb ;
+	strcpy(symb.symbole, lexeme.valeur) ;
+	symb.ligne=lexeme.numero_ligne ;
+	symb.section=section ;
+	symb.decalage=0 ; /* on met à 0 pour l'instant car on ne le connait pas encore */
+	*pl_attente = ajout_tete_L_SYMB (symb,*pl_attente) ; /* on ajoute dans la liste d'attente en attendant de connaitre le decalage */ 
+	return(l) ;
+}
  
+void maj_symbole(int** dec, int section, L_SYMB* pl_attente, L_SYMB* pl_symb ) {
+	L_SYMB p=*pl_attente ;
+	SYMB symb ;
+	while ( !liste_est_vide_L_SYMB(p) ) {
+		if ( (p->val).section==section ) {
+			symb=p->val ;
+			
+			symb.decalage = **(dec+section-1) ;
+			*pl_symb = ajout_tete_L_SYMB (symb,*pl_symb) ;
+			p = supprimer_tete_L_SYMB (p) ;
+		}
+		else p=p->suiv ;	
+	}		
+}
 
 /* CAS DIRECTIVE */
  
@@ -127,7 +161,8 @@ L_LEXEME charge_word (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_BSS
 	
 			case 1 :
 			donnee1.ligne=lexeme.numero_ligne ;
-			donnee1.decalage=**dec ;
+			if ( (**dec)%4 != 0 ) **dec += (4-(**dec)%4) ; /* on aligne sur 4 octets si besoin */
+			donnee1.decalage=**dec ; 
 			donnee1.nb_op=1 ;
 			strcpy(donnee1.instruction,".word") ;
 			donnee1.t_operande[0]=operande  ;
@@ -141,6 +176,7 @@ L_LEXEME charge_word (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_BSS
 	
 			case 3 :
 			donnee3.ligne=lexeme.numero_ligne ;
+			if ( (**(dec+2))%4 != 0 ) **(dec+2) += (4-(**(dec+2))%4) ; /* on aligne sur 4 octets si besoin */
 			donnee3.decalage=**(dec+2) ;
 			strcpy(donnee1.instruction,".word") ;
 			donnee3.operande=operande  ;
@@ -198,6 +234,55 @@ L_LEXEME charge_byte (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_BSS
 	return l ;
 }
 
-/* L_LEXEME charge_asciiz (LEXEME lexeme, int section) {} */
+L_LEXEME charge_asciiz (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_BSS* pl_bss, L_DATA* pl_data) {
+	LEXEME lexeme = l->val ;
+	OPERANDE operande ;
+	TEXT donnee1 ;
+	DATA donnee3 ;
+	do {	
+		l=l->suiv ;
+		if ( l->val.nom_type == 12 ) { 
+		/* si expression qui est entre des guillemets */
+			strcpy(operande.val, l->val.valeur) ;
+		}
+		else { /* sinon message d'erreur A FAIRE */
+		}
+		switch (section) {
+	
+			case 1 :
+			donnee1.ligne=lexeme.numero_ligne ;
+			donnee1.decalage=**dec ;
+			donnee1.nb_op=1 ;
+			strcpy(donnee1.instruction,".asciiz") ;
+			donnee1.t_operande[0]=operande  ;
+			*pl_text = ajout_tete_L_TEXT (donnee1,*pl_text) ;
+			**dec += strlen(operande.val)+1 ;
+				break ;
+	
+			case 2 :
+			/* Erreur car impossible dans .bss*/
+				break ;
+	
+			case 3 :
+			donnee3.ligne=lexeme.numero_ligne ;
+			donnee3.decalage=**(dec+2) ;
+			strcpy(donnee1.instruction,".asciiz") ;
+			donnee3.operande=operande  ;
+			*pl_data = ajout_tete_L_DATA (donnee3,*pl_data) ;
+			**(dec+2) += strlen(operande.val)+1 ;
+				break ;
+
+		}
+	} while ( ( l=(l->suiv) )->val.nom_type == 2 ) ; /* Si on a une virgule donc une autre opérande ensuite, on recommence */
+	
+	return l ;
+}
+
+
+
  
 /* CAS SYMB_ALPHA */
+
+
+
+
