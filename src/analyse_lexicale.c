@@ -74,12 +74,13 @@ void lecture_liste_lexeme(L_LEXEME L){
 		
 	
         	while(p->val.valeur[i] !='\0'){
-            		printf("%c\n",p->val.valeur[i]);
+            		printf("%c",p->val.valeur[i]);
 
             	i++;
         	}
         	p=p->suiv;
         	i=0;
+		puts("") ;
 	}
      }
 
