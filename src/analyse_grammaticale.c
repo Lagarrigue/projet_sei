@@ -45,6 +45,7 @@ void init (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_BSS* pl_bss, L
 				}
 				else { /* Message d'erreur */
 				}
+				pl_attente = maj_symbole(dec,section, pl_attente, pl_symb ) ;
 				break ;
 	
 			case SYMBOL_ALPHA :
@@ -57,10 +58,15 @@ void init (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_BSS* pl_bss, L
 					** sinon le nombre d'opérandes et le type d'intruction (R, I, J ou P)
 					**/ 	
 				}
+				pl_attente = maj_symbole(dec,section, pl_attente, pl_symb ) ;
 				break ;
 	
 			case DEUX_PTS :
-				if (section==0) /* Erreur */
+				if (section==0) { /* Erreur */
+				}
+				else {
+					l=charge_symbole( l, section, dec , pl_attente) ;
+				}	
 				break ;
 	
 			case NL :
@@ -86,19 +92,30 @@ L_LEXEME charge_symbole (L_LEXEME l, int section, int** dec, L_SYMB* pl_attente)
 	return(l) ;
 }
  
-void maj_symbole(int** dec, int section, L_SYMB* pl_attente, L_SYMB* pl_symb ) {
-	L_SYMB p=*pl_attente ;
+L_SYMB* maj_symbole(int** dec, int section, L_SYMB* pl_attente, L_SYMB* pl_symb ) {
+	L_SYMB p = *pl_attente ;
+	L_SYMB previous = p ;
 	SYMB symb ;
-	while ( !liste_est_vide_L_SYMB(p) ) {
+	if ( !liste_est_vide_L_SYMB(p) && (p->val).section==section  ) { /* Cas de la tete */
+		symb=p->val ;
+		symb.decalage = **(dec+section-1) ;
+		*pl_symb = ajout_tete_L_SYMB (symb,*pl_symb) ;
+		*pl_attente = supprimer_tete_L_SYMB (*pl_attente) ;
+		return maj_symbole( dec , section , pl_attente, pl_symb) ; 
+	}
+	p=p->suiv ;
+	while ( !liste_est_vide_L_SYMB(p) ) { /* Cas d'un maillon qui n'est pas en tete */
 		if ( (p->val).section==section ) {
 			symb=p->val ;
-			
 			symb.decalage = **(dec+section-1) ;
 			*pl_symb = ajout_tete_L_SYMB (symb,*pl_symb) ;
-			p = supprimer_tete_L_SYMB (p) ;
+			(previous->suiv) = (p->suiv) ;	
+			free(p) ;
 		}
-		else p=p->suiv ;	
-	}		
+		previous = p ;
+		p = p->suiv ;	
+	}
+	return pl_attente ;		
 }
 
 /* CAS DIRECTIVE */
