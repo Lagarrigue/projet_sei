@@ -13,6 +13,7 @@ section :
 
 void init (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_BSS* pl_bss, L_DATA* pl_data, L_SYMB* pl_symb, L_SYMB* pl_attente) {
 	enum {NL, VIRGULE, DEUX_PTS, COMMENTAIRE, REGISTRE, DIRECTIVE, SYMBOL_ALPHA, VALEUR_DEC, VALEUR_HEX, SYMBOL_ALPHA_NUM, SIGNE, GUILLEMETS, PARENTHESE} ;
+	int nb_op=0 ; /* utile pour les instructions */
 	while ( l != NULL ) {
 		switch (l->val.nom_type) {
 			/* Les l->suiv = NULL ne sont pas géré => A FAIRE */
@@ -57,6 +58,7 @@ void init (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_BSS* pl_bss, L
 					** Fonction recherche_dico : doit retourner 0 si l'intruction n'existe pas, 
 					** sinon le nombre d'opérandes et le type d'intruction (R, I, J ou P)
 					**/ 	
+					l=charge_instruction(l,dec,pl_text,nb_op) ;
 				}
 				pl_attente = maj_symbole(dec,section, pl_attente, pl_symb ) ;
 				break ;
@@ -77,6 +79,38 @@ void init (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_BSS* pl_bss, L
 		}
 	l=l->suiv ;
 	}	
+}
+
+
+/* CAS SYMB_ALPHA */
+
+L_LEXEME charge_instruction (L_LEXEME l, int** dec, L_TEXT* pl_text, int nb_op ){
+	LEXEME lexeme = l->val ;
+	l=l->suiv ;
+	OPERANDE operande ;
+	TEXT donnee ;
+	int i ;
+	strcpy(donnee.instruction, lexeme.valeur) ;
+	donnee.ligne = lexeme.numero_ligne ;
+	donnee.decalage = **dec ;
+	**dec += 4 ;
+	donnee.nb_op=nb_op ;
+	for (i=0 ; i<nb_op ; i++ ) {
+		if ( (l->val).nom_type != 8 && (l->val).nom_type !=9 && (l->val).nom_type !=5 ) { /* Si pas registre, val dec ou hexa */
+			/* Message d'erreur */
+		}
+		else {
+			strcpy(operande.val, (l->val).valeur) ;
+			operande.type = (l->val).nom_type ;
+			donnee.t_operande[i] = operande ;
+		}
+		if ( ((l=l->suiv)->val).nom_type != 2 ) {
+			/* Message d'erreur car virgule attendue => EXIT ? */
+		}
+		l=l->suiv ;
+	}
+	*pl_text = ajout_tete_L_TEXT (donnee,*pl_text) ;
+	return l ;		
 }
 
 /* CAS SYMBOLE */
@@ -128,7 +162,8 @@ L_LEXEME charge_space (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_BS
 	BSS donnee2 ;
 	DATA donnee3 ;	
 	if (l->val.nom_type == 8 || l->val.nom_type == 9 ) { /* si valeur décimale ou hexadécimale*/
-		strcpy(operande.val, l->val.valeur) ;
+		strcpy(operande.val, (l->val).valeur) ;
+		operande.type = (l->val).nom_type ;
 	}
 	else { /* sinon message d'erreur */
 	}
@@ -170,7 +205,8 @@ L_LEXEME charge_word (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_BSS
 		l=l->suiv ;
 		if (l->val.nom_type == 8 || l->val.nom_type == 9 || l->val.nom_type == 7) { 
 		/* si valeur décimale, hexadécimale ou symbole alpha*/
-			strcpy(operande.val, l->val.valeur) ;
+			strcpy(operande.val, (l->val).valeur) ;
+			operande.type = (l->val).nom_type ;
 		}
 		else { /* sinon message d'erreur A FAIRE */
 		}
@@ -216,7 +252,8 @@ L_LEXEME charge_byte (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_BSS
 		l=l->suiv ;
 		if (l->val.nom_type == 8 || l->val.nom_type == 9 || l->val.nom_type == 7) { 
 		/* si valeur décimale, hexadécimale ou symbole alpha*/
-			strcpy(operande.val, l->val.valeur) ;
+			strcpy(operande.val, (l->val).valeur) ;
+			operande.type = (l->val).nom_type ;
 		}
 		else { /* sinon message d'erreur A FAIRE */
 		}
@@ -260,7 +297,8 @@ L_LEXEME charge_asciiz (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_B
 		l=l->suiv ;
 		if ( l->val.nom_type == 12 ) { 
 		/* si expression qui est entre des guillemets */
-			strcpy(operande.val, l->val.valeur) ;
+			strcpy(operande.val, (l->val).valeur) ;
+			operande.type = (l->val).nom_type ;
 		}
 		else { /* sinon message d'erreur A FAIRE */
 		}
@@ -298,7 +336,7 @@ L_LEXEME charge_asciiz (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_B
 
 
  
-/* CAS SYMB_ALPHA */
+
 
 
 

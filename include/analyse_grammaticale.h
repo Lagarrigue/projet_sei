@@ -21,7 +21,8 @@ typedef union operande_bis {
 			} OPERANDE_BIS ;
 
 typedef struct operande {
-	char val[512] ; } OPERANDE ;
+	char val[512] ; 
+	int type ; } OPERANDE ;
 	
 typedef struct l_operande {
     	OPERANDE val ;
@@ -99,6 +100,7 @@ L_LEXEME charge_asciiz (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_B
 L_LEXEME charge_symbole (L_LEXEME l, int section, int** dec, L_SYMB* pl_attente) ;
 L_SYMB* maj_symbole(int** dec, int section, L_SYMB* pl_attente, L_SYMB* pl_symb ) ;
 
+L_LEXEME charge_instruction (L_LEXEME l, int** dec, L_TEXT* pl_text, int nb_op ) ;
 /* ********** FONCTION DE LISTES ********** */
 
  
