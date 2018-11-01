@@ -5,9 +5,9 @@
 
 typedef struct
 {
-    char nom_inst[10];
+    char nom_inst[512];
     int nb_op;
-    int num_decallage;
+    char type_instruction[2];
 } INSTRUCTION;
 
 typedef struct maillon
@@ -15,7 +15,6 @@ typedef struct maillon
     INSTRUCTION val;
     struct maillon* suiv ;
 }* L_INSTRUCTION;
-
 
 /* ********** FONCTION DICTIONNAIRE********** */
 
@@ -28,7 +27,7 @@ L_INSTRUCTION ajout_tete_dictionnaire(INSTRUCTION c, L_INSTRUCTION L) ;
 L_INSTRUCTION supprimer_tete_dictionnaire(L_INSTRUCTION L);
 void liberer_liste_dictionnaire(L_INSTRUCTION l);
 int hash(char nom[], int l);
-L_INSTRUCTION* lecture_dictionnaire(int longueur_table);
+L_INSTRUCTION*  lecture_dictionnaire(int longueur_table) ;
 
 /*
 int recherche_element(char mot[], L_INSTRUCTION L){
