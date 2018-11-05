@@ -37,7 +37,7 @@ void print_usage( char *exec ) {
  */
 int main ( int argc, char *argv[] ) {
 
-    unsigned int 	nlines 	= 0;
+
     char         	 *file 	= NULL;
     
     /* Initialisation des variables pour l'analyse lexicale */
@@ -86,11 +86,10 @@ int main ( int argc, char *argv[] ) {
 
 
     /* ---------------- do the lexical analysis -------------------*/
-    puts("Analyse lexicale en cours ...") ;
+        puts("Analyse lexicale en cours ...") ;
 	l_lexeme=analyse_lexicale(file) ;
 	puts("Analyse lexicale teerminée.") ;
 	l_lexeme = supprimer_tete (l_lexeme) ; /* car 1er lexeme est une erreur pour l'instant : A CORRIGER */ 
-	DEBUG_MSG("source code got %d lines",nlines);
 	while (a != 1 && a != 2 ) {
 		puts("Afficher la liste des lexemes ?  OUI (1)  NON (2)") ;
 		scanf("%d",&a) ;
@@ -99,10 +98,18 @@ int main ( int argc, char *argv[] ) {
     
     /* ---------------- do the gramatical analysis ------------------*/
     
+    a=0 ;
     init (l_lexeme, section, dec, &l_text, &l_bss, &l_data, &l_symb, &l_attente,dictionnaire) ;
-    lecture_liste_L_TEXT(l_text) ;
-    lecture_liste_L_BSS(l_bss) ;
-    lecture_liste_L_DATA(l_data) ;
+    while (a != 1 && a != 2 ) {
+		puts("Afficher les listes des text, bss, data et symbole ?  OUI (1)  NON (2)") ;
+		scanf("%d",&a) ;
+		if (a == 1) { 
+			lecture_liste_L_TEXT(l_text) ;
+  			lecture_liste_L_BSS(l_bss) ;
+    			lecture_liste_L_DATA(l_data) ;
+		} 
+	}
+    
     /* ---------------- Free memory and terminate -------------------*/
 
     /* TODO free everything properly*/

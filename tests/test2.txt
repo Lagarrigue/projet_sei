@@ -1,16 +1,14 @@
-Idbziebf
-.set noreorder
-.data
 .text
-ADD
-.byte 1
-.word 0xFFFFFFFF
-.asciiz "est-ce que le .word est bien \"aligné\" ?"
-.word 0x00000000
-# TEST_RETURN_CODE=PASS
-.data 
-# TEST_RETURN_CODE = PASS
-# allons au ru
 .bss
-.space 24
+.space 3
+.text
+ADDI $1,$0,8
+boucle:
+    BEQ $0 , $1 , byebye
+    NOP
+    addi $1 , $1 , 1
+    J boucle 
+    NOP
+byebye:
+    JAL viteviteauru
 

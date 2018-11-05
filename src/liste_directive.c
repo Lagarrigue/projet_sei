@@ -1,4 +1,3 @@
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
@@ -244,5 +243,43 @@ void liberer_liste_L_SYMB(L_SYMB l)
     {
         l=supprimer_tete_L_SYMB(l);
     }
+}
+
+
+
+/* ********** TABLEAU DES SYMBOLES ********** */
+
+SYMB* creer_tab_symb(int l)
+{
+    SYMB* tableau=NULL;
+    tableau=calloc(l, sizeof(*tableau));
+    return tableau;
+}
+
+
+SYMB* conversion_liste_symb_vers_tableau(L_SYMB L){
+	int longueur_tab=0;
+	L_SYMB p;
+	p=L;
+	while(!liste_est_vide_L_SYMB(p)){
+		longueur_tab++;
+		p=p->suiv;
+		
+	}
+
+	printf("la longueur est : %d\n", longueur_tab);
+	SYMB* tab;
+	tab=creer_tab_symb(longueur_tab);
+	
+	p=L;
+	
+	int i=0;
+	while(!liste_est_vide_L_SYMB(p)){	
+		tab[longueur_tab-i-1]=p->val;
+		p=p->suiv;
+		i++;
+	}
+	
+	return tab;
 }
 

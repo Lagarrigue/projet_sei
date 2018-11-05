@@ -52,7 +52,7 @@ L_INSTRUCTION*  lecture_dictionnaire(int longueur_table)
 
         for(i=0; i<nb_instruction; i++) /*on lit ligne par ligne le fichier des instructions*/
         {
-            fscanf(fichier, "%s %d %s ", nom, &(operandes), type_instruc);/*espace après le dernier %d pour lire un caractère en plus (ici le \n)*/
+            fscanf(fichier, "%s %d %c ", nom, &(operandes), &type_instruc);/*espace après le dernier %d pour lire un caractère en plus (ici le \n)*/
             instruction.nb_op=operandes;
             instruction.type_instruction = type_instruc ;
             strcpy(instruction.nom_inst,nom);

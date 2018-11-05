@@ -16,20 +16,20 @@ void init (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_BSS* pl_bss, L
 	int S = 0 ;
 	int nb_op=0 ; /* utile pour les instructions */
 	INSTRUCTION* p_instruction ;
-	char type ;
 	while ( l != NULL ) {
 		S=(l->val).nom_type ;
 		switch ( S ) {
-			case 6 :
+			case 6 : /* CAS DIRECTIVE */
 				if (strcmp(l->val.valeur,"space") == 0) {
 					l=charge_space (l, section , dec , pl_text , pl_bss , pl_data) ;
 				}
 				else if (strcmp(l->val.valeur,"set") == 0) {
 					if ( section != 0 ) {
 						/* Erreur car .set ne peut etre que au debut */
-						WARNING_MSG("(ligne %d) .set doit être au début du programme",l->val.numero_ligne);
+						WARNING_MSG("(ligne %d) .set doit être au début du programme",l->val.numero_ligne); 
+					/* A CORRIGER : si noredor suit le .set, il va etre lu dans case instruction */
 					}
-					else {
+					else { 
 						l=charge_set(l) ;
 						}
 				}
@@ -57,19 +57,24 @@ void init (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_BSS* pl_bss, L
 				pl_attente = maj_symbole(dec,section, pl_attente, pl_symb ) ;
 				break ;
 	
-			case 7 :
+			case 7 : /* CAS INSTRUCTION */
 				if (section != 1 ) { 
 				/* Erreur car les instructions doivent etre dans .text */
 					WARNING_MSG("(ligne %d) Les instructions doivent être dans la section .text",l->val.numero_ligne);
 				}
 				else {
-					p_instruction = recherche_element(l->val.valeur, dicti, 15) ;				
-					l=charge_instruction(l,dec,pl_text,instruction) ;
-				}
+					if ( (p_instruction = recherche_element(l->val.valeur, dicti, 15)) == NULL ) {
+						WARNING_MSG("(ligne %d)  Instruction non reconnue",l->val.numero_ligne);
+					}
+					else {	
+						nb_op=(*p_instruction).nb_op ;			
+						l=charge_instruction(l,dec,pl_text,nb_op) ;
+					}
 				pl_attente = maj_symbole(dec,section, pl_attente, pl_symb ) ;
+				}
 				break ;
 	
-			case 3 :
+			case 3 : /* CAS ETIQUETTE (ou DEUX_PTS d'apres notre analyse lexicale */
 				if (section==0) { 
 					WARNING_MSG("(ligne %d) Les étiquettes doivent être dans une section ",l->val.numero_ligne);
 				}
@@ -78,10 +83,10 @@ void init (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_BSS* pl_bss, L
 				}	
 				break ;
 	
-			case 1 :
+			case 1 : /* CAS NL */
 				break ;
 			
-			case 4 :
+			case 4 : /* CAS COMMENTAIRE */
 				break ;
 		}
 	l=l->suiv ;
@@ -91,11 +96,15 @@ void init (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_BSS* pl_bss, L
 
 /* CAS SYMB_ALPHA */
 
-L_LEXEME charge_instruction (L_LEXEME l, int** dec, L_TEXT* pl_text, INSTRUCTION instruction){
+L_LEXEME charge_instruction (L_LEXEME l, int** dec, L_TEXT* pl_text, int nb_op){
 	LEXEME lexeme = l->val ;
-	l=l->suiv ;
-	if (l==NULL) {
+	/* A FINIR : int signe=0 ;  on passera a 1 si négatif */
+	if (l==NULL) {	/* Si NULL on quitte la fonction */
 		return l ;
+	}
+	if ( (l->val).nom_type == 11 )  { /* on gère le cas où on a un "-" d'un nombre négatif */
+		l=l->suiv ;
+		if (l==NULL) { return l ;} /* il faut alors tester de nouveau le l->suiv */
 	}
 	OPERANDE operande ;
 	TEXT donnee ;
@@ -105,22 +114,38 @@ L_LEXEME charge_instruction (L_LEXEME l, int** dec, L_TEXT* pl_text, INSTRUCTION
 	donnee.decalage = **dec ;
 	**dec += 4 ;
 	donnee.nb_op=nb_op ;
+	*pl_text = ajout_tete_L_TEXT (donnee,*pl_text) ;
 	for (i=0 ; i<nb_op ; i++ ) {
-		if ( (l->val).nom_type != 8 && (l->val).nom_type !=9 && (l->val).nom_type !=5 ) { /* Si pas registre, val dec ou hexa */
-			WARNING_MSG("(ligne %d) Registre, valeur décimale ou hexadécimale attendue",l->val.numero_ligne);
+		l=l->suiv ;
+		if ( l == NULL ){
+			return l ;
 		}
-		else {
+		if ( (l->val).nom_type == 8 || (l->val).nom_type ==9 || (l->val).nom_type ==5 ) { 
 			strcpy(operande.val, (l->val).valeur) ;
 			operande.type = (l->val).nom_type ;
 			donnee.t_operande[i] = operande ;
 		}
-		if ( ((l=l->suiv)->val).nom_type != 2 ) {
-			/* Message d'erreur car virgule attendue => EXIT ? */
-			WARNING_MSG("(ligne %d) virgule attendue",l->val.numero_ligne);
+		else {
+			/* Si pas registre, val dec ou hexa */
+			WARNING_MSG("(ligne %d) Registre, valeur décimale ou hexadécimale attendue",l->val.numero_ligne);
+			return l ;
 		}
+		if ( i == (nb_op-1) ) { /* On ne vérifie pas la virgule si c'est le dernier */
+			return l ; 
+		}
+		/* Etape ou l'on passe la virgule */
 		l=l->suiv ;
+		if ( l == NULL ){
+			return l ;
+		}
+		if ( (l->val).nom_type != 2 ) {
+			/* Message d'erreur car virgule attendue */
+			WARNING_MSG("(ligne %d) virgule attendue",l->val.numero_ligne);
+			return l ;
+		}
+		
+		
 	}
-	*pl_text = ajout_tete_L_TEXT (donnee,*pl_text) ;
 	return l ;		
 }
 
@@ -229,17 +254,22 @@ L_LEXEME charge_word (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_BSS
 	OPERANDE operande ;
 	TEXT donnee1 ;
 	DATA donnee3 ;
+	/* A FINIR : int signe=0 ;  on passera a 1 si négatif */
 	do {	
 		l=l->suiv ;
 		if (l==NULL) {
 			return l ;
+		}
+		if ( (l->val).nom_type == 11 ) { /* on gère le cas où on a un "-" d'un nombre négatif */
+			l=l->suiv ;
+			if (l==NULL) { return l ;} /* il faut alors tester de nouveau le l->suiv */
 		}
 		if (l->val.nom_type == 8 || l->val.nom_type == 9 || l->val.nom_type == 7) { 
 		/* si valeur décimale, hexadécimale ou symbole alpha*/
 			strcpy(operande.val, (l->val).valeur) ;
 			operande.type = (l->val).nom_type ;
 		}
-		else { /* sinon message d'erreur A FAIRE */
+		else { /* sinon message d'erreur */
 			WARNING_MSG("(ligne %d) Valeur décimale, hexadécimale ou symboles alpha attendue",l->val.numero_ligne);
 		}
 		switch (section) {
@@ -285,18 +315,22 @@ L_LEXEME charge_byte (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_BSS
 	OPERANDE operande ;
 	TEXT donnee1 ;
 	DATA donnee3 ;
-	
+	/* A FINIR : int signe=0 ;  on passera a 1 si négatif */
 	do {	
 		l=l->suiv ;
 		if (l==NULL) {
 			return l ;
+		}
+		if ( (l->val).nom_type == 11 ) { /* on gère le cas où on a un "-" d'un nombre négatif */
+			l=l->suiv ;
+			if (l==NULL) { return l ;} /* il faut alors tester de nouveau le l->suiv */
 		}
 		if (l->val.nom_type == 8 || l->val.nom_type == 9 || l->val.nom_type == 7) { 
 		/* si valeur décimale, hexadécimale ou symbole alpha*/
 			strcpy(operande.val, (l->val).valeur) ;
 			operande.type = (l->val).nom_type ;
 		}
-		else { /* sinon message d'erreur A FAIRE */
+		else { /* sinon message d'erreur */
 			WARNING_MSG("(ligne %d)  Valeur décimale, hexadécimale ou symboles alpha attendue",l->val.numero_ligne);
 		}
 		switch (section) {

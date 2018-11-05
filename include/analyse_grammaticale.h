@@ -13,13 +13,6 @@
 
 /* operandes */
 
-typedef union operande_bis {
-	char val1 ;		/* pour .byte */
-	int val2 ; 		/* pour .word */
-	char val3[512] ; 	/* pour asciiz ou symbole*/
-	unsigned int val4 ; 	/* pour .space */
-	/* autre ? */
-			} OPERANDE_BIS ;
 
 typedef struct operande {
 	char val[512] ; 

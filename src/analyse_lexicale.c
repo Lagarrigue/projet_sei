@@ -298,7 +298,7 @@ L_LEXEME analyse_lexicale(char* nom_fichier){
                     }
 
                     /*else if (((isalpha(ligne[i])==0 )& (isdigit(ligne[i])==0))) *//*le caractère est différents de alpha ou digit, on ajoute alors un nouveau lexeme à la liste de lexeme*/
-                    else if (ligne[i]==',' || ligne[i]==' ' || ligne[i]=='"' || ligne[i]==':' ||ligne[i]=='\n')
+                    else if (ligne[i]==',' || ligne[i]==' ' || ligne[i]=='"' || ligne[i]==':' ||ligne[i]=='\n' || ligne[i]=='(' )
                     {
                         j=0;
                         lexeme_ligne.nom_type=10;
