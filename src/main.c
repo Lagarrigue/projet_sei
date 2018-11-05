@@ -14,6 +14,7 @@
 #include <notify.h>
 #include <lex.h>
 
+#include "analyse_grammaticale.h"
 /**
  * @param exec Name of executable.
  * @return Nothing.
@@ -34,24 +35,38 @@ void print_usage( char *exec ) {
  * @brief Main entry point for MIPS assembler.
  *
  */
-int main_bis ( int argc, char *argv[] ) {
+int main ( int argc, char *argv[] ) {
 
     unsigned int 	nlines 	= 0;
     char         	 *file 	= NULL;
-
-    /* exemples d'utilisation des macros du fichier notify.h */
-    /* WARNING_MSG : sera toujours affiche */
-    WARNING_MSG("Un message WARNING_MSG !");
-
-    /* macro INFO_MSG : uniquement si compilé avec -DVERBOSE. Cf. Makefile*/
-    INFO_MSG("Un message INFO_MSG : Debut du programme %s", argv[0]);
-
-    /* macro DEBUG_MSG : uniquement si compilé avec -DDEBUG (ie : compilation avec make debug). Cf. Makefile */
-    DEBUG_MSG("Un message DEBUG_MSG !");
-
-    /* La macro suivante provoquerait l'affichage du message
-       puis la sortie du programme avec un code erreur non nul (EXIT_FAILURE) */
-    /* ERROR_MSG("Erreur. Arret du programme"); */
+    
+    /* Initialisation des variables pour l'analyse lexicale */
+	L_LEXEME l_lexeme ;
+	l_lexeme = creer_liste() ;
+    /* Initialisation des variables pour l'analyse grammaticale */
+	int section=0 ;
+	int** dec ; 
+	int i ;
+	if ( (dec = calloc(3,sizeof(int*)) ) == NULL ) {
+		puts("Erreur d'allocation") ;
+		return 1 ;
+		}
+	else {
+		for (i=0 ; i<3 ; i++ ) {
+			dec[i]=calloc(1,sizeof(int));
+			if (dec[i] == NULL) {
+				puts("Erreur d'allocation") ;
+				return 1 ;
+			}
+		}
+	}
+	int a=0 ;
+	L_TEXT l_text = creer_liste_L_TEXT() ;
+	L_BSS l_bss = creer_liste_L_BSS() ;
+	L_DATA l_data = creer_liste_L_DATA() ;
+	L_SYMB l_symb = creer_liste_L_SYMB() ;;
+	L_SYMB l_attente = creer_liste_L_SYMB() ;
+	L_INSTRUCTION* dictionnaire = lecture_dictionnaire(15) ;
 
 
     if ( argc <2 ) {
@@ -71,9 +86,23 @@ int main_bis ( int argc, char *argv[] ) {
 
 
     /* ---------------- do the lexical analysis -------------------*/
-    lex_load_file( file, &nlines );
-    DEBUG_MSG("source code got %d lines",nlines);
-
+    puts("Analyse lexicale en cours ...") ;
+	l_lexeme=analyse_lexicale(file) ;
+	puts("Analyse lexicale teerminée.") ;
+	l_lexeme = supprimer_tete (l_lexeme) ; /* car 1er lexeme est une erreur pour l'instant : A CORRIGER */ 
+	DEBUG_MSG("source code got %d lines",nlines);
+	while (a != 1 && a != 2 ) {
+		puts("Afficher la liste des lexemes ?  OUI (1)  NON (2)") ;
+		scanf("%d",&a) ;
+		if (a == 1) { lecture_liste_lexeme(l_lexeme)  ; } 
+	}
+    
+    /* ---------------- do the gramatical analysis ------------------*/
+    
+    init (l_lexeme, section, dec, &l_text, &l_bss, &l_data, &l_symb, &l_attente,dictionnaire) ;
+    lecture_liste_L_TEXT(l_text) ;
+    lecture_liste_L_BSS(l_bss) ;
+    lecture_liste_L_DATA(l_data) ;
     /* ---------------- Free memory and terminate -------------------*/
 
     /* TODO free everything properly*/

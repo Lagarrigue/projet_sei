@@ -1,5 +1,6 @@
 #include "analyse_grammaticale.h"
 #include <string.h>
+#include "notify.h"
 
 
  
@@ -11,27 +12,28 @@ section :
 3 -> .data	
 */ 
 
-void init (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_BSS* pl_bss, L_DATA* pl_data, L_SYMB* pl_symb, L_SYMB* pl_attente) {
-	puts ("Debut init") ;
+void init (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_BSS* pl_bss, L_DATA* pl_data, L_SYMB* pl_symb, L_SYMB* pl_attente, L_INSTRUCTION* dicti) {
 	int S = 0 ;
 	int nb_op=0 ; /* utile pour les instructions */
-	puts("1") ;
+	INSTRUCTION* p_instruction ;
+	char type ;
 	while ( l != NULL ) {
 		S=(l->val).nom_type ;
-		puts("2") ;
 		switch ( S ) {
 			case 6 :
-				puts("3");
 				if (strcmp(l->val.valeur,"space") == 0) {
 					l=charge_space (l, section , dec , pl_text , pl_bss , pl_data) ;
 				}
 				else if (strcmp(l->val.valeur,"set") == 0) {
 					if ( section != 0 ) {
 						/* Erreur car .set ne peut etre que au debut */
+						WARNING_MSG("(ligne %d) .set doit être au début du programme",l->val.numero_ligne);
 					}
+					else {
+						l=charge_set(l) ;
+						}
 				}
 				else if (strcmp(l->val.valeur,"word") == 0) {
-					puts("4") ;
 					l = charge_word (l, section , dec , pl_text , pl_bss , pl_data) ;
 				}
 				else if (strcmp(l->val.valeur,"byte") == 0) {
@@ -47,10 +49,10 @@ void init (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_BSS* pl_bss, L
 					section = 2 ;
 				}
 				else if (strcmp(l->val.valeur,"data") == 0) {
-					puts("4") ;
 					section = 3 ;
 				}
-				else { /* Message d'erreur */
+				else { 
+					WARNING_MSG("(ligne %d) Directive non reconnue",l->val.numero_ligne);
 				}
 				pl_attente = maj_symbole(dec,section, pl_attente, pl_symb ) ;
 				break ;
@@ -58,20 +60,18 @@ void init (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_BSS* pl_bss, L
 			case 7 :
 				if (section != 1 ) { 
 				/* Erreur car les instructions doivent etre dans .text */
+					WARNING_MSG("(ligne %d) Les instructions doivent être dans la section .text",l->val.numero_ligne);
 				}
 				else {
-					/*					
-					** Fonction recherche_dico : doit retourner 0 si l'intruction n'existe pas, 
-					** sinon le nombre d'opérandes et le type d'intruction (R, I, J ou P)
-					** 
-					recherche_element(l->val.valeur, L_INSTRUCTION* dicti, int longueur_table) */	
-					l=charge_instruction(l,dec,pl_text,nb_op) ;
+					p_instruction = recherche_element(l->val.valeur, dicti, 15) ;				
+					l=charge_instruction(l,dec,pl_text,instruction) ;
 				}
 				pl_attente = maj_symbole(dec,section, pl_attente, pl_symb ) ;
 				break ;
 	
 			case 3 :
-				if (section==0) { /* Erreur */
+				if (section==0) { 
+					WARNING_MSG("(ligne %d) Les étiquettes doivent être dans une section ",l->val.numero_ligne);
 				}
 				else {
 					l=charge_symbole( l, section, dec , pl_attente) ;
@@ -84,7 +84,6 @@ void init (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_BSS* pl_bss, L
 			case 4 :
 				break ;
 		}
-	puts("lexeme ok") ;
 	l=l->suiv ;
 	}	
 }
@@ -92,7 +91,7 @@ void init (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_BSS* pl_bss, L
 
 /* CAS SYMB_ALPHA */
 
-L_LEXEME charge_instruction (L_LEXEME l, int** dec, L_TEXT* pl_text, int nb_op ){
+L_LEXEME charge_instruction (L_LEXEME l, int** dec, L_TEXT* pl_text, INSTRUCTION instruction){
 	LEXEME lexeme = l->val ;
 	l=l->suiv ;
 	if (l==NULL) {
@@ -108,7 +107,7 @@ L_LEXEME charge_instruction (L_LEXEME l, int** dec, L_TEXT* pl_text, int nb_op )
 	donnee.nb_op=nb_op ;
 	for (i=0 ; i<nb_op ; i++ ) {
 		if ( (l->val).nom_type != 8 && (l->val).nom_type !=9 && (l->val).nom_type !=5 ) { /* Si pas registre, val dec ou hexa */
-			/* Message d'erreur */
+			WARNING_MSG("(ligne %d) Registre, valeur décimale ou hexadécimale attendue",l->val.numero_ligne);
 		}
 		else {
 			strcpy(operande.val, (l->val).valeur) ;
@@ -117,6 +116,7 @@ L_LEXEME charge_instruction (L_LEXEME l, int** dec, L_TEXT* pl_text, int nb_op )
 		}
 		if ( ((l=l->suiv)->val).nom_type != 2 ) {
 			/* Message d'erreur car virgule attendue => EXIT ? */
+			WARNING_MSG("(ligne %d) virgule attendue",l->val.numero_ligne);
 		}
 		l=l->suiv ;
 	}
@@ -139,7 +139,7 @@ L_LEXEME charge_symbole (L_LEXEME l, int section, int** dec, L_SYMB* pl_attente)
  
 L_SYMB* maj_symbole(int** dec, int section, L_SYMB* pl_attente, L_SYMB* pl_symb ) {
 	if ( *pl_attente == NULL ) {
-		return NULL ; 
+		return pl_attente ; 
 	}
 	L_SYMB p = *pl_attente ;
 	L_SYMB previous = p ;
@@ -183,11 +183,13 @@ L_LEXEME charge_space (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_BS
 		operande.type = (l->val).nom_type ;
 	}
 	else { /* sinon message d'erreur */
+		WARNING_MSG("(ligne %d) Valeur décimale ou hexadicimale attendue ",l->val.numero_ligne);
 	}
 	switch (section) {
 
 		case 1 :
 		/* Erreur car impossible dans .text */
+			WARNING_MSG("(ligne %d) .space impossible dans .text",l->val.numero_ligne);
 			break ;
 
 		case 2 :
@@ -211,14 +213,22 @@ L_LEXEME charge_space (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_BS
 	return l ;
 	}
 		
-
+L_LEXEME charge_set (L_LEXEME l) {
+	if (l->suiv == NULL ) {
+		return l ;
+	}
+	l=l->suiv ;
+	if ( strcmp(l->val.valeur, "noreorder") != 0) {
+		WARNING_MSG("(ligne %d) .set ne prend que en compte noreorder",l->val.numero_ligne);
+	} 
+	return l ;
+}
 
 L_LEXEME charge_word (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_BSS* pl_bss, L_DATA* pl_data ) {
 	LEXEME lexeme = l->val ;
 	OPERANDE operande ;
 	TEXT donnee1 ;
 	DATA donnee3 ;
-	puts("5") ;
 	do {	
 		l=l->suiv ;
 		if (l==NULL) {
@@ -226,11 +236,11 @@ L_LEXEME charge_word (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_BSS
 		}
 		if (l->val.nom_type == 8 || l->val.nom_type == 9 || l->val.nom_type == 7) { 
 		/* si valeur décimale, hexadécimale ou symbole alpha*/
-			puts("6") ;
 			strcpy(operande.val, (l->val).valeur) ;
 			operande.type = (l->val).nom_type ;
 		}
 		else { /* sinon message d'erreur A FAIRE */
+			WARNING_MSG("(ligne %d) Valeur décimale, hexadécimale ou symboles alpha attendue",l->val.numero_ligne);
 		}
 		switch (section) {
 			
@@ -247,12 +257,11 @@ L_LEXEME charge_word (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_BSS
 	
 			case 2 :
 			/* Erreur car impossible dans .bss*/
+				WARNING_MSG("(ligne %d) .word impossible dans .bss",l->val.numero_ligne);
 				break ;
 	
 			case 3 :
-			puts("7") ;
 			donnee3.ligne=lexeme.numero_ligne ;
-			printf("%d \n");
 			if ( (**(dec+2))%4 != 0 ) {
 				**(dec+2) += (4-(**(dec+2))%4) ; /* on aligne sur 4 octets si besoin */
 			} 
@@ -263,10 +272,11 @@ L_LEXEME charge_word (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_BSS
 			**(dec+2) += 4 ;
 			puts("8") ;
 				break ;
-
+			
 		}
 	} while ( (l->suiv != NULL) && ( l=(l->suiv) )->val.nom_type == 2 ) ; /* Si on a une virgule donc d'autre opérandes, on recommence */
 	return l ;
+	
 }
 
 
@@ -287,6 +297,7 @@ L_LEXEME charge_byte (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_BSS
 			operande.type = (l->val).nom_type ;
 		}
 		else { /* sinon message d'erreur A FAIRE */
+			WARNING_MSG("(ligne %d)  Valeur décimale, hexadécimale ou symboles alpha attendue",l->val.numero_ligne);
 		}
 		switch (section) {
 	
@@ -302,6 +313,7 @@ L_LEXEME charge_byte (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_BSS
 	
 			case 2 :
 			/* Erreur car impossible dans .bss*/
+			WARNING_MSG("(ligne %d) .byte impossible dans .bss",l->val.numero_ligne);
 				break ;
 	
 			case 3 :
@@ -335,6 +347,7 @@ L_LEXEME charge_asciiz (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_B
 			operande.type = (l->val).nom_type ;
 		}
 		else { /* sinon message d'erreur A FAIRE */
+			WARNING_MSG("(ligne %d) Expression entre guillemets attendue",l->val.numero_ligne);
 		}
 		switch (section) {
 	
@@ -350,6 +363,7 @@ L_LEXEME charge_asciiz (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_B
 	
 			case 2 :
 			/* Erreur car impossible dans .bss*/
+				WARNING_MSG("(ligne %d) .asciiz impossible dans .bss",l->val.numero_ligne);
 				break ;
 	
 			case 3 :

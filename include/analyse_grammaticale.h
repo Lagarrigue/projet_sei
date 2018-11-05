@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include "analyse_lexicale.h"
 #include <string.h>
+#include "dictionnaire.h"
 
 
 
@@ -91,7 +92,8 @@ typedef struct l_symb {
 
 
 /* ********** FONCTION ANALYSE GRAMMATICALE ********** */
-void init (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_BSS* pl_bss, L_DATA* pl_data, L_SYMB* pl_symb, L_SYMB* pl_attente) ;
+
+void init (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_BSS* pl_bss, L_DATA* pl_data, L_SYMB* pl_symb, L_SYMB* pl_attente, L_INSTRUCTION* dictionnaire) ;
 L_LEXEME charge_space (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_BSS* pl_bss, L_DATA* pl_data ) ;
 L_LEXEME charge_word (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_BSS* pl_bss, L_DATA* pl_data ) ;
 L_LEXEME charge_byte (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_BSS* pl_bss, L_DATA* pl_data ) ;
@@ -101,6 +103,7 @@ L_LEXEME charge_symbole (L_LEXEME l, int section, int** dec, L_SYMB* pl_attente)
 L_SYMB* maj_symbole(int** dec, int section, L_SYMB* pl_attente, L_SYMB* pl_symb ) ;
 
 L_LEXEME charge_instruction (L_LEXEME l, int** dec, L_TEXT* pl_text, int nb_op ) ;
+L_LEXEME charge_set (L_LEXEME l) ;
 /* ********** FONCTION DE LISTES ********** */
 
  
@@ -120,7 +123,7 @@ L_TEXT creer_liste_L_TEXT(void);
 L_TEXT ajout_tete_L_TEXT(TEXT c, L_TEXT L) ;
 L_TEXT supprimer_tete_L_TEXT(L_TEXT L) ;
 void liberer_liste_L_TEXT(L_TEXT l) ;
-
+void lecture_liste_L_TEXT(L_TEXT L) ;
 
 /*  DATA  */
 
@@ -129,7 +132,7 @@ L_DATA creer_liste_L_DATA(void) ;
 L_DATA ajout_tete_L_DATA(DATA c, L_DATA L) ;
 L_DATA supprimer_tete_L_DATA(L_DATA L) ;
 void liberer_liste_L_DATA(L_DATA l) ;
-
+void lecture_liste_L_DATA(L_DATA L);
 
 /*  BSS  */
 
@@ -138,7 +141,7 @@ L_BSS creer_liste_L_BSS(void) ;
 L_BSS ajout_tete_L_BSS(BSS c, L_BSS L) ;
 L_BSS supprimer_tete_L_BSS(L_BSS L) ;
 void liberer_liste_L_BSS(L_BSS l) ;
-
+void lecture_liste_L_BSS(L_BSS L) ;
 
 /*  SYMB  */
 
@@ -147,6 +150,7 @@ L_SYMB creer_liste_L_SYMB(void) ;
 L_SYMB ajout_tete_L_SYMB(SYMB c, L_SYMB L) ;
 L_SYMB supprimer_tete_L_SYMB(L_SYMB L) ;
 void liberer_liste_L_SYMB(L_SYMB l) ;
+void lecture_liste_L_SYMB(L_SYMB L) ;
 
 
 /* ********** FONCTION DE TABLEAUX  ********** */

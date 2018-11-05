@@ -7,13 +7,13 @@ typedef struct
 {
     char nom_inst[512];
     int nb_op;
-    char type_instruction[2];
+    char type_instruction;
 } INSTRUCTION;
 
-typedef struct maillon
+typedef struct maillonb
 {
     INSTRUCTION val;
-    struct maillon* suiv ;
+    struct maillonb* suiv ;
 }* L_INSTRUCTION;
 
 /* ********** FONCTION DICTIONNAIRE********** */
