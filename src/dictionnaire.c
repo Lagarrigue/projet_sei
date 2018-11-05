@@ -4,11 +4,11 @@
 #include "dictionnaire.h"
 
 /* à changer : ajouter num ligne au lexeme */
+
 /* ajouter les \n */
 /* ajouter les , */
 
 /*le type d'instruction sera R, I, J ou P */
-
 
 
 void initialisation_tab_char_dictionnaire(char tab[], int taille)
@@ -20,7 +20,7 @@ void initialisation_tab_char_dictionnaire(char tab[], int taille)
     }
 }
 
-L_INSTRUCTION* creer_dictionnaire(int l)
+L_INSTRUCTION* creer_dictionnaire(int l) /*on crée une table de hashage par allocation dynamique*/
 {
     L_INSTRUCTION* tableau=NULL;
     tableau=calloc(l, sizeof(*tableau));
@@ -72,22 +72,20 @@ void liberer_liste_dictionnaire(L_INSTRUCTION l)
     }
 }
 
-int hash(char* nom, int l)
+int hash(char* nom, int l) /* fonction qui calcul l'indice d'un élément dans la table de hashage (basé sur le nom) */
 {
     int i=0;
     int h=0;
     while(nom[i]!='\0')
     {
         h=h+nom[i];
-        /* printf("le hash est : %d\n", h); */
         i++;
-
     }
     return h%l;
 }
 
 /*format des fichiers : on met l'ensemble de champs à la suite que l'on sépare par une virgule ex ADD, 3, 3, 0*/
-L_INSTRUCTION*  lecture_dictionnaire(int longueur_table)
+L_INSTRUCTION*  lecture_dictionnaire(int longueur_table) 
 {
 	L_INSTRUCTION* T;
     FILE* fichier;
@@ -104,17 +102,15 @@ L_INSTRUCTION*  lecture_dictionnaire(int longueur_table)
         T=creer_dictionnaire(longueur_table);
         char nom[512];
         initialisation_tab_char_dictionnaire(nom, 512);
-        /*à initialiser \0*/
         int operandes=0;
         char type_instruc[2];
         int nb_instruction=0;
         int i;
         int indice_tableau=0;
         INSTRUCTION instruction;
-
         fscanf(fichier, "%d ", &(nb_instruction));
 
-        for(i=0; i<nb_instruction; i++)
+        for(i=0; i<nb_instruction; i++) /*on lit ligne par ligne le fichier des instructions*/
         {
             fscanf(fichier, "%s %d %s ", nom, &(operandes), type_instruc);/*espace après le dernier %d pour lire un caractère en plus (ici le \n)*/
             instruction.nb_op=operandes;
@@ -124,44 +120,27 @@ L_INSTRUCTION*  lecture_dictionnaire(int longueur_table)
 
             T[indice_tableau]=ajout_tete_dictionnaire(instruction, T[indice_tableau]);
             initialisation_tab_char_dictionnaire(nom,512);
-
         }
-        printf("------------------\n");
     }
-
 	printf("dictionnaire cree avec succes\n");
+	fclose(fichier);
 	return T;
-	/*fermer le fichier */
 }
-
 
 /* cette fonction renvoie le type INSTRUCTION* (adresse) qui contient le nom de l'instruction, son nb d'opérandes et son type d'instruction (R, IJP),
 le format des données est définit plus haut dans le struct*/
+
 INSTRUCTION* recherche_element(char mot[], L_INSTRUCTION* dicti, int longueur_table){
     int val_hash=0;
     val_hash=hash(mot, longueur_table);
     L_INSTRUCTION p;
     p=dicti[val_hash];
-    while (p !=NULL){
-        if(strcmp(p->val.nom_inst,mot)==0){/*comparaison chaines à terminer*/
+    while (p !=NULL){ /* parcours de la liste si les clefs de plusieurs éléments sont identiques */
+        if( strcmp(p->val.nom_inst,mot)==0 ){/*comparaison des chaines non sensible à la case*/
             return &(p->val);
         }
         p=p->suiv;
-        }
+    }
         return NULL;
     }
 
-
-/*
-corriger les petits trucs sur début programme
-ajouter en queue de liste chaque élément
-void analyse_grammaticale(L_LEXEMME LLEX){
-    L_LEXEMME p;
-    p=LLEX
-    if (p->val.valeur=="text" && p-val.nom_type==6){//il faut fonction de oomparaison chaines
-        //on va utiliser un automate et lire chaque lexeme, et en utilisant le dictionnaire on vérifie la syntaxe
-        // à quoi serve les décallages ?
-        //c'est quoi les primitives ??
-    }
-}
-*/
