@@ -47,6 +47,9 @@ int main ( int argc, char *argv[] ) {
 	int section=0 ;
 	int** dec ; 
 	int i ;
+	int size ;
+	SYMB* tab ;
+	
 	if ( (dec = calloc(3,sizeof(int*)) ) == NULL ) {
 		puts("Erreur d'allocation") ;
 		return 1 ;
@@ -100,6 +103,9 @@ int main ( int argc, char *argv[] ) {
     
     a=0 ;
     init (l_lexeme, section, dec, &l_text, &l_bss, &l_data, &l_symb, &l_attente,dictionnaire) ;
+    size=longueur_l_symb(l_symb) ;
+    tab=creer_tab_symb(size);
+    tab=conversion_liste_symb_vers_tableau(tab,l_symb,size) ;
     while (a != 1 && a != 2 ) {
 		puts("Afficher les listes des text, bss, data et symbole ?  OUI (1)  NON (2)") ;
 		scanf("%d",&a) ;
@@ -107,6 +113,8 @@ int main ( int argc, char *argv[] ) {
 			lecture_liste_L_TEXT(l_text) ;
   			lecture_liste_L_BSS(l_bss) ;
     			lecture_liste_L_DATA(l_data) ;
+    			lecture_liste_L_SYMB(l_symb) ;
+    			/*lecture_tab_symb(tab, size) ; */
 		} 
 	}
     

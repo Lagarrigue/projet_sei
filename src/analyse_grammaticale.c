@@ -169,7 +169,7 @@ L_SYMB* maj_symbole(int** dec, int section, L_SYMB* pl_attente, L_SYMB* pl_symb 
 	L_SYMB p = *pl_attente ;
 	L_SYMB previous = p ;
 	SYMB symb ;
-	if ( !liste_est_vide_L_SYMB(p) && (p->val).section==section  ) { /* Cas de la tete */
+	if ( (p->val).section==section  ) { /* Cas de la tete */
 		symb=p->val ;
 		symb.decalage = **(dec+section-1) ;
 		*pl_symb = ajout_tete_L_SYMB (symb,*pl_symb) ;
@@ -182,8 +182,8 @@ L_SYMB* maj_symbole(int** dec, int section, L_SYMB* pl_attente, L_SYMB* pl_symb 
 			symb=p->val ;
 			symb.decalage = **(dec+section-1) ;
 			*pl_symb = ajout_tete_L_SYMB (symb,*pl_symb) ;
+			if ( (p->suiv) == NULL ) {return NULL ; }
 			(previous->suiv) = (p->suiv) ;	
-			free(p) ;
 		}
 		previous = p ;
 		p = p->suiv ;	
@@ -197,9 +197,7 @@ L_SYMB* maj_symbole(int** dec, int section, L_SYMB* pl_attente, L_SYMB* pl_symb 
 L_LEXEME charge_space (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_BSS* pl_bss, L_DATA* pl_data ) {
 	LEXEME lexeme = l->val ;
 	l=l->suiv ;
-	if (l==NULL) {
-		return l ;
-	}
+	if (l==NULL) { return l ; }
 	OPERANDE operande ;
 	BSS donnee2 ;
 	DATA donnee3 ;	
@@ -300,7 +298,6 @@ L_LEXEME charge_word (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_BSS
 			donnee3.operande=operande  ;
 			*pl_data = ajout_tete_L_DATA (donnee3,*pl_data) ;
 			**(dec+2) += 4 ;
-			puts("8") ;
 				break ;
 			
 		}

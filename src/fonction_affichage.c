@@ -127,4 +127,17 @@ void lecture_liste_L_SYMB(L_SYMB L){
      }
 }
 
-
+void lecture_tab_symb( SYMB* tab, int size) {
+	int i ;
+	SYMB symb ;
+	for (i=0 ; i<size ; i++) {
+		symb=tab[i] ;
+		printf("-------------------------\n") ;
+        	printf("%s : ", symb.symbole) ;
+        	printf("\n");
+        	printf("* ligne : %d\n",symb.ligne);
+        	printf("* section : %d\n", symb.section);
+        	printf("* decalage : %d\n",symb.decalage);
+		puts("") ;
+	}
+}

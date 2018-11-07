@@ -249,6 +249,19 @@ void liberer_liste_L_SYMB(L_SYMB l)
 
 /* ********** TABLEAU DES SYMBOLES ********** */
 
+int longueur_l_symb(L_SYMB l) {
+	int n ;
+	L_SYMB p;
+	p=l;
+	while(!liste_est_vide_L_SYMB(p)){
+		n++;
+		p=p->suiv;
+		
+	}
+	return n ;
+}
+
+
 SYMB* creer_tab_symb(int l)
 {
     SYMB* tableau=NULL;
@@ -257,29 +270,17 @@ SYMB* creer_tab_symb(int l)
 }
 
 
-SYMB* conversion_liste_symb_vers_tableau(L_SYMB L){
-	int longueur_tab=0;
-	L_SYMB p;
-	p=L;
-	while(!liste_est_vide_L_SYMB(p)){
-		longueur_tab++;
-		p=p->suiv;
-		
-	}
-
-	printf("la longueur est : %d\n", longueur_tab);
-	SYMB* tab;
-	tab=creer_tab_symb(longueur_tab);
-	
-	p=L;
-	
+SYMB* conversion_liste_symb_vers_tableau(SYMB* tab, L_SYMB L, int size){
+	size =0;
+	L_SYMB p=L ;	
 	int i=0;
 	while(!liste_est_vide_L_SYMB(p)){	
-		tab[longueur_tab-i-1]=p->val;
+		tab[size-i-1]=p->val;
 		p=p->suiv;
 		i++;
 	}
 	
 	return tab;
 }
+
 

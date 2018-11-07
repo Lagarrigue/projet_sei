@@ -149,8 +149,8 @@ void lecture_liste_L_SYMB(L_SYMB L) ;
 /* ********** FONCTION DE TABLEAUX  ********** */
 
 SYMB* creer_tab_symb(int l) ;
-SYMB* conversion_liste_symb_vers_tableau(L_SYMB L) ;
-
-
+SYMB* conversion_liste_symb_vers_tableau(SYMB* tab, L_SYMB L, int size) ;
+void lecture_tab_symb( SYMB* tab, int size) ;
+int longueur_l_symb(L_SYMB) ;
 
 
