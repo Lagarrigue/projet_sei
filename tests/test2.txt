@@ -4,11 +4,11 @@
 .text
 ADDI $1,$0,8
 boucle:
-    BEQ $0 , $1 , byebye
+    BEQ $0 , $1 , 12
     NOP
-    addi $1 , $1 , 1
-    J boucle 
+    ADDI $1 , $1 , 1
+    J 3 
     NOP
 byebye:
-    JAL viteviteauru
+    JAL 8
 

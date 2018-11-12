@@ -265,13 +265,14 @@ int longueur_l_symb(L_SYMB l) {
 SYMB* creer_tab_symb(int l)
 {
     SYMB* tableau=NULL;
-    tableau=calloc(l, sizeof(*tableau));
+    if ( (tableau=calloc(l, sizeof(*tableau))) == NULL ) { 
+    	puts("Erreur allocation tableau");
+    	return NULL ; }
     return tableau;
 }
 
 
-SYMB* conversion_liste_symb_vers_tableau(SYMB* tab, L_SYMB L, int size){
-	size =0;
+void conversion_liste_symb_vers_tableau(SYMB* tab, L_SYMB L, int size){
 	L_SYMB p=L ;	
 	int i=0;
 	while(!liste_est_vide_L_SYMB(p)){	
@@ -279,8 +280,6 @@ SYMB* conversion_liste_symb_vers_tableau(SYMB* tab, L_SYMB L, int size){
 		p=p->suiv;
 		i++;
 	}
-	
-	return tab;
 }
 
 

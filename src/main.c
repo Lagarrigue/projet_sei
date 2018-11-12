@@ -93,7 +93,7 @@ int main ( int argc, char *argv[] ) {
 	l_lexeme=analyse_lexicale(file) ;
 	puts("Analyse lexicale teerminée.") ;
 	l_lexeme = supprimer_tete (l_lexeme) ; /* car 1er lexeme est une erreur pour l'instant : A CORRIGER */ 
-	while (a != 1 && a != 2 ) {
+	while (a == 0 ) {
 		puts("Afficher la liste des lexemes ?  OUI (1)  NON (2)") ;
 		scanf("%d",&a) ;
 		if (a == 1) { lecture_liste_lexeme(l_lexeme)  ; } 
@@ -103,10 +103,15 @@ int main ( int argc, char *argv[] ) {
     
     a=0 ;
     init (l_lexeme, section, dec, &l_text, &l_bss, &l_data, &l_symb, &l_attente,dictionnaire) ;
+    lecture_liste_L_BSS(l_bss) ;
+    lecture_liste_L_DATA(l_data) ;
+    lecture_liste_L_TEXT(l_text) ;
     size=longueur_l_symb(l_symb) ;
     tab=creer_tab_symb(size);
-    tab=conversion_liste_symb_vers_tableau(tab,l_symb,size) ;
-    while (a != 1 && a != 2 ) {
+    conversion_liste_symb_vers_tableau(tab,l_symb,size) ;
+    lecture_tab_symb(tab, size) ; 
+    /* 
+    while (a == 0 ) {
 		puts("Afficher les listes des text, bss, data et symbole ?  OUI (1)  NON (2)") ;
 		scanf("%d",&a) ;
 		if (a == 1) { 
@@ -114,17 +119,12 @@ int main ( int argc, char *argv[] ) {
     			lecture_liste_L_DATA(l_data) ;
 			lecture_liste_L_SYMB(l_symb) ;
 			lecture_liste_L_TEXT(l_text) ;
-    			/*lecture_tab_symb(tab, size) ; */
+    			lecture_tab_symb(tab, size) ; 
 		} 
-	}
-    
+    }
+    */
     /* ---------------- Free memory and terminate -------------------*/
 
     /* TODO free everything properly*/
-    liberer_liste_L_SYMB(l_attente);
-    liberer_liste_L_SYMB(l_symb);
-    liberer_liste_L_TEXT(l_text);
-    liberer_liste_L_DATA(l_data);
-    liberer_liste_L_BSS(l_bss);
     exit( EXIT_SUCCESS );
 }
