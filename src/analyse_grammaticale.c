@@ -21,6 +21,7 @@ void init (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_BSS* pl_bss, L
 		switch ( S ) {
 			case 6 : /* CAS DIRECTIVE */
 				if (strcmp(l->val.valeur,"space") == 0) {
+					pl_attente = maj_symbole(dec,section, pl_attente, pl_symb, 0 ) ;
 					l=charge_space (l, section , dec , pl_text , pl_bss , pl_data) ;
 				}
 				else if (strcmp(l->val.valeur,"set") == 0) {
@@ -30,16 +31,20 @@ void init (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_BSS* pl_bss, L
 					/* A CORRIGER : si noredor suit le .set, il va etre lu dans case instruction */
 					}
 					else { 
+						pl_attente = maj_symbole(dec,section, pl_attente, pl_symb, 0 ) ;
 						l=charge_set(l) ;
 						}
 				}
 				else if (strcmp(l->val.valeur,"word") == 0) {
+					pl_attente = maj_symbole(dec,section, pl_attente, pl_symb, 1 ) ;
 					l = charge_word (l, section , dec , pl_text , pl_bss , pl_data) ;
 				}
 				else if (strcmp(l->val.valeur,"byte") == 0) {
+					pl_attente = maj_symbole(dec,section, pl_attente, pl_symb, 0 ) ;
 					l = charge_byte (l, section , dec , pl_text , pl_bss , pl_data) ;
 				}
 				else if (strcmp(l->val.valeur,"asciiz") == 0) {
+					pl_attente = maj_symbole(dec,section, pl_attente, pl_symb, 0 ) ;
 					l = charge_asciiz (l, section , dec , pl_text , pl_bss , pl_data) ;
 				}
 				else if (strcmp(l->val.valeur,"text") == 0) {
@@ -54,7 +59,6 @@ void init (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_BSS* pl_bss, L
 				else { 
 					WARNING_MSG("(ligne %d) Directive non reconnue",l->val.numero_ligne);
 				}
-				pl_attente = maj_symbole(dec,section, pl_attente, pl_symb ) ;
 				break ;
 	
 			case 7 : /* CAS INSTRUCTION */
@@ -67,10 +71,10 @@ void init (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_BSS* pl_bss, L
 						WARNING_MSG("(ligne %d)  Instruction non reconnue",l->val.numero_ligne);
 					}
 					else {	
+						pl_attente = maj_symbole(dec,section, pl_attente, pl_symb, 0 ) ;
 						nb_op=(*p_instruction).nb_op ;			
 						l=charge_instruction(l,dec,pl_text,nb_op) ;
 					}
-				pl_attente = maj_symbole(dec,section, pl_attente, pl_symb ) ;
 				}
 				break ;
 	
@@ -162,7 +166,7 @@ L_LEXEME charge_symbole (L_LEXEME l, int section, int** dec, L_SYMB* pl_attente)
 	return(l) ;
 }
  
-L_SYMB* maj_symbole(int** dec, int section, L_SYMB* pl_attente, L_SYMB* pl_symb ) {
+L_SYMB* maj_symbole(int** dec, int section, L_SYMB* pl_attente, L_SYMB* pl_symb,int word ) {
 	if ( *pl_attente == NULL ) {
 		return pl_attente ; 
 	}
@@ -172,9 +176,12 @@ L_SYMB* maj_symbole(int** dec, int section, L_SYMB* pl_attente, L_SYMB* pl_symb 
 	if ( (p->val).section==section  ) { /* Cas de la tete */
 		symb=p->val ;
 		symb.decalage = **(dec+section-1) ;
+		if (word ==1) { /* si on a un .word , maj_symbole est lancé apres avoir chargé charge_word donc on fais dec-4 */
+			symb.decalage-=4 ;
+		}
 		*pl_symb = ajout_tete_L_SYMB (symb,*pl_symb) ;
 		*pl_attente = supprimer_tete_L_SYMB (*pl_attente) ;
-		return maj_symbole( dec , section , pl_attente, pl_symb) ; 
+		return maj_symbole( dec , section , pl_attente, pl_symb, word) ; 
 	}
 	p=p->suiv ;
 	while ( !liste_est_vide_L_SYMB(p) ) { /* Cas d'un maillon qui n'est pas en tete */

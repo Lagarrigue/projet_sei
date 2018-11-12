@@ -30,7 +30,7 @@ void lecture_liste_L_TEXT(L_TEXT L){
 
      else 
      {
-     printf("error liste vide\n");
+     printf("La liste TEXT est vide\n");
      }
 }
 
@@ -61,7 +61,7 @@ void lecture_liste_L_DATA(L_DATA L){
 
      else 
      {
-     printf("error liste vide\n");
+     printf("La liste  DATA est vide\n");
      }
 }
 
@@ -92,7 +92,7 @@ void lecture_liste_L_BSS(L_BSS L){
 
      else 
      {
-     printf("error liste vide\n");
+     printf("La liste BSS est vide\n");
      }
 }
 
@@ -108,8 +108,8 @@ void lecture_liste_L_SYMB(L_SYMB L){
         	j++ ;
         	printf("* symbole : ");
         	while(p->val.symbole[i] !='\0'){
-            	printf("%c",p->val.symbole[i]);
-            	i++;
+            		printf("%c",p->val.symbole[i]);
+            		i++;
         	}
         	printf("\n");
         	printf("* ligne : %d\n",p->val.ligne);
@@ -123,7 +123,7 @@ void lecture_liste_L_SYMB(L_SYMB L){
 
      else 
      {
-     printf("error liste vide\n");
+     printf("La liste SYMB vide\n");
      }
 }
 

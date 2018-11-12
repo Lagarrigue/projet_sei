@@ -110,10 +110,10 @@ int main ( int argc, char *argv[] ) {
 		puts("Afficher les listes des text, bss, data et symbole ?  OUI (1)  NON (2)") ;
 		scanf("%d",&a) ;
 		if (a == 1) { 
-			lecture_liste_L_TEXT(l_text) ;
-  			lecture_liste_L_BSS(l_bss) ;
+			lecture_liste_L_BSS(l_bss) ;
     			lecture_liste_L_DATA(l_data) ;
-    			lecture_liste_L_SYMB(l_symb) ;
+			lecture_liste_L_SYMB(l_symb) ;
+			lecture_liste_L_TEXT(l_text) ;
     			/*lecture_tab_symb(tab, size) ; */
 		} 
 	}
@@ -121,6 +121,10 @@ int main ( int argc, char *argv[] ) {
     /* ---------------- Free memory and terminate -------------------*/
 
     /* TODO free everything properly*/
-
+    liberer_liste_L_SYMB(l_attente);
+    liberer_liste_L_SYMB(l_symb);
+    liberer_liste_L_TEXT(l_text);
+    liberer_liste_L_DATA(l_data);
+    liberer_liste_L_BSS(l_bss);
     exit( EXIT_SUCCESS );
 }
