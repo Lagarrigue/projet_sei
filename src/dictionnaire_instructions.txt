@@ -1,32 +1,32 @@
 31
-ADD 3 R
-ADDI 3 I
-SUB 3 R
-MULT 2 R
-DIV 2 R
-AND 3 R
-OR 3 R
-XOR 3 R
-ROTR 3 I
-SLL 3 I
-SRL 3 I
-SLT 3 R
-LW 3 I
-SW 3 I
-LUI 2 I
-MFHI 1 R
-MFLO 1 R
-BEQ 3 I
-BNE 3 I
-BGTZ 2 I
-BLEZ 2 I
-J 1 J
-JAL 1 J
-JR 1 R
-NOP 0 J
-LW 2 I
-SW 2 I
-MOVE 2 R
-NEG 2 R
-LI 2 I
-BLT 3 I
+ADD 3 R reg reg reg
+ADDI 3 I reg reg imm
+SUB 3 R reg reg reg
+MULT 2 R reg reg non
+DIV 2 R reg reg non
+AND 3 R reg reg reg
+OR 3 R reg reg reg
+XOR 3 R reg reg reg
+ROTR 3 I reg reg sa
+SLL 3 I reg reg sa
+SRL 3 I reg reg sa
+SLT 3 R reg reg reg
+LW 3 I reg boff non
+SW 3 I reg boff non
+LUI 2 I reg imm non
+MFHI 1 R reg non non
+MFLO 1 R reg reg non
+BEQ 3 I reg reg offset
+BNE 3 I reg reg offset
+BGTZ 2 I reg offset non
+BLEZ 2 I reg offset non
+J 1 J target non non
+JAL 1 J target non non
+JR 1 R reg non non
+NOP 0 J non non non
+LW 2 I reg target non
+SW 2 I reg target non
+MOVE 2 R reg reg non
+NEG 2 R reg reg non
+LI 2 I reg imm non
+BLT 3 I reg reg target

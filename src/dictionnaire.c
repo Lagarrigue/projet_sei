@@ -29,7 +29,7 @@ L_INSTRUCTION*  lecture_dictionnaire(int longueur_table)
 {
     L_INSTRUCTION* T;
     FILE* fichier;
-    fichier=fopen("src/dictionnaire_instructions.txt","r");
+    fichier=fopen("src/dictionnaire_instructions.txt","r"); /* à changer pour le definitif */
     if (fichier==NULL)
     {
         perror("Erreur ouverture fichier");
@@ -40,26 +40,44 @@ L_INSTRUCTION*  lecture_dictionnaire(int longueur_table)
         puts("ouverture en lecture reussie du fichier");
 
         T=creer_dictionnaire(longueur_table);
-        char nom[512];
-        initialisation_tab_char_dictionnaire(nom, 512);
-        int operandes=0;
-        char type_instruc;
+        char lecture_nom[512];
+        initialisation_tab_char_dictionnaire(lecture_nom, 512);
+        int lecture_nb_operandes=0;
+        char lecture_type_instruc[2];
+        initialisation_tab_char_dictionnaire(lecture_type_instruc, 2);
         int nb_instruction=0;
         int i;
         int indice_tableau=0;
+        
+        char lecture_type_operande_1[15];
+        initialisation_tab_char_dictionnaire(lecture_type_operande_1, 15);
+        char lecture_type_operande_2[15];
+        initialisation_tab_char_dictionnaire(lecture_type_operande_2, 15);
+        char lecture_type_operande_3[15];
+        initialisation_tab_char_dictionnaire(lecture_type_operande_2, 15);
+        
         INSTRUCTION instruction;
         fscanf(fichier, "%d ", &(nb_instruction));
 
         for(i=0; i<nb_instruction; i++) /*on lit ligne par ligne le fichier des instructions*/
         {
-            fscanf(fichier, "%s %d %c ", nom, &(operandes), &type_instruc);/*espace après le dernier %d pour lire un caractère en plus (ici le \n)*/
-            instruction.nb_op=operandes;
-            instruction.type_instruction = type_instruc ;
-            strcpy(instruction.nom_inst,nom);
-            indice_tableau=hash(nom,longueur_table);/*changer taille tableau*/
+            fscanf(fichier, "%s %d %s %s %s %s", lecture_nom, &(lecture_nb_operandes), lecture_type_instruc, lecture_type_operande_1, lecture_type_operande_2, lecture_type_operande_3);/*espace après le dernier %d pour lire un caractère en plus (ici le \n)*/
+            
+            instruction.nb_op=lecture_nb_operandes;
+            strcpy(instruction.type_instruction, lecture_type_instruc);
+            strcpy(instruction.nom_inst,lecture_nom);
+            strcpy(instruction.type_op[0],lecture_type_operande_1);
+            strcpy(instruction.type_op[1],lecture_type_operande_2);
+            strcpy(instruction.type_op[2],lecture_type_operande_3);
+            
+            indice_tableau=hash(lecture_nom,longueur_table);/*changer taille tableau*/
 
             T[indice_tableau]=ajout_tete_dictionnaire(instruction, T[indice_tableau]);
-            initialisation_tab_char_dictionnaire(nom,512);
+            initialisation_tab_char_dictionnaire(lecture_nom,512);
+            initialisation_tab_char_dictionnaire(lecture_type_instruc, 2);
+            initialisation_tab_char_dictionnaire(lecture_type_operande_1, 15);
+            initialisation_tab_char_dictionnaire(lecture_type_operande_2, 15);
+            initialisation_tab_char_dictionnaire(lecture_type_operande_3, 15);
         }
     }
 	printf("dictionnaire cree avec succes\n");
@@ -83,8 +101,7 @@ INSTRUCTION* recherche_element(char mot[], L_INSTRUCTION* dicti, int longueur_ta
     }
         return NULL;
     }
-
-
+    
 
 void initialisation_tab_char_dictionnaire(char tab[], int taille)
 {
