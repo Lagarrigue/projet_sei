@@ -62,9 +62,6 @@ L_LEXEME charge_instruction (L_LEXEME l/*correspond à celui juste apres l'instr
 				break ;
 
 			case SIGNE :
-				/* Combiner le signe avec le lexeme suivant et renvoyer un LEXEME
-				 * 
-				 */
 				l = signe(l) ;
 				S=DEBUT ;
 				break ;
@@ -80,6 +77,10 @@ L_LEXEME charge_instruction (L_LEXEME l/*correspond à celui juste apres l'instr
 				break ;
 
 			case OFFSET :
+				/*operande.val = charge_offset() ; */
+				break ;
+			
+			case BASE_OFF :
 				/*operande.val = charge_offset() ; */
 				break ;
 		}
