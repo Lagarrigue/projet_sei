@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "dictionnaire.h"
+#include "instruction.h"
 
 /* à changer : ajouter num ligne au lexeme */
 

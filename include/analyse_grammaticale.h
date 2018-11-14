@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include "analyse_lexicale.h"
 #include <string.h>
-#include "dictionnaire.h"
+#include "instruction.h"
 
 
 
@@ -14,9 +14,27 @@
 /* operandes */
 
 
-typedef struct operande {
-	char val[512] ; 
-	int type ; } OPERANDE ;
+typedef union {
+	unsigned char reg;
+	short imm ;
+	unsigned char sa ; 
+	char etiq[512] ;
+	short ad_rel;
+	unsigned int ad_abs ;
+	int nb ;
+	struct {
+		unsigned char reg ;
+		short offset ;} base_offset ;
+	} VAL_OPERANDE ;
+
+ /* typedef enum { REG , IMM , SA , ETIQ , AD_REL , AD_ABS , OFFSET , BASE_OFF , TARGAET } TYPE_VAL_OPERANDE ; 
+		   1      2     3    4      5        6         7        8          9
+*/
+
+typedef struct {
+	int type ;
+	VAL_OPERANDE val ; } OPERANDE ;
+	
 	
 typedef struct l_operande {
     	OPERANDE val ;
@@ -84,20 +102,26 @@ typedef struct l_symb {
     	struct l_symb *suiv ; } * L_SYMB ;
 
 
-/* ********** FONCTION ANALYSE GRAMMATICALE ********** */
+/* ********** FONCTIONS ANALYSE GRAMMATICALE ********** */
 
 void init (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_BSS* pl_bss, L_DATA* pl_data, L_SYMB* pl_symb, L_SYMB* pl_attente, L_INSTRUCTION* dictionnaire) ;
+
 L_LEXEME charge_space (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_BSS* pl_bss, L_DATA* pl_data ) ;
 L_LEXEME charge_word (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_BSS* pl_bss, L_DATA* pl_data ) ;
 L_LEXEME charge_byte (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_BSS* pl_bss, L_DATA* pl_data ) ;
 L_LEXEME charge_asciiz (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_BSS* pl_bss, L_DATA* pl_data) ;
+L_LEXEME charge_set (L_LEXEME l) ;
 
 L_LEXEME charge_symbole (L_LEXEME l, int section, int** dec, L_SYMB* pl_attente) ;
 L_SYMB* maj_symbole(int** dec, int section, L_SYMB* pl_attente, L_SYMB* pl_symb, int word ) ;
 
-L_LEXEME charge_instruction (L_LEXEME l, int** dec, L_TEXT* pl_text, int nb_op ) ;
-L_LEXEME charge_set (L_LEXEME l) ;
-/* ********** FONCTION DE LISTES ********** */
+
+/* ********** FONCTIONS POUR LES OPERANDES ********** */
+
+L_LEXEME charge_instruction (L_LEXEME l, int** dec, L_TEXT* pl_text, INSTRUCTION instruction) ;
+L_LEXEME signe( L_LEXEME) ;
+
+/* ********** FONCTIONS DE LISTES ********** */
 
  
 /*  OPERANDE  */
@@ -146,7 +170,7 @@ void liberer_liste_L_SYMB(L_SYMB l) ;
 void lecture_liste_L_SYMB(L_SYMB L) ;
 
 
-/* ********** FONCTION DE TABLEAUX  ********** */
+/* ********** FONCTIONS DE TABLEAUX  ********** */
 
 SYMB* creer_tab_symb(int l) ;
 void conversion_liste_symb_vers_tableau(SYMB* tab, L_SYMB L, int size) ;

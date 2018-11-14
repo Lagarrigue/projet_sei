@@ -9,10 +9,7 @@ typedef struct
     int nb_op;
     char type_instruction[2];
     
-    char type_op[3][10];
-   
-    
-    
+    char type_op[3][10];  
     /*
     1 -> registre
     2 -> valeur_immediate
