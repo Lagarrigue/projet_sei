@@ -25,6 +25,7 @@ typedef union {
 	short ad_rel;
 	unsigned int ad_abs ;
 	int nb ;
+	long tar ;
 	struct {
 		unsigned char reg ;
 		short offset ;} base_offset ;
@@ -123,6 +124,10 @@ L_SYMB* maj_symbole(int** dec, int section, L_SYMB* pl_attente, L_SYMB* pl_symb,
 
 L_LEXEME charge_instruction (L_LEXEME l , int** dec, L_TEXT* pl_text, INSTRUCTION instruction) ;
 L_LEXEME signe (L_LEXEME l) ;
+short valeur_imm(LEXEME lex) ;
+int valeur_sa(LEXEME lex) ;
+long valeur_target(LEXEME lex) ;
+long valeur_offset(LEXEME lex) ;
 
 /* ********** FONCTIONS DE LISTES ********** */
 

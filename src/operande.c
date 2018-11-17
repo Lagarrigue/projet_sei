@@ -43,12 +43,12 @@ L_LEXEME charge_instruction (L_LEXEME l , int** dec, L_TEXT* pl_text, INSTRUCTIO
 
 			case IMM :
 				operande.type = 2 ;
-				/*operande.val = valeur_imm(l->val) ; */
+				(operande.val).imm = valeur_imm(l->val) ; 
 				break ;
 
 			case SA :
 				operande.type = 3 ;
-				/*operande.val = valeur_sa(l->val) ; */
+				(operande.val).sa = valeur_sa(l->val) ; 
 				break ;
 
 			case ETIQ :
@@ -69,14 +69,17 @@ L_LEXEME charge_instruction (L_LEXEME l , int** dec, L_TEXT* pl_text, INSTRUCTIO
 				break ;
 
 			case TARGET :
-				/*operande.val = charge_target() ; */
+				operande.type = 9 ;
+				(operande.val).tar = valeur_target(l->val) ; 
 				break ;
 
 			case OFFSET :
-				/*operande.val = charge_offset() ; */
+				operande.type = 7 ;
+				(operande.val).imm = valeur_offset(l->val) ; 
 				break ;
 			
 			case BASE_OFF :
+				operande.type = 8 ;
 				/*operande.val = charge_offset() ; */
 				break ;
 		}
@@ -123,9 +126,9 @@ L_LEXEME signe (L_LEXEME l){ /* Consiste à modifier le lexeme suivant */
 short valeur_imm(LEXEME lex){/* on met en argument le lexeme voulut !*/
 	short valeur_finale=0;
 	if(lex.nom_type==8){
-		long valeur=0;
+		short valeur=0;
 		valeur=strtol(lex.valeur,NULL, 10);
-		if(valeur < ((long) pow(2,16))-1 && valeur >= 0){
+		if(valeur < ((short) pow(2,16))-1 && valeur >= 0){
 			valeur_finale=valeur;
 			return valeur_finale;
 		}
@@ -136,9 +139,9 @@ short valeur_imm(LEXEME lex){/* on met en argument le lexeme voulut !*/
 			}
 	}
 	else if(lex.nom_type==9){
-		long valeur=0;
+		short valeur=0;
 		valeur=strtol(lex.valeur,NULL , 16);
-		if(valeur < ((long) pow(2,16))-1 && valeur >= 0){
+		if(valeur < ((short) pow(2,16))-1 && valeur >= 0){
 			valeur_finale=valeur;
 			return valeur_finale;
 		}
