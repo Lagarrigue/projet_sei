@@ -1,8 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "analyse_lexicale.h"
+#include <math.h>
 #include <string.h>
+#include "analyse_lexicale.h"
 #include "instruction.h"
+#include "notify.h"
+
 
 
 
@@ -118,8 +121,8 @@ L_SYMB* maj_symbole(int** dec, int section, L_SYMB* pl_attente, L_SYMB* pl_symb,
 
 /* ********** FONCTIONS POUR LES OPERANDES ********** */
 
-L_LEXEME charge_instruction (L_LEXEME l, int** dec, L_TEXT* pl_text, INSTRUCTION instruction) ;
-L_LEXEME signe( L_LEXEME) ;
+L_LEXEME charge_instruction (L_LEXEME l , int** dec, L_TEXT* pl_text, INSTRUCTION instruction) ;
+L_LEXEME signe (L_LEXEME l) ;
 
 /* ********** FONCTIONS DE LISTES ********** */
 

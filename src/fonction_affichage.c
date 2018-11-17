@@ -52,7 +52,7 @@ void lecture_liste_L_DATA(L_DATA L){
         	printf("\n");
         	printf("* ligne : %d\n",p->val.ligne);
         	printf("* decalage : %d\n",p->val.decalage);
-        	printf("* operande %s\n", p->val.operande.val);
+        	/*printf("* operande %s\n", p->val.operande.val); A REVOIR => OPERANDE a changé */
         	p=p->suiv;
         	i=0;
 		puts("") ;
@@ -82,8 +82,8 @@ void lecture_liste_L_BSS(L_BSS L){
         	}
         	printf("\n");
         	printf("* ligne : %d\n",p->val.ligne);
-        	printf("* decalage : %d\n",p->val.decalage);
-        	printf("* operande %s\n", p->val.operande.val);
+        	printf("* decalage : %d\n",p->val.decalage); 
+        	/*printf("* operande %s\n", p->val.operande.val); A REVOIR => OPERANDE a changé */
         	p=p->suiv;
         	i=0;
 		puts("") ;

@@ -1,10 +1,7 @@
 #include "analyse_grammaticale.h"
 
 
-	/* recherche_instruction (l->val) ;
-	 * si existe => instruction= charge_instruction(l->val) ;
-	 */
-L_LEXEME charge_instruction (L_LEXEME l/*correspond à celui juste apres l'instr*/, int** dec, L_TEXT* pl_text, INSTRUCTION instruction){
+L_LEXEME charge_instruction (L_LEXEME l , int** dec, L_TEXT* pl_text, INSTRUCTION instruction){
 	int nb_op = instruction.nb_op ;
 	int i ;
 	char** type_op_attendu ;
@@ -21,7 +18,6 @@ L_LEXEME charge_instruction (L_LEXEME l/*correspond à celui juste apres l'instr
 			}
 		}
 	}
-	type_op_attendu = instruction.type_op ;
 	enum { DEBUT,SIGNE, REG , IMM , SA , ETIQ , AD_REL , AD_ABS,BASE_OFF, TARGET, OFFSET ,VIRGULE} ;
 	int S ;
 	OPERANDE operande ;
@@ -29,7 +25,7 @@ L_LEXEME charge_instruction (L_LEXEME l/*correspond à celui juste apres l'instr
 
 		switch (S) {
 			case DEBUT :
-				type_op_attendu = (instruction.type_op)[i] ;
+				type_op_attendu[i] = (instruction.type_op)[i] ;
 				if ( (l->val).nom_type == 4) { S=ETIQ ;}
 				else if ( (l->val).nom_type == 2 ) {S=SIGNE ;}
 				else if ( strcmp(type_op_attendu[i],"reg")==0 )    {S=REG ;}
@@ -91,7 +87,7 @@ L_LEXEME charge_instruction (L_LEXEME l/*correspond à celui juste apres l'instr
 			l=l->suiv ;
 			if (l==NULL) { return NULL ; } ;
 			if ( (l->val).nom_type != 2 ) {
-				WARNING_MSG("(ligne %d) virgule attendue",l->val.numero_ligne);
+				WARNING_MSG("(ligne %d) Virgule attendue ",l->val.numero_ligne);
 				return l ; 
 			}
 			else {
@@ -115,14 +111,144 @@ L_LEXEME signe (L_LEXEME l){ /* Consiste à modifier le lexeme suivant */
 		strcpy( (l->val).valeur, strcat(signe,(l->val).valeur) ) ;
 	}
 	else {
-		WARNING_MSG("(ligne %d) Valeur décimale attendue apres '-'",l->val.numero_ligne); 
+		WARNING_MSG("(ligne %d) Valeur décimale attendue apres '-'",(l->val).numero_ligne);
+		return NULL ;
 	}
 	return l ;
 }		
 	
 	
 	
+/* immediate : valeur codé sur 16 bits*/
+short valeur_imm(LEXEME lex){/* on met en argument le lexeme voulut !*/
+	short valeur_finale=0;
+	if(lex.nom_type==8){
+		long valeur=0;
+		valeur=strtol(lex.valeur,NULL, 10);
+		if(valeur < ((long) pow(2,16))-1 && valeur >= 0){
+			valeur_finale=valeur;
+			return valeur_finale;
+		}
+			
+		else{
+			WARNING_MSG("valeur instruction ligne n°%d trop grande, c'est un short",lex.numero_ligne);
+			return 0;
+			}
+	}
+	else if(lex.nom_type==9){
+		long valeur=0;
+		valeur=strtol(lex.valeur,NULL , 16);
+		if(valeur < ((long) pow(2,16))-1 && valeur >= 0){
+			valeur_finale=valeur;
+			return valeur_finale;
+		}
+		else{
+			WARNING_MSG("valeur instruction ligne n°%d trop grande, c'est un short",lex.numero_ligne);
+			return 0;
+		}
+	}
+	
+	else {
+		WARNING_MSG("type operande instruction ligne n°%d tnon conforme",lex.numero_ligne);
+		return 0 ;
+	}
+}
 
+
+/* shift amount valeur comprise entre 0 et 31*/
+int valeur_sa(LEXEME lex){
+	short valeur_finale=0;
+	if(lex.nom_type==8){
+		int valeur=0;
+		valeur=strtol(lex.valeur, NULL, 10);
+		if(valeur < ((int) pow(2,5))-1 && valeur >= 0){
+			valeur_finale=valeur;
+			return valeur_finale;
+		}
+			
+		else{
+			WARNING_MSG("valeur instruction ligne n°%d trop grande comprise entre 0 et 31 inclus ou erreur de signe",lex.numero_ligne);
+			return 0;
+		}
+	}
+	else if(lex.nom_type==9){
+		int valeur=0;
+		valeur=strtol(lex.valeur,NULL , 16);
+		if(valeur < ((int) pow(2,5))-1 && valeur >= 0){
+			valeur_finale=valeur;
+			return valeur_finale;
+		}
+		else{
+			WARNING_MSG("valeur instruction ligne n°%d trop grande comprise entre 0 et 31 inclus ou erreur de signe",lex.numero_ligne);
+			return 0;
+		}
+	}
+	else {
+		WARNING_MSG("type operande instruction ligne n°%d tnon conforme",lex.numero_ligne);
+		return 0 ;
+	}
+}
+
+/* codage sur 26 bits */
+long valeur_target(LEXEME lex){
+	long valeur=0;
+	if(lex.nom_type==8){
+		valeur=strtol(lex.valeur,NULL, 10);
+		if(valeur < ((long) pow(2,26))-1 && valeur >= 0){
+			return valeur;
+		}
+			
+		else{
+			WARNING_MSG("valeur instruction ligne n°%d trop grande, c'est codé sur 26 bits",lex.numero_ligne);
+			return 0;
+		}
+	}
+	else if(lex.nom_type==9){
+		valeur=strtol(lex.valeur,NULL , 16);
+		if(valeur < ((long) pow(2,24))-1 && valeur >= 0){
+			return valeur;
+		}
+		else{
+			WARNING_MSG("valeur instruction ligne n°%d trop grande, c'est codé sur 26 bits",lex.numero_ligne);
+			return 0;
+		}
+	}
+	else {
+		WARNING_MSG("type operande instruction ligne n°%d tnon conforme",lex.numero_ligne);
+		return 0 ;
+	}
+}
+
+
+/* codage sur 18 bits signés*/
+long valeur_offset(LEXEME lex){
+	long valeur=0;
+	if(lex.nom_type==8){
+		valeur=strtol(lex.valeur,NULL, 10);
+		if(valeur < ((long) pow(2,18))-1 && valeur >= 0){
+			return valeur;
+		}
+			
+		else{
+			WARNING_MSG("valeur instruction ligne n°%d trop grande, c'est codé sur 18 bits signés",lex.numero_ligne);
+			return 0 ;
+		}
+	}
+	else if(lex.nom_type==9){
+		valeur=strtol(lex.valeur,NULL , 16);
+		if(valeur < ((long) pow(2,18))-1 && valeur >= 0){
+			return valeur;
+		}
+		else{
+			WARNING_MSG("valeur instruction ligne n°%d trop grande c'est codé sur 18 bits signés, c'est un short",lex.numero_ligne);
+			return 0;
+		}
+	}
+	else {
+		WARNING_MSG("type operande instruction ligne n°%d tnon conforme",lex.numero_ligne);
+		return 0 ;
+	}
+}
 
 
 

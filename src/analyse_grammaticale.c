@@ -1,6 +1,4 @@
 #include "analyse_grammaticale.h"
-#include <string.h>
-#include "notify.h"
 
 
  
@@ -14,7 +12,7 @@ section :
 
 void init (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_BSS* pl_bss, L_DATA* pl_data, L_SYMB* pl_symb, L_SYMB* pl_attente, L_INSTRUCTION* dicti) {
 	int S = 0 ;
-	int nb_op=0 ;
+	/*int nb_op=0 ; */
 	INSTRUCTION* p_instruction ;
 	while ( l != NULL ) {
 		S=(l->val).nom_type ;
@@ -72,7 +70,6 @@ void init (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_BSS* pl_bss, L
 					}
 					else {	
 						pl_attente = maj_symbole(dec,section, pl_attente, pl_symb, 0 ) ;
-						nb_op=(*p_instruction).nb_op ;			
 						/*l=charge_instruction(l,dec,pl_text,nb_op) ;*/
 					}
 				}
@@ -331,7 +328,7 @@ L_LEXEME charge_byte (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_BSS
 			return l ;
 		}
 		if ( (l->val).nom_type == 11 ) { /* on gère le cas où on a un "-" d'un nombre négatif */
-			l=signe ;
+			l=signe(l) ;
 		}
 		if (l->val.nom_type == 8 ) {/* si decimal */
 			(operande.val).nb = strtol( (l->val).valeur ,NULL, 10);
