@@ -128,6 +128,7 @@ short valeur_imm(LEXEME lex) ;
 int valeur_sa(LEXEME lex) ;
 long valeur_target(LEXEME lex) ;
 long valeur_offset(LEXEME lex) ;
+unsigned char valeur_reg(LEXEME l) ;
 
 /* ********** FONCTIONS DE LISTES ********** */
 

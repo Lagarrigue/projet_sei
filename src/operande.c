@@ -38,7 +38,7 @@ L_LEXEME charge_instruction (L_LEXEME l , int** dec, L_TEXT* pl_text, INSTRUCTIO
 			
 			case REG :
 				operande.type = 1 ;
-				/*operande.val = valeur_reg(l->val) ; */
+				(operande.val).reg = valeur_reg(l->val) ; 
 				break ;
 
 			case IMM :
@@ -80,7 +80,7 @@ L_LEXEME charge_instruction (L_LEXEME l , int** dec, L_TEXT* pl_text, INSTRUCTIO
 			
 			case BASE_OFF :
 				operande.type = 8 ;
-				/*operande.val = charge_offset() ; */
+				/*operande.val = charge_base_offset() ; */
 				break ;
 		}
 
@@ -120,7 +120,19 @@ L_LEXEME signe (L_LEXEME l){ /* Consiste à modifier le lexeme suivant */
 	return l ;
 }		
 	
-	
+unsigned char valeur_reg(LEXEME l) {
+	unsigned char s=0 ;
+	long int val= strtol( (l.valeur)+1 , NULL, 10) ;
+	if (0 <= val && val<32 ) {
+		s = (unsigned char)val ;
+		return s ;
+	}
+	else {
+		WARNING_MSG("(ligne %d) Registre inconnu ",l.numero_ligne) ;
+		return 0 ;
+	}
+}
+		
 	
 /* immediate : valeur codé sur 16 bits*/
 short valeur_imm(LEXEME lex){/* on met en argument le lexeme voulut !*/
