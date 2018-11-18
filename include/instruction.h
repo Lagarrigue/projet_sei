@@ -3,28 +3,15 @@
 
 /* ********** STRUCTURES ********** */
 
-typedef struct
-{
+typedef struct {
     char nom_inst[512];
     int nb_op;
-    char type_instruction[2];
-    
-    char type_op[3][10];  
-    /*
-    1 -> registre
-    2 -> valeur_immediate
-    3 -> shift_amount
-    4 -> base_offset
-    5 -> relatif
-    6 -> absolu_aligne
-    */
-} INSTRUCTION;
+    char type_instruction[2];  
+    char type_op[3][10] ; } INSTRUCTION;
 
-typedef struct maillonb
-{
+typedef struct maillonb {
     INSTRUCTION val;
-    struct maillonb* suiv ;
-}* L_INSTRUCTION;
+    struct maillonb* suiv ; }* L_INSTRUCTION;
 
 /* ********** FONCTION DICTIONNAIRE********** */
 

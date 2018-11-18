@@ -3,8 +3,14 @@
 
 L_LEXEME charge_instruction (L_LEXEME l , int** dec, L_TEXT* pl_text, INSTRUCTION instruction){
 	int nb_op = instruction.nb_op ;
-	int i ;
+	int i=0 ;
 	char** type_op_attendu ;
+	TEXT donnee ;
+	strcpy(donnee.instruction, instruction.nom_inst) ;
+	donnee.ligne = (l->val).numero_ligne ;
+	donnee.decalage = **dec ;
+	**dec += 4 ;
+	donnee.nb_op = nb_op ;
 	if ( (type_op_attendu = calloc(3,sizeof(*type_op_attendu)) ) == NULL ) {
 		puts("Erreur d'allocation") ;
 		return NULL ;
@@ -18,11 +24,13 @@ L_LEXEME charge_instruction (L_LEXEME l , int** dec, L_TEXT* pl_text, INSTRUCTIO
 			}
 		}
 	}
+	i=0 ;
 	enum { DEBUT,SIGNE, REG , IMM , SA , ETIQ , AD_REL , AD_ABS,BASE_OFF, TARGET, OFFSET ,VIRGULE} ;
-	int S ;
+	int S = DEBUT ;
 	OPERANDE operande ;
+	l=l->suiv ;
+	if (l==NULL) { return NULL ; } ;
 	while ( i<nb_op ) {
-
 		switch (S) {
 			case DEBUT :
 				type_op_attendu[i] = (instruction.type_op)[i] ;
@@ -55,6 +63,7 @@ L_LEXEME charge_instruction (L_LEXEME l , int** dec, L_TEXT* pl_text, INSTRUCTIO
 				/* Cherche l'etiquette dans le tableau et renvoie le truc associé en type LEXEME
 				 * PB : tableau pas encore créé !
 				 */ 
+				strcpy(operande.val.etiq, (l->val).valeur) ;
 				break ;
 
 			case SIGNE :
@@ -84,8 +93,7 @@ L_LEXEME charge_instruction (L_LEXEME l , int** dec, L_TEXT* pl_text, INSTRUCTIO
 				break ;
 		}
 
-		((*pl_text)->val).t_operande[i] = operande ;
-
+		donnee.t_operande[i] = operande ;
 		if ( i<(nb_op-1)) { /* Si on est pas au dernier opérande : on doit gérer les virgules */
 			l=l->suiv ;
 			if (l==NULL) { return NULL ; } ;
@@ -95,10 +103,12 @@ L_LEXEME charge_instruction (L_LEXEME l , int** dec, L_TEXT* pl_text, INSTRUCTIO
 			}
 			else {
 				l=l->suiv ;
-				i++ ;
+				if (l==NULL) { return NULL ; } ;
 			}
 		}
+		i++ ;
 	}
+	*pl_text = ajout_tete_L_TEXT (donnee,*pl_text) ;
 	return l ;		
 }
 

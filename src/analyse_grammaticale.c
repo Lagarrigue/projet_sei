@@ -70,7 +70,7 @@ void init (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_BSS* pl_bss, L
 					}
 					else {	
 						pl_attente = maj_symbole(dec,section, pl_attente, pl_symb, 0 ) ;
-						/*l=charge_instruction(l,dec,pl_text,nb_op) ;*/
+						l=charge_instruction (l , dec, pl_text, *p_instruction) ;
 					}
 				}
 				break ;
@@ -258,7 +258,6 @@ L_LEXEME charge_word (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_BSS
 	OPERANDE operande ;
 	TEXT donnee1 ;
 	DATA donnee3 ;
-	/* A FINIR : int signe=0 ;  on passera a 1 si négatif */
 	do {	
 		l=l->suiv ;
 		if (l==NULL) {
@@ -275,6 +274,7 @@ L_LEXEME charge_word (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_BSS
 		} 
 		else if ( l->val.nom_type == 7 ) { /* si symbole alpha*/
 			strcpy((operande.val).etiq, (l->val).valeur) ;
+			WARNING_MSG("(ligne %d)  Etiquette non géré pour le moment",l->val.numero_ligne);
 		}
 		else { /* sinon message d'erreur */
 			WARNING_MSG("(ligne %d) Valeur décimale, hexadécimale ou symboles alpha attendue",l->val.numero_ligne);
@@ -338,6 +338,7 @@ L_LEXEME charge_byte (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_BSS
 		} 
 		else if ( l->val.nom_type == 7 ) { /* si symbole alpha*/
 			strcpy((operande.val).etiq, (l->val).valeur) ;
+			WARNING_MSG("(ligne %d)  Etiquette non géré pour le moment",l->val.numero_ligne);
 		}
 		else { /* sinon message d'erreur */
 			WARNING_MSG("(ligne %d)  Valeur décimale, hexadécimale ou symboles alpha attendue",l->val.numero_ligne);

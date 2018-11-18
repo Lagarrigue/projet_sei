@@ -1,8 +1,9 @@
 # TEST_RETURN_CODE = PASS
 # allons au ru
+.byte
 .set noreorder
 .text
-    Lw $t0 , lunchtime
+    LW $t0 , lunchtime
     LW $6, -200($7)
     ADDI $t1,$zero,8
 boucle:
@@ -14,7 +15,7 @@ boucle:
 byebye:
     JAL viteviteauru
 
-.data
+.text
 lunchtime: 
     .word 12
     .word menu

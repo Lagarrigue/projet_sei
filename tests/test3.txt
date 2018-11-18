@@ -1,0 +1,14 @@
+.text
+.text
+
+byebye:
+    JAL viteviteauru
+    
+menu:
+    .space 24
+
+.text
+lunchtime: 
+    .word 12
+    .word menu
+    .asciiz "ils disent : \"au ru!\""
