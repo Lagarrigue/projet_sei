@@ -79,7 +79,7 @@ L_REGISTRE_reg*  lecture_dictionnaire_reg(int longueur_table)
 {
     L_REGISTRE_reg* T;
     FILE* fichier;
-    fichier=fopen("dico_registre.txt","r");
+    fichier=fopen("src/dico_registre.txt","r");
     if (fichier==NULL)
     {
         perror("Erreur ouverture fichier");
@@ -93,7 +93,7 @@ L_REGISTRE_reg*  lecture_dictionnaire_reg(int longueur_table)
         char lecture_chiffre[512];
         initialisation_tab_char_dictionnaire_reg(lecture_chiffre, 512);
         char lecture_lettres[512];
-		initialisation_tab_char_dictionnaire_reg(lecture_lettres, 512);
+	initialisation_tab_char_dictionnaire_reg(lecture_lettres, 512);
 
         int nb_instruction=0;
         int i;

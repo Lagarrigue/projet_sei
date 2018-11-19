@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
-#include "analyse_lexicale.h"
+#include "dictionnaire_registre.h"
 
 /*
 NL-->1
@@ -90,8 +90,6 @@ void lecture_liste_lexeme(L_LEXEME L){
      }
 }
 
-
-
 /* ici commence la fonction principale qui permet de lire le fichier assembleur */
 
 L_LEXEME analyse_lexicale(char* nom_fichier){
@@ -99,7 +97,7 @@ L_LEXEME analyse_lexicale(char* nom_fichier){
 	liste_lecture_instructions=creer_liste();
 	FILE* fichier;
 	fichier=fopen(nom_fichier,"r");
-	if (fichier==NULL){ 
+	if (fichier==NULL){
 		perror("Erreur ouverture du fichier");
 		}
 
@@ -112,6 +110,13 @@ L_LEXEME analyse_lexicale(char* nom_fichier){
         LEXEME lexeme_ligne;
         lexeme_ligne.nom_type=0;
         char mot[512] ;
+
+        initialisation_lexeme(&lexeme_ligne);
+        initialisation_tab_char(mot,512);
+        L_REGISTRE_reg * dico_registre;
+        dico_registre=lecture_dictionnaire_reg(10);
+        puts("APRES DICO") ;
+        REGISTRE_reg* reg;
 	/* i,j,k sont des compteur */
         int i=0;
         int j=0;
@@ -119,9 +124,8 @@ L_LEXEME analyse_lexicale(char* nom_fichier){
         int test_guillemets=0;
         int verif_guillemets=0;
         int numero_ligne_programme=0;
-        int valeur_registre=0;
         int nouvelle_ligne=0;
-        /* probleme possible avec ligne */
+        
 
         enum {DEBUT, NL, SPACE_TAB, VIRGULE, DEUX_PTS, COMMENTAIRE, REGISTRE, DIRECTIVE, SYMBOL_ALPHA, VALEUR_DEC, VALEUR_HEX, SYMBOL_ALPHA_NUM, SIGNE, GUILLEMETS, PARENTHESE};
         int S=DEBUT;
@@ -134,7 +138,7 @@ L_LEXEME analyse_lexicale(char* nom_fichier){
 			nouvelle_ligne=0;
             while(nouvelle_ligne==0) /* on lit la ligne mise en mémoire temporaire caractère par caractère */
             {
-           
+
                 switch(S) /* on déclare l'automate permettant de gérer l'ensemble des lexemes */
                 {
 
@@ -163,11 +167,11 @@ L_LEXEME analyse_lexicale(char* nom_fichier){
                         S=GUILLEMETS;
                     else if (ligne[i]=='(')
                         S=PARENTHESE;
-                    else if (ligne[i]=='\n')     
+                    else if (ligne[i]=='\n')
                    	 	S=NL;
                     break;
 
-               
+
                 case NL:
                 	nouvelle_ligne=1;
                 	if (mot[0]!='\0'){
@@ -180,7 +184,7 @@ L_LEXEME analyse_lexicale(char* nom_fichier){
                     	}
                     	S=DEBUT;
                 	break;
-                
+
                 case SPACE_TAB: /* on saute la tabulation ou l'espace */
                     i++;
                     S=DEBUT;
@@ -214,7 +218,7 @@ L_LEXEME analyse_lexicale(char* nom_fichier){
                     S=DEBUT;
                     break;
 
-                case REGISTRE: 
+                case REGISTRE:
 
                     if (lexeme_ligne.nom_type!=5)/*détection du #*/
                     {
@@ -232,26 +236,27 @@ L_LEXEME analyse_lexicale(char* nom_fichier){
                         S=REGISTRE;
                     }
 
-                   /*else if (isdigit(ligne[i])==0 && isalpha(ligne[i])==0)*/ /*on détecte la fin du nom de registre on stock donc dans la liste de lexemes*/
+                   /*on détecte la fin du nom de registre on stock donc dans la liste de lexemes*/
                       else if (ligne[i]==',' || ligne[i]==' ' || ligne[i]=='\n' || ligne[i]=='"')
                     {
-                        j=0;
 
+
+                            reg=recherche_element_reg(mot, dico_registre, 10);
+                            if(reg != NULL){
+                                strcpy(mot,(*reg).nom_chiffre);
+                            }
+                            else{
+                                printf("erreur, registre inexistant a la ligne n° %d\n",numero_ligne_programme);
+                            }
+
+                        j=0;
                         /*strcpy(lexeme_ligne.valeur, mot);*/
                         copie_tab_char(mot, lexeme_ligne.valeur,512);
                         liste_lecture_instructions=ajout_tete(lexeme_ligne,liste_lecture_instructions);
-
-                        valeur_registre=atoi(mot);/*conversion d'un char vers int*/
-
-                        if(valeur_registre>31)/*gestion erreur pour les numeros de registres*/
-                        {
-                            printf("erreur syntaxe ligne n° %d : registre inconnu\n", numero_ligne_programme);
-                        }
-
                         initialisation_lexeme(&lexeme_ligne);
                         initialisation_tab_char(mot,512);
                         S=DEBUT;
-                    } 
+                    }
                     break;
 
                 case DIRECTIVE:
@@ -297,7 +302,7 @@ L_LEXEME analyse_lexicale(char* nom_fichier){
                         S=SYMBOL_ALPHA_NUM;
                     }
 
-                    /*else if (((isalpha(ligne[i])==0 )& (isdigit(ligne[i])==0))) *//*le caractère est différents de alpha ou digit, on ajoute alors un nouveau lexeme à la liste de lexeme*/
+                    /*le caractère est différents de alpha ou digit, on ajoute alors un nouveau lexeme à la liste de lexeme*/
                     else if (ligne[i]==',' || ligne[i]==' ' || ligne[i]=='"' || ligne[i]==':' ||ligne[i]=='\n' || ligne[i]=='(' )
                     {
                         j=0;
@@ -331,7 +336,7 @@ L_LEXEME analyse_lexicale(char* nom_fichier){
                     if ((ligne[i+1]=='"') & (ligne[i]=='\\')) /*on ajoute le caractere guillemet précédé d'un back slash dans mot, qui appartient à la chaine de caractère, en fait ce n'est pas le guillemet de fin de chaine*/
 
                     {
-                        mot[j]='"'; 
+                        mot[j]='"';
                         j++;
                         i=i+2;/*on saute le back slash pour ne pas l'afficher dans la liste*/
                         S=GUILLEMETS;
@@ -418,64 +423,53 @@ L_LEXEME analyse_lexicale(char* nom_fichier){
                     break;
                 }
 
-
-/*partie du programme que l'on garde même si non initile ici
-cette partie permet d'ajouter à la liste le lexeme avant le saut de ligne et de commencer un nouveau lexeme après le saut de ligne
-permet de séparer les champs
-              
-                if (ligne[i]=='\n' && mot[0]!='\0')
-                {
-                    j=0;
-                    lexeme_ligne.nom_type=10;
-                    copie_tab_char(mot, lexeme_ligne.valeur,512);
-                    //strcpy(lexeme_ligne.valeur,mot);
-                    liste_lecture_instructions=ajout_tete(lexeme_ligne,liste_lecture_instructions);
-
-                    printf("test plus bas %c \n",mot[i]);
-                    initialisation_lexeme(&lexeme_ligne);
-                    initialisation_tab_char(mot,512);
-                    S=DEBUT;
-                }
-                */
-
                 if(est_vide(liste_lecture_instructions)==0) /*partie qui permet d'attribuer les type pour les lexemes alpha, digit et hexadécimal, on gère aussi des erreurs au cas ou on mélangerai des digits avec des alphas et inversement*/
                 {
                     if ( liste_lecture_instructions->val.nom_type==10)/*lexeme alpha_num non définit*/
                     {
-                        if(liste_lecture_instructions->val.valeur[0]=='0' && liste_lecture_instructions->val.valeur[1]=='x')/*détection du type hexadécimal*/
+                        if(liste_lecture_instructions->val.valeur[0]=='0' && (liste_lecture_instructions->val.valeur[1]=='x'||liste_lecture_instructions->val.valeur[1]=='X'))/*détection du type hexadécimal*/
                         {
+                            int l=2;
+                            while(liste_lecture_instructions->val.valeur[l]!='\0'){
+                                int hex=liste_lecture_instructions->val.valeur[l];
+                                if( (hex<48 || hex>57) && (hex<65|| hex>70) && (hex<97 || hex>102) ){
+
+                                    printf("erreur a la ligne n° %d, ce n'est pas une valeur hexadecimal\n",numero_ligne_programme);
+                                }
+                                l++;
+                            }
+
                             liste_lecture_instructions->val.nom_type=9;
                             lexeme_ligne.numero_ligne=numero_ligne_programme;
                         }
 
-                        else 
+                        else
                         {
-                            
+
 			    k=0;
 
 			    if(isdigit(liste_lecture_instructions->val.valeur[k]))/*gestion des erreurs et attribution type_lexemme pour caractère décimal*/
 			    {
-				k=0;		
+				k=0;
 				liste_lecture_instructions->val.nom_type=8;
 				lexeme_ligne.numero_ligne=numero_ligne_programme;
 
 				while(liste_lecture_instructions->val.valeur[k]!='\0')/*gestion de l'erreur*/
 				{
-					if(isalpha(liste_lecture_instructions->val.valeur[k]))
+					if(isalpha(liste_lecture_instructions->val.valeur[k]) && liste_lecture_instructions->val.valeur[0] != '0' )
 					{
 						printf("type 1 erreur de syntaxe ligne n° %d : mélange de symbole digit et alpha\n",numero_ligne_programme);
 					}
 					k++;
 				}
 			    }
-			
+
 			    else if(isalpha(liste_lecture_instructions->val.valeur[k]) && liste_lecture_instructions->val.valeur[i]!=':')/*gestion des erreurs et attribution type_lexemme pour caractère alpha*/
 			    {
-			    
+
 				k=0;
 				liste_lecture_instructions->val.nom_type=7;
 				lexeme_ligne.numero_ligne=numero_ligne_programme;
-
 
 				while(liste_lecture_instructions->val.valeur[k]!='\0')/*gestion de l'erreur*/
 				{
@@ -499,4 +493,4 @@ permet de séparer les champs
     liste_lecture_instructions=renversement_liste(liste_lecture_instructions);
     return liste_lecture_instructions;
 }
-	
+
