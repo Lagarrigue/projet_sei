@@ -34,7 +34,6 @@ void init (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_BSS* pl_bss, L
 						}
 				}
 				else if (strcmp(l->val.valeur,"word") == 0) {
-					puts("ON EST DANS WORD");
 					l = charge_word (l, section , dec , pl_text , pl_bss , pl_data) ;
 					pl_attente = maj_symbole(dec,section, pl_attente, pl_symb, 1 ) ;
 				}
@@ -259,7 +258,7 @@ L_LEXEME charge_word (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_BSS
 	OPERANDE operande ;
 	TEXT donnee1 ;
 	DATA donnee3 ;
-	do {	puts("BOUCLE WORD");
+	do {
 		l=l->suiv ;
 		if (l==NULL) { return l ;}
 		if ( l->val.nom_type == 2 ){ /* SI virgule on passe au suivant */

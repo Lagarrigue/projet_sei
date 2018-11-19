@@ -7,6 +7,7 @@ void lecture_liste_L_TEXT(L_TEXT L){
     L_TEXT p;
     int j=0;
     int i=0;
+    int n ;
     p=L;
     if(liste_est_vide_L_TEXT(L)==0)
     {
@@ -22,6 +23,36 @@ void lecture_liste_L_TEXT(L_TEXT L){
         	printf("* ligne : %d\n",p->val.ligne);
         	printf("* decalage : %d\n",p->val.decalage);
         	printf("* nb_op : %d\n",p->val.nb_op);
+        	for (n=0 ; n<p->val.nb_op ; n++ ) {
+        		if ( (p->val).t_operande[n].type ==  4 ){
+        			printf(" # OP %d : %s  (type :%d)\n",n ,((p->val).t_operande[n]).val.etiq, (p->val).t_operande[n]).type);
+        		}
+        		else if ( ((p->val).t_operande[n]).type == 1 ){
+        			printf(" # OP %d : %lf  (type :%d)\n",n ,((p->val).t_operande[n]).val.reg, (p->val).t_operande[n]).type);
+        		}
+        		else if ( ((p->val).t_operande[n]).type == 2 ){
+        			printf(" # OP %d : %lf  (type :%d)\n",n ,((p->val).t_operande[n]).val.imm, (p->val).t_operande[n]).type);
+        		}
+        		else if ( ((p->val).t_operande[n]).type == 3 ){
+        			printf(" # OP %d : %lf  (type :%d)\n",n ,((p->val).t_operande[n]).val.sa, (p->val).t_operande[n]).type);
+        		}
+        		else if ( ((p->val).t_operande[n]).type == 5 ){
+        			printf(" # OP %d : %lf  (type :%d)\n",n ,((p->val).t_operande[n]).val.ad_rel, (p->val).t_operande[n]).type);
+        		}
+        		else if ( ((p->val).t_operande[n]).type == 6 ){
+        			printf(" # OP %d : %lf  (type :%d)\n",n ,((p->val).t_operande[n]).val.ad_abs, (p->val).t_operande[n]).type);
+        		}
+        		else if ( ((p->val).t_operande[n]).type == 7 ){
+        			printf(" # OP %d : %lf  (type :%d)\n",n ,((p->val).t_operande[n]).val.imm, (p->val).t_operande[n]).type);
+        		}
+        		else if ( ((p->val).t_operande[n]).type == 8 ){
+        			printf(" # OP %d : %lf  (type :%d)\n",n ,((p->val).t_operande[n]).val.base_offset, (p->val).t_operande[n]).type);
+        		}
+        		else if ( ((p->val).t_operande[n]).type == 9 ){
+        			printf(" # OP %d : %lf  (type :%d)\n",n ,((p->val).t_operande[n]).val.tar, (p->val).t_operande[n]).type);
+        		}
+      			n++ ;
+      		}	
         	p=p->suiv;
         	i=0;
 		puts("") ;
