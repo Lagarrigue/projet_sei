@@ -34,8 +34,9 @@ void init (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_BSS* pl_bss, L
 						}
 				}
 				else if (strcmp(l->val.valeur,"word") == 0) {
-					pl_attente = maj_symbole(dec,section, pl_attente, pl_symb, 1 ) ;
+					puts("ON EST DANS WORD");
 					l = charge_word (l, section , dec , pl_text , pl_bss , pl_data) ;
+					pl_attente = maj_symbole(dec,section, pl_attente, pl_symb, 1 ) ;
 				}
 				else if (strcmp(l->val.valeur,"byte") == 0) {
 					pl_attente = maj_symbole(dec,section, pl_attente, pl_symb, 0 ) ;
@@ -90,7 +91,7 @@ void init (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_BSS* pl_bss, L
 			case 4 : /* CAS COMMENTAIRE */
 				break ;
 		}
-	l=l->suiv ;
+		l=l->suiv ;
 	}	
 }
 
@@ -258,10 +259,12 @@ L_LEXEME charge_word (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_BSS
 	OPERANDE operande ;
 	TEXT donnee1 ;
 	DATA donnee3 ;
-	do {	
+	do {	puts("BOUCLE WORD");
 		l=l->suiv ;
-		if (l==NULL) {
-			return l ;
+		if (l==NULL) { return l ;}
+		if ( l->val.nom_type == 2 ){ /* SI virgule on passe au suivant */
+			l=l->suiv ;
+			if (l==NULL) { return l ;}
 		}
 		if ( (l->val).nom_type == 11 ) { /* on gère le cas où on a un "-" d'un nombre négatif */
 			l=signe(l) ;
@@ -276,7 +279,7 @@ L_LEXEME charge_word (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_BSS
 			strcpy((operande.val).etiq, (l->val).valeur) ;
 			WARNING_MSG("(ligne %d)  Etiquette non géré pour le moment",l->val.numero_ligne);
 		}
-		else { /* sinon message d'erreur */
+		else { 
 			WARNING_MSG("(ligne %d) Valeur décimale, hexadécimale ou symboles alpha attendue",l->val.numero_ligne);
 		}
 		switch (section) {
@@ -293,7 +296,6 @@ L_LEXEME charge_word (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_BSS
 				break ;
 	
 			case 2 :
-			/* Erreur car impossible dans .bss*/
 				WARNING_MSG("(ligne %d) .word impossible dans .bss",l->val.numero_ligne);
 				break ;
 	
@@ -310,7 +312,7 @@ L_LEXEME charge_word (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_BSS
 				break ;
 			
 		}
-	} while ( (l->suiv != NULL) && ( l=(l->suiv) )->val.nom_type == 2 ) ; /* Si on a une virgule donc d'autre opérandes, on recommence */
+	} while ( (l->suiv != NULL) && (l->suiv)->val.nom_type == 2 ) ; /* Si on a une virgule donc d'autre opérandes, on recommence */
 	return l ;
 	
 }
@@ -321,11 +323,14 @@ L_LEXEME charge_byte (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_BSS
 	OPERANDE operande ;
 	TEXT donnee1 ;
 	DATA donnee3 ;
-	/* A FINIR : int signe=0 ;  on passera a 1 si négatif */
 	do {	
 		l=l->suiv ;
 		if (l==NULL) {
 			return l ;
+		}
+		if ( l->val.nom_type == 2 ){ /* SI virgule on passe au suivant */
+			l=l->suiv ;
+			if (l==NULL) { return l ;}
 		}
 		if ( (l->val).nom_type == 11 ) { /* on gère le cas où on a un "-" d'un nombre négatif */
 			l=signe(l) ;
@@ -370,7 +375,7 @@ L_LEXEME charge_byte (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_BSS
 				break ;
 
 		}
-	} while ( (l->suiv==NULL) && ( l=(l->suiv) )->val.nom_type == 2 ) ; /* Si on a une virgule donc une autre opérande ensuite, on recommence */
+	} while ( (l->suiv==NULL) && (l->suiv)->val.nom_type == 2 ) ; /* Si on a une virgule donc une autre opérande ensuite, on recommence */
 	
 	return l ;
 }
@@ -384,6 +389,10 @@ L_LEXEME charge_asciiz (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_B
 		l=l->suiv ;
 		if (l==NULL) {
 			return l ;
+		}
+		if ( l->val.nom_type == 2 ){ /* SI virgule on passe au suivant */
+			l=l->suiv ;
+			if (l==NULL) { return l ;}
 		}
 		if ( l->val.nom_type == 12 ) { 
 		/* si expression qui est entre des guillemets */
@@ -419,7 +428,7 @@ L_LEXEME charge_asciiz (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_B
 				break ;
 
 		}
-	} while ( (l->suiv==NULL) && ( l=(l->suiv) )->val.nom_type == 2 ) ; /* Si on a une virgule donc une autre opérande ensuite, on recommence */
+	} while ( (l->suiv==NULL) && (l->suiv)->val.nom_type == 2 ) ; /* Si on a une virgule donc une autre opérande ensuite, on recommence */
 	
 	return l ;
 }
