@@ -1,14 +1,21 @@
+# TEST_RETURN_CODE = PASS
+# allons au ru
+.set noreorder
 .text
-.bss
-.space 3
-.text
-ADDI $1,$0,8
+    ADDI $1,$0,8
+    NOP
 boucle:
-    BEQ $0 , $1 , 12
+    BEQ $0 , $1 , 23
     NOP
     ADDI $1 , $1 , 1
-    J 3 
-    NOP
+    J 89 
 byebye:
-    JAL 8
+    JAL 90
 
+.data
+lunchtime: 
+    .word 12
+    .asciiz "ils disent : \"au ru!\""
+.bss 
+menu:
+    .space 24

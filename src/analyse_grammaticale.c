@@ -16,6 +16,7 @@ void init (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_BSS* pl_bss, L
 	INSTRUCTION* p_instruction ;
 	while ( l != NULL ) {
 		S=(l->val).nom_type ;
+		printf("LEXEM : %s\n",(l->val).valeur);
 		switch ( S ) {
 			case 6 : /* CAS DIRECTIVE */
 				if (strcmp(l->val.valeur,"space") == 0) {
@@ -90,65 +91,14 @@ void init (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_BSS* pl_bss, L
 			case 4 : /* CAS COMMENTAIRE */
 				break ;
 		}
-		l=l->suiv ;
+		if (l != NULL) {
+			l=l->suiv ;
+		}
 	}	
 }
 
 
-/* CAS SYMB_ALPHA */
 
-/* L_LEXEME charge_instruction (L_LEXEME l, int** dec, L_TEXT* pl_text, int nb_op){
-	LEXEME lexeme = l->val ;
-	if (l==NULL) {	
-		return l ;
-	}
-	if ( (l->val).nom_type == 11 )  { 
-		l=l->suiv ;
-		if (l==NULL) { return l ;} 
-	}
-	OPERANDE operande ;
-	TEXT donnee ;
-	int i ;
-	strcpy(donnee.instruction, lexeme.valeur) ;
-	donnee.ligne = lexeme.numero_ligne ;
-	donnee.decalage = **dec ;
-	**dec += 4 ;
-	donnee.nb_op=nb_op ;
-	*pl_text = ajout_tete_L_TEXT (donnee,*pl_text) ;
-	for (i=0 ; i<nb_op ; i++ ) {
-		l=l->suiv ;
-		if ( l == NULL ){
-			return l ;
-		}
-		if ( (l->val).nom_type == 8 || (l->val).nom_type ==9 || (l->val).nom_type ==5 ) { 
-			strcpy(operande.val, (l->val).valeur) ;
-			operande.type = (l->val).nom_type ;
-			donnee.t_operande[i] = operande ;
-		}
-		else {
-
-			WARNING_MSG("(ligne %d) Registre, valeur décimale ou hexadécimale attendue",l->val.numero_ligne);
-			return l ;
-		}
-		if ( i == (nb_op-1) ) { 
-			return l ; 
-		}
-		
-		l=l->suiv ;
-		if ( l == NULL ){
-			return l ;
-		}
-		if ( (l->val).nom_type != 2 ) {
-
-			WARNING_MSG("(ligne %d) virgule attendue",l->val.numero_ligne);
-			return l ;
-		}
-		
-		
-	}
-	return l ;		
-}
-*/
 
 /* CAS SYMBOLE */
 
@@ -382,6 +332,7 @@ L_LEXEME charge_byte (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_BSS
 L_LEXEME charge_asciiz (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_BSS* pl_bss, L_DATA* pl_data) {
 	LEXEME lexeme = l->val ;
 	OPERANDE operande ;
+	operande.type=10 ;
 	TEXT donnee1 ;
 	DATA donnee3 ;
 	do {	

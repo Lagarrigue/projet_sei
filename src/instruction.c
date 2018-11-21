@@ -69,7 +69,7 @@ L_INSTRUCTION*  lecture_dictionnaire(int longueur_table)
             strcpy(instruction.type_op[0],lecture_type_operande_1);
             strcpy(instruction.type_op[1],lecture_type_operande_2);
             strcpy(instruction.type_op[2],lecture_type_operande_3);
-            
+          
             indice_tableau=hash(lecture_nom,longueur_table);/*changer taille tableau*/
 
             T[indice_tableau]=ajout_tete_dictionnaire(instruction, T[indice_tableau]);
@@ -80,6 +80,7 @@ L_INSTRUCTION*  lecture_dictionnaire(int longueur_table)
             initialisation_tab_char_dictionnaire(lecture_type_operande_3, 15);
         }
     }
+    	
 	printf("dictionnaire cree avec succes\n");
 	fclose(fichier);
 	return T;

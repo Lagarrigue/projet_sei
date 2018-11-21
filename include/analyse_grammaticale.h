@@ -16,6 +16,9 @@
 
 /* operandes */
 
+typedef struct BO {
+	unsigned char reg ;
+	short offset ;} BASE_OFFSET ;
 
 typedef union {
 	unsigned char reg;
@@ -26,14 +29,15 @@ typedef union {
 	unsigned int ad_abs ;
 	int nb ;
 	long tar ;
-	struct {
-		unsigned char reg ;
-		short offset ;} base_offset ;
+	BASE_OFFSET base_offset ;
+	
 	} VAL_OPERANDE ;
 
- /* typedef enum { REG , IMM , SA , ETIQ , AD_REL , AD_ABS , OFFSET , BASE_OFF , TARGAET } TYPE_VAL_OPERANDE ; 
-		   1      2     3    4      5        6         7        8          9
+ /* typedef enum { REG , IMM , SA , ETIQ , AD_REL , AD_ABS , OFFSET , BASE_OFF , TARGAET, ASCIIZ } TYPE_VAL_OPERANDE ; 
+		   1      2     3    4      5        6         7        8          9        10
 */
+
+
 
 typedef struct {
 	int type ;
@@ -127,8 +131,9 @@ L_LEXEME signe (L_LEXEME l) ;
 short valeur_imm(LEXEME lex) ;
 int valeur_sa(LEXEME lex) ;
 long valeur_target(LEXEME lex) ;
-long valeur_offset(LEXEME lex) ;
+short valeur_offset(LEXEME lex) ;
 unsigned char valeur_reg(LEXEME l) ;
+BASE_OFFSET valeur_base_off(LEXEME l, LEXEME suiv ) ;
 
 /* ********** FONCTIONS DE LISTES ********** */
 

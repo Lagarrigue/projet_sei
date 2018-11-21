@@ -25,33 +25,38 @@ void lecture_liste_L_TEXT(L_TEXT L){
         	printf("* nb_op : %d\n",p->val.nb_op);
         	for (n=0 ; n<p->val.nb_op ; n++ ) {
         		if ( (p->val).t_operande[n].type ==  4 ){
-        			printf(" # OP %d : %s  (type :%d)\n",n ,((p->val).t_operande[n]).val.etiq, (p->val).t_operande[n].type);
+        			printf(" # OP %d : %s  (ETIQ)\n",n+1,((p->val).t_operande[n]).val.etiq);
+        		}
+        		if ( (p->val).t_operande[n].type ==  10 ){
+        			printf(" # OP %d : %s  (STR)\n",n+1,((p->val).t_operande[n]).val.etiq);
         		}
         		else if ( ((p->val).t_operande[n]).type == 1 ){
-        			printf(" # OP %d : %c  (type :%d)\n",n ,((p->val).t_operande[n]).val.reg, (p->val).t_operande[n].type);
+        			printf(" # OP %d : %d  (REG)\n",n+1 ,((p->val).t_operande[n]).val.reg);
         		}
         		else if ( ((p->val).t_operande[n]).type == 2 ){
-        			printf(" # OP %d : %hd  (type :%d)\n",n ,((p->val).t_operande[n]).val.imm, (p->val).t_operande[n].type);
+        			printf(" # OP %d : %hd  (IMM)\n",n+1 ,((p->val).t_operande[n]).val.imm);
         		}
         		else if ( ((p->val).t_operande[n]).type == 3 ){
-        			printf(" # OP %d : %c  (type :%d)\n",n ,((p->val).t_operande[n]).val.sa, (p->val).t_operande[n].type);
+        			printf(" # OP %d : %d  (SA)\n",n+1 ,((p->val).t_operande[n]).val.sa);
         		}
         		else if ( ((p->val).t_operande[n]).type == 5 ){
-        			printf(" # OP %d : %hd  (type :%d)\n",n ,((p->val).t_operande[n]).val.ad_rel, (p->val).t_operande[n].type);
+        			printf(" # OP %d : %hd  (AD_REL)\n",n+1 ,((p->val).t_operande[n]).val.ad_rel);
         		}
         		else if ( ((p->val).t_operande[n]).type == 6 ){
-        			printf(" # OP %d : %d  (type :%d)\n",n ,((p->val).t_operande[n]).val.ad_abs, (p->val).t_operande[n].type);
+        			printf(" # OP %d : %d  (AD_ABS)\n",n+1 ,((p->val).t_operande[n]).val.ad_abs);
         		}
         		else if ( ((p->val).t_operande[n]).type == 7 ){
-        			printf(" # OP %d : %hd  (type :%d)\n",n ,((p->val).t_operande[n]).val.imm, (p->val).t_operande[n].type);
+        			printf(" # OP %d : %hd  (OFFSET)\n",n+1 ,((p->val).t_operande[n]).val.imm);
         		}
         		else if ( ((p->val).t_operande[n]).type == 8 ){
-        			printf(" # OP %d : %c (%hd) (type :%d)\n",n ,((p->val).t_operande[n]).val.base_offset.reg, ((p->val).t_operande[n]).val.base_offset.offset, (p->val).t_operande[n].type);
+        			printf(" # OP %d : %d (%hd) (BASE_OFF)\n",n +1,((p->val).t_operande[n]).val.base_offset.reg, ((p->val).t_operande[n]).val.base_offset.offset);
         		}
         		else if ( ((p->val).t_operande[n]).type == 9 ){
-        			printf(" # OP %d : %ld  (type :%d)\n",n ,((p->val).t_operande[n]).val.tar, (p->val).t_operande[n].type);
+        			printf(" # OP %d : %ld  (TARGET)\n",n+1 ,((p->val).t_operande[n]).val.tar);
         		}
-      			n++ ;
+        		else { 
+        			printf("* valeur op : %d\n", ((p->val).t_operande[n]).val.nb) ;
+        		}
       		}	
         	p=p->suiv;
         	i=0;

@@ -92,7 +92,6 @@ int main ( int argc, char *argv[] ) {
         puts("Analyse lexicale en cours ...") ;
 	l_lexeme=analyse_lexicale(file) ;
 	puts("Analyse lexicale teerminée.") ;
-	l_lexeme = supprimer_tete (l_lexeme) ; /* car 1er lexeme est une erreur pour l'instant : A CORRIGER */ 
 	while (a == 0 ) {
 		puts("Afficher la liste des lexemes ?  OUI (1)  NON (2)") ;
 		scanf("%d",&a) ;
