@@ -16,7 +16,6 @@ void init (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_BSS* pl_bss, L
 	INSTRUCTION* p_instruction ;
 	while ( l != NULL ) {
 		S=(l->val).nom_type ;
-		printf("LEXEM : %s\n",(l->val).valeur);
 		switch ( S ) {
 			case 6 : /* CAS DIRECTIVE */
 				if (strcmp(l->val.valeur,"space") == 0) {
@@ -254,7 +253,7 @@ L_LEXEME charge_word (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_BSS
 				**(dec+2) += (4-(**(dec+2))%4) ; /* on aligne sur 4 octets si besoin */
 			} 
 			donnee3.decalage=**(dec+2) ;
-			strcpy(donnee1.instruction,".word") ;
+			strcpy(donnee3.directive,".word") ;
 			donnee3.operande=operande  ;
 			*pl_data = ajout_tete_L_DATA (donnee3,*pl_data) ;
 			**(dec+2) += 4 ;
@@ -317,7 +316,7 @@ L_LEXEME charge_byte (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_BSS
 			case 3 :
 			donnee3.ligne=lexeme.numero_ligne ;
 			donnee3.decalage=**(dec+2) ;
-			strcpy(donnee1.instruction,".byte") ;
+			strcpy(donnee3.directive,".byte") ;
 			donnee3.operande=operande  ;
 			*pl_data = ajout_tete_L_DATA (donnee3,*pl_data) ;
 			**(dec+2) += 1 ;
@@ -371,7 +370,7 @@ L_LEXEME charge_asciiz (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_B
 			case 3 :
 			donnee3.ligne=lexeme.numero_ligne ;
 			donnee3.decalage=**(dec+2) ;
-			strcpy(donnee1.instruction,".asciiz") ;
+			strcpy(donnee3.directive,".asciiz") ;
 			donnee3.operande=operande  ;
 			*pl_data = ajout_tete_L_DATA (donnee3,*pl_data) ;
 			**(dec+2) += strlen((operande.val).etiq)+1 ;
@@ -379,7 +378,6 @@ L_LEXEME charge_asciiz (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_B
 
 		}
 	} while ( (l->suiv==NULL) && (l->suiv)->val.nom_type == 2 ) ; /* Si on a une virgule donc une autre opérande ensuite, on recommence */
-	
 	return l ;
 }
 

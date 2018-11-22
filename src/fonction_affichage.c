@@ -24,7 +24,7 @@ void lecture_liste_L_TEXT(L_TEXT L){
         	printf("* decalage : %d\n",p->val.decalage);
         	printf("* nb_op : %d\n",p->val.nb_op);
         	for (n=0 ; n<p->val.nb_op ; n++ ) {
-        		if ( (p->val).t_operande[n].type ==  4 ){
+        		if ( (p->val).t_operande[n].type ==  4 ||  (p->val).t_operande[n].type ==  10 ){
         			printf(" # OP %d : %s  (ETIQ)\n",n+1,((p->val).t_operande[n]).val.etiq);
         		}
         		if ( (p->val).t_operande[n].type ==  10 ){
@@ -88,7 +88,13 @@ void lecture_liste_L_DATA(L_DATA L){
         	printf("\n");
         	printf("* ligne : %d\n",p->val.ligne);
         	printf("* decalage : %d\n",p->val.decalage);
-        	printf("* operande : %d\n", p->val.operande.val.nb); 
+        	printf("* operande : "); 
+        	if ( (p->val).operande.type ==  4 || (p->val).operande.type==10 ){
+        		printf("%s\n",(p->val).operande.val.etiq);
+        	}
+        	else { 
+        		printf("%d\n", (p->val).operande.val.nb) ;
+        	}
         	p=p->suiv;
         	i=0;
 		puts("") ;
@@ -104,7 +110,6 @@ void lecture_liste_L_DATA(L_DATA L){
 void lecture_liste_L_BSS(L_BSS L){
     L_BSS p;
     int j=0;
-    int i=0;
     p=L;
     if(liste_est_vide_L_BSS(L)==0)
     {
@@ -112,16 +117,17 @@ void lecture_liste_L_BSS(L_BSS L){
         	printf("-------------------------\nLa donnee BSS n°%d est :\n",j);
         	j++ ;
         	printf("* directive : ");
-        	while(p->val.directive[i] !='\0'){
-            	printf("%c",p->val.directive[i]);
-            	i++;
-        	}
-        	printf("\n");
+            	printf("%s \n",p->val.directive);
         	printf("* ligne : %d\n",p->val.ligne);
         	printf("* decalage : %d\n",p->val.decalage); 
-        	printf("* operande : %d\n", p->val.operande.val.nb); 
+        	printf("* operande : "); 
+        	if ( (p->val).operande.type ==  4 ){
+        		printf("%s\n",(p->val).operande.val.etiq);
+        	}
+        	else { 
+        		printf("%d\n", (p->val).operande.val.nb) ;
+        	} 
         	p=p->suiv;
-        	i=0;
 		puts("") ;
 	}
      }
