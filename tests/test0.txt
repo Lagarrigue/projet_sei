@@ -1,0 +1,13 @@
+# TEST_RETURN_CODE = PASS
+# allons au ru
+.set noreorder
+.text
+.set noreorder
+.text
+   
+   LW $4, $5, 700
+
+.text
+.data
+.set noreorder
+.text

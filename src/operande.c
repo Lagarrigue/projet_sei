@@ -1,7 +1,7 @@
 #include "analyse_grammaticale.h"
 
 
-L_LEXEME charge_instruction (L_LEXEME l , int** dec, L_TEXT* pl_text, INSTRUCTION instruction){
+L_LEXEME charge_instruction (L_LEXEME l , int** dec, L_TEXT* pl_text, INSTRUCTION instruction, L_SYMB* pl_symb){
 	int nb_op = instruction.nb_op ;
 	int i=0 ;
 	int j ;
@@ -30,6 +30,7 @@ L_LEXEME charge_instruction (L_LEXEME l , int** dec, L_TEXT* pl_text, INSTRUCTIO
 		return l ;
 	}
 	OPERANDE operande ;
+	/*SMB symb ; */
 	l=l->suiv ;
 	if (l==NULL) { return NULL ; } ;
 	while ( i<nb_op ) {
@@ -37,8 +38,13 @@ L_LEXEME charge_instruction (L_LEXEME l , int** dec, L_TEXT* pl_text, INSTRUCTIO
 		if ( (l->val).nom_type == 4) {
 			WARNING_MSG("(ligne %d) [operande n°%d] Etiquette non géré pour le moment",l->val.numero_ligne,i+1);
 			strcpy(operande.val.etiq, (l->val).valeur) ;
+			/*if ( existence_symbole((l->val).valeur , *pl_symb) == FALSE ){
+				strcpy(symb.symbole, (l->val).valeur) ;
+				symb.defined=FALSE;
+				*pl_symb = ajout_tete_L_SYMB (symb,*pl_symb) ;
+			}*/
+			
 		}
-		
 		else if ( (l->val).nom_type == 11 ) {
 			l = signe(l) ;
 			i-- ;

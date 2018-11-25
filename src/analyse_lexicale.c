@@ -3,6 +3,7 @@
 #include <ctype.h>
 #include "dictionnaire_registre.h"
 
+
 /*
 NL-->1
 VIRGULE-->2

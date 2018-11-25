@@ -70,7 +70,7 @@ void init (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_BSS* pl_bss, L
 					}
 					else {	
 						pl_attente = maj_symbole(dec,section, pl_attente, pl_symb, 0 ) ;
-						l=charge_instruction (l , dec, pl_text, *p_instruction) ;
+						l=charge_instruction (l , dec, pl_text, *p_instruction,pl_symb) ;
 					}
 				}
 				break ;
@@ -107,6 +107,7 @@ L_LEXEME charge_symbole (L_LEXEME l, int section, int** dec, L_SYMB* pl_attente)
 	strcpy(symb.symbole, lexeme.valeur) ;
 	symb.ligne=lexeme.numero_ligne ;
 	symb.section=section ;
+	symb.defined=TRUE ;
 	symb.decalage=0 ; /* on met à 0 pour l'instant car on ne le connait pas encore */
 	*pl_attente = ajout_tete_L_SYMB (symb,*pl_attente) ; /* on ajoute dans la liste d'attente en attendant de connaitre le decalage */ 
 	return(l) ;

@@ -1,0 +1,9 @@
+7
+NOP 0 non non non
+LW 2 reg target non
+SW 2 reg target non
+MOVE 2 reg reg non
+NEG 2 reg reg non
+LI 2 reg imm non
+BLT 3 reg reg target
+

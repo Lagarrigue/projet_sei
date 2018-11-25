@@ -5,7 +5,7 @@
 #include "analyse_lexicale.h"
 #include "instruction.h"
 #include "notify.h"
-
+#include <global.h>
 
 
 
@@ -101,6 +101,7 @@ typedef struct l_bss {
 
 typedef struct symb {
 	char symbole[512] ;
+	int defined ;
 	int ligne ; /* ligne de definition dans le code et non pas d'utilisation ! */
 	int section ; /* 1=text 2=DATA 3=BSS */
 	int decalage ; } SYMB ;
@@ -126,7 +127,7 @@ L_SYMB* maj_symbole(int** dec, int section, L_SYMB* pl_attente, L_SYMB* pl_symb,
 
 /* ********** FONCTIONS POUR LES OPERANDES ********** */
 
-L_LEXEME charge_instruction (L_LEXEME l , int** dec, L_TEXT* pl_text, INSTRUCTION instruction) ;
+L_LEXEME charge_instruction (L_LEXEME l , int** dec, L_TEXT* pl_text, INSTRUCTION instruction, L_SYMB*) ;
 L_LEXEME signe (L_LEXEME l) ;
 short valeur_imm(LEXEME lex) ;
 int valeur_sa(LEXEME lex) ;
