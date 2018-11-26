@@ -104,7 +104,6 @@ L_LEXEME analyse_lexicale(char* nom_fichier){
 
 	else
 	{
-	puts("Ouverture reussie du fichier");
 
         /* on déclare les variables dont on aura besoin par la suite */
         char ligne[512];
@@ -116,7 +115,6 @@ L_LEXEME analyse_lexicale(char* nom_fichier){
         initialisation_tab_char(mot,512);
         L_REGISTRE_reg * dico_registre;
         dico_registre=lecture_dictionnaire_reg(10);
-        puts("APRES DICO") ;
         REGISTRE_reg* reg;
 	/* i,j,k sont des compteur */
         int i=0;
@@ -410,7 +408,13 @@ L_LEXEME analyse_lexicale(char* nom_fichier){
 
                     else if (ligne[i]==')') /*on détecte la fin de la parenthèse et on ajoute le lexeme à la liste de lexemes*/
                     {
-
+			reg = recherche_element_reg(mot,dico_registre,10) ;
+			if ( reg !=NULL) {
+				strcpy(mot,(*reg).nom_chiffre);
+			}
+			else {
+				printf("Registre inexistant à la ligne %d",numero_ligne_programme) ;
+			}	
                         j=0;
                         i++;
                         /*strcpy(lexeme_ligne.valeur,mot);*/
@@ -489,7 +493,6 @@ L_LEXEME analyse_lexicale(char* nom_fichier){
             }
         }
     }
-    printf("lecture terminee avec succes\n");
     fclose(fichier);
     liste_lecture_instructions=renversement_liste(liste_lecture_instructions);
     return liste_lecture_instructions;

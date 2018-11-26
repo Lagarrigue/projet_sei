@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <strings.h>
 #include <string.h>
 #include "notify.h"
 
@@ -117,7 +118,7 @@ L_LEXEME suppression_maillon(L_LEXEME l, int num_lex);
 L_LEXEME ajouter_maillon(L_LEXEME l, int num_lex, LEXEME lex);
 L_LEXEME ajuster_numero_lexeme(L_LEXEME l);
 L_LEXEME fonction_chainage(L_LEXEME l, int num_lex, L_LEXEME l2, int nb_operandes);
-L_LEXEME remplacement_pseudo_instruction(L_LEXEME l, int num_lex, char* nom_pseudo);
+L_LEXEME remplacement_pseudo_instruction(L_LEXEME l, int num_lex, char nom_pseudo[512]);
 L_LEXEME verification_appartenance_pseudo_instruction(L_LEXEME liste_lexemes, L_PSEUDO_INSTRUCTION* dico, int longueur_dico);
 
 

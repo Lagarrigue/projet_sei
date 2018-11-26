@@ -14,7 +14,6 @@ L_LEXEME charge_instruction (L_LEXEME l , int** dec, L_TEXT* pl_text, INSTRUCTIO
 	strcpy(donnee.instruction, instruction.nom_inst) ;
 	donnee.ligne = (l->val).numero_ligne ;
 	donnee.decalage = **dec ;
-	strcpy(donnee.type_instruction, instruction.type_instruction);
 	**dec += 4 ;
 	donnee.nb_op = nb_op ;
 	if ( (type_op_attendu = calloc(3,sizeof(*type_op_attendu)) ) == NULL ) {
@@ -32,10 +31,8 @@ L_LEXEME charge_instruction (L_LEXEME l , int** dec, L_TEXT* pl_text, INSTRUCTIO
 	}
 	l=l->suiv ;
 	if (l==NULL) { return NULL ; } ;
-			printf("nb op : %d ", nb_op);
 	while ( i<nb_op ) {
 		type_op_attendu[i] = (instruction.type_op)[i] ;
-		printf(" OP : %s ",(l->val).valeur) ;
 		/* Etiquette */
 		if ( (l->val).nom_type == 7) { 
 			strcpy(operande.val.etiq.nom, (l->val).valeur) ;
@@ -180,7 +177,7 @@ short valeur_imm(LEXEME lex){/* on met en argument le lexeme voulut !*/
 	if(lex.nom_type==8){
 		short valeur=0;
 		valeur=strtol(lex.valeur,NULL, 10);
-		if(valeur < ((short) pow(2,16))-1 && valeur >= 0){
+		if(valeur < ((short) pow(2,15))-1 && valeur >= (-(short) pow(2,15))){
 			valeur_finale=valeur;
 			return valeur_finale;
 		}
@@ -193,7 +190,7 @@ short valeur_imm(LEXEME lex){/* on met en argument le lexeme voulut !*/
 	else if(lex.nom_type==9){
 		short valeur=0;
 		valeur=strtol(lex.valeur,NULL , 16);
-		if(valeur < ((short) pow(2,16))-1 && valeur >= 0){
+		if(valeur < ((short) pow(2,15))-1 && valeur >= (-(short) pow(2,15))){
 			valeur_finale=valeur;
 			return valeur_finale;
 		}
@@ -241,27 +238,27 @@ int valeur_sa(LEXEME lex){
 	return 69 ;
 }
 
-/* codage sur 26 bits */
+/* codage sur 28 bits non signes et divisible par 4 */
 long valeur_target(LEXEME lex){
 	long valeur=0;
 	if(lex.nom_type==8){
 		valeur=strtol(lex.valeur,NULL, 10);
-		if(valeur < ((long) pow(2,26))-1 && valeur >= 0){
+		if(valeur < ((long) pow(2,26))-1 && valeur >= 0 && valeur%4==0){
 			return valeur;
 		}
 			
 		else{
-			WARNING_MSG("valeur instruction ligne n°%d trop grande, c'est codé sur 26 bits",lex.numero_ligne);
+			WARNING_MSG("valeur instruction ligne n°%d trop grande qui doit etre positive, divisible par 4 , c'est codé sur 28 bits",lex.numero_ligne);
 			return 0;
 		}
 	}
 	else if(lex.nom_type==9){
 		valeur=strtol(lex.valeur,NULL , 16);
-		if(valeur < ((long) pow(2,24))-1 && valeur >= 0){
+		if(valeur < ((long) pow(2,26))-1 && valeur >= 0 && valeur%4==0){
 			return valeur;
 		}
 		else{
-			WARNING_MSG("valeur instruction ligne n°%d trop grande, c'est codé sur 26 bits",lex.numero_ligne);
+			WARNING_MSG("valeur instruction ligne n°%d trop grande qui doit etre positive, divisible par 4, c'est codé sur 28 bits",lex.numero_ligne);
 			return 0;
 		}
 	}
@@ -273,11 +270,11 @@ long valeur_target(LEXEME lex){
 
 
 /* codage sur 18 bits signés */
-short valeur_offset(LEXEME lex){
-	short valeur=0;
+long valeur_offset(LEXEME lex){
+	long valeur=0;
 	if(lex.nom_type==8){
 		valeur=strtol(lex.valeur,NULL, 10);
-		if(valeur < ((short) pow(2,18))-1 && valeur >= 0){
+		if(valeur <= ((long) pow(2,17))-1 && valeur >= (-(long) pow(2,17))){
 			return valeur;
 		}
 			
@@ -288,11 +285,11 @@ short valeur_offset(LEXEME lex){
 	}
 	else if(lex.nom_type==9){
 		valeur=strtol(lex.valeur,NULL , 16);
-		if(valeur < ((short) pow(2,18))-1 && valeur >= 0){
+		if(valeur < ((short) pow(2,17))-1 && valeur >= (-(long) pow(2,17))){
 			return valeur;
 		}
 		else{
-			WARNING_MSG("valeur instruction ligne n°%d trop grande c'est codé sur 18 bits signés, c'est un short",lex.numero_ligne);
+			WARNING_MSG("valeur instruction ligne n°%d trop grande c'est codé sur 18 bits signés",lex.numero_ligne);
 			return 0;
 		}
 	}
@@ -302,15 +299,15 @@ short valeur_offset(LEXEME lex){
 	}
 }
 
-
+/* l'offset est codé ici sur 16 bits signés*/
 BASE_OFFSET valeur_base_off(LEXEME l, LEXEME suiv ){
 	BASE_OFFSET b_o ;
-	unsigned char reg ;
+	unsigned char reg;
 	short offset ;
-	if((l.nom_type==8 || l.nom_type==9 )&& suiv.nom_type==13){
+	if((l.nom_type==8 || l.nom_type==9) && suiv.nom_type==13){
 		if(l.nom_type==8){
 			offset = strtol(l.valeur, NULL, 10) ;
-			if( ( offset < ((short) pow(2,15))-1) && (offset >= -(short) pow(2,15))){
+			if( ( offset < ((short) pow(2,15))-1) && (offset >= (-(short) pow(2,15)))){
 				b_o.offset=offset ;
 			}
 			else{
@@ -321,7 +318,7 @@ BASE_OFFSET valeur_base_off(LEXEME l, LEXEME suiv ){
 		}
 		else if (l.nom_type==9){
 			offset=strtol(l.valeur, NULL , 16) ;
-			if( (offset < ((short) pow(2,15))-1) && (offset >= -(short) pow(2,15))){
+			if( (offset < ((short) pow(2,15))-1) && (offset >= (-(short) pow(2,15)))){
 				b_o.offset=offset ;
 			}
 			else{

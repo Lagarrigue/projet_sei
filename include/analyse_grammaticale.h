@@ -16,7 +16,7 @@
 
 /* operandes */
 
-typedef struct BO {
+typedef struct bo {
 	unsigned char reg ;
 	short offset ;} BASE_OFFSET ;
 	
@@ -29,8 +29,6 @@ typedef union {
 	short imm ;
 	unsigned char sa ; 
 	ETIQ etiq ;
-	short ad_rel;
-	unsigned int ad_abs ;
 	int nb ;
 	long tar ;
 	BASE_OFFSET base_offset ; } VAL_OPERANDE ;
@@ -135,7 +133,7 @@ L_LEXEME signe (L_LEXEME l) ;
 short valeur_imm(LEXEME lex) ;
 int valeur_sa(LEXEME lex) ;
 long valeur_target(LEXEME lex) ;
-short valeur_offset(LEXEME lex) ;
+long valeur_offset(LEXEME lex) ;
 unsigned char valeur_reg(LEXEME l) ;
 BASE_OFFSET valeur_base_off(LEXEME l, LEXEME suiv ) ;
 

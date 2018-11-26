@@ -39,12 +39,6 @@ void lecture_liste_L_TEXT(L_TEXT L){
         		else if ( ((p->val).t_operande[n]).type == 3 ){
         			printf(" # OP %d : %d  (SA)\n",n+1 ,((p->val).t_operande[n]).val.sa);
         		}
-        		else if ( ((p->val).t_operande[n]).type == 5 ){
-        			printf(" # OP %d : %hd  (AD_REL)\n",n+1 ,((p->val).t_operande[n]).val.ad_rel);
-        		}
-        		else if ( ((p->val).t_operande[n]).type == 6 ){
-        			printf(" # OP %d : %d  (AD_ABS)\n",n+1 ,((p->val).t_operande[n]).val.ad_abs);
-        		}
         		else if ( ((p->val).t_operande[n]).type == 7 ){
         			printf(" # OP %d : %hd  (OFFSET)\n",n+1 ,((p->val).t_operande[n]).val.imm);
         		}

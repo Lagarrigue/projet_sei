@@ -28,7 +28,6 @@ L_PSEUDO_INSTRUCTION*  lecture_dictionnaire_pseudo(int longueur_table)
 
     else
     {
-        puts("ouverture en lecture reussie du fichier");
 
         T=creer_dictionnaire_pseudo(longueur_table);
         char lecture_nom[512];
@@ -71,7 +70,7 @@ L_PSEUDO_INSTRUCTION*  lecture_dictionnaire_pseudo(int longueur_table)
             initialisation_tab_char_dictionnaire_pseudo(lecture_type_operande_3, 15);
         }
     }
-	printf("dictionnaire cree avec succes\n");
+
 	fclose(fichier);
 	return T;
 }

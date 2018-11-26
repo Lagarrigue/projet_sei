@@ -87,7 +87,6 @@ L_REGISTRE_reg*  lecture_dictionnaire_reg(int longueur_table)
 
     else
     {
-        puts("ouverture en lecture reussie du fichier");
 
         T=creer_dictionnaire_reg(longueur_table);
         char lecture_chiffre[512];
@@ -114,7 +113,6 @@ L_REGISTRE_reg*  lecture_dictionnaire_reg(int longueur_table)
             initialisation_tab_char_dictionnaire_reg(lecture_lettres,512);
         }
     }
-	printf("dictionnaire cree avec succes\n");
 	fclose(fichier);
 	return T;
 }

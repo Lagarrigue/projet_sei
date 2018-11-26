@@ -37,7 +37,6 @@ L_INSTRUCTION*  lecture_dictionnaire(int longueur_table)
 
     else
     {
-        puts("ouverture en lecture reussie du fichier");
 
         T=creer_dictionnaire(longueur_table);
         char lecture_nom[512];
@@ -81,7 +80,6 @@ L_INSTRUCTION*  lecture_dictionnaire(int longueur_table)
         }
     }
     	
-	printf("dictionnaire cree avec succes\n");
 	fclose(fichier);
 	return T;
 }
