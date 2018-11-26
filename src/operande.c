@@ -14,6 +14,7 @@ L_LEXEME charge_instruction (L_LEXEME l , int** dec, L_TEXT* pl_text, INSTRUCTIO
 	strcpy(donnee.instruction, instruction.nom_inst) ;
 	donnee.ligne = (l->val).numero_ligne ;
 	donnee.decalage = **dec ;
+	strcpy(donnee.type_instruction, instruction.type_instruction);
 	**dec += 4 ;
 	donnee.nb_op = nb_op ;
 	if ( (type_op_attendu = calloc(3,sizeof(*type_op_attendu)) ) == NULL ) {

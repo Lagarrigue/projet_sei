@@ -60,6 +60,7 @@ typedef struct text {
 	int ligne ;
 	int decalage ;
 	int nb_op ;
+	char type_instruction[1] ;
 	OPERANDE t_operande[3] ; } TEXT ;
 
 typedef struct l_text {

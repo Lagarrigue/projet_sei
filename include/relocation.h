@@ -13,3 +13,5 @@ typedef struct reloc {
 */	
 	
 SYMB* p_symbole ( char etiq[512], SYMB* tab_etiq, int n ) ;
+RELOC * relocation(SYMB* tab_symb, int size, L_TEXT * pl_text, L_DATA * pl_data, int** dec, int ad_data, int ad_text ) ;
+int existence_symbole (char etiq[512] ,L_SYMB l_symb) ;
