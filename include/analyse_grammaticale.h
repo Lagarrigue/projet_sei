@@ -19,19 +19,21 @@
 typedef struct BO {
 	unsigned char reg ;
 	short offset ;} BASE_OFFSET ;
+	
+typedef struct etiq {
+	char nom[512] ;
+	char attendu[10] ; } ETIQ ;
 
 typedef union {
 	unsigned char reg;
 	short imm ;
 	unsigned char sa ; 
-	char etiq[512] ;
+	ETIQ etiq ;
 	short ad_rel;
 	unsigned int ad_abs ;
 	int nb ;
 	long tar ;
-	BASE_OFFSET base_offset ;
-	
-	} VAL_OPERANDE ;
+	BASE_OFFSET base_offset ; } VAL_OPERANDE ;
 
  /* typedef enum { REG , IMM , SA , ETIQ , AD_REL , AD_ABS , OFFSET , BASE_OFF , TARGAET, ASCIIZ } TYPE_VAL_OPERANDE ; 
 		   1      2     3    4      5        6         7        8          9        10

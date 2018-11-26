@@ -24,11 +24,11 @@ void lecture_liste_L_TEXT(L_TEXT L){
         	printf("* decalage : %d\n",p->val.decalage);
         	printf("* nb_op : %d\n",p->val.nb_op);
         	for (n=0 ; n<p->val.nb_op ; n++ ) {
-        		if ( (p->val).t_operande[n].type ==  4 ||  (p->val).t_operande[n].type ==  10 ){
-        			printf(" # OP %d : %s  (ETIQ)\n",n+1,((p->val).t_operande[n]).val.etiq);
+        		if ( (p->val).t_operande[n].type ==  4){
+        			printf(" # OP %d : %s  (ETIQ)\n",n+1,((p->val).t_operande[n]).val.etiq.nom);
         		}
-        		if ( (p->val).t_operande[n].type ==  10 ){
-        			printf(" # OP %d : %s  (STR)\n",n+1,((p->val).t_operande[n]).val.etiq);
+        		else if ( (p->val).t_operande[n].type ==  10 ){
+        			printf(" # OP %d : %s  (STR)\n",n+1,((p->val).t_operande[n]).val.etiq.nom);
         		}
         		else if ( ((p->val).t_operande[n]).type == 1 ){
         			printf(" # OP %d : %d  (REG)\n",n+1 ,((p->val).t_operande[n]).val.reg);
@@ -90,7 +90,7 @@ void lecture_liste_L_DATA(L_DATA L){
         	printf("* decalage : %d\n",p->val.decalage);
         	printf("* operande : "); 
         	if ( (p->val).operande.type ==  4 || (p->val).operande.type==10 ){
-        		printf("%s\n",(p->val).operande.val.etiq);
+        		printf("%s\n",(p->val).operande.val.etiq.nom);
         	}
         	else { 
         		printf("%d\n", (p->val).operande.val.nb) ;
@@ -122,7 +122,7 @@ void lecture_liste_L_BSS(L_BSS L){
         	printf("* decalage : %d\n",p->val.decalage); 
         	printf("* operande : "); 
         	if ( (p->val).operande.type ==  4 ){
-        		printf("%s\n",(p->val).operande.val.etiq);
+        		printf("%s\n",(p->val).operande.val.etiq.nom);
         	}
         	else { 
         		printf("%d\n", (p->val).operande.val.nb) ;

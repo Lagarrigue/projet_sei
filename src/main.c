@@ -72,7 +72,6 @@ int main ( int argc, char *argv[] ) {
 	L_SYMB l_attente = creer_liste_L_SYMB() ;
 	L_INSTRUCTION* dictionnaire = lecture_dictionnaire(15) ;
 
-
     if ( argc <2 ) {
         print_usage(argv[0]);
         exit( EXIT_FAILURE );
@@ -106,6 +105,7 @@ int main ( int argc, char *argv[] ) {
     
     /* ---------------- do the gramatical analysis ------------------*/
     	a=0 ;
+    	puts ("GO");
     	init (l_lexeme, section, dec, &l_text, &l_bss, &l_data, &l_symb, &l_attente,dictionnaire) ;
     	size=longueur_l_symb(l_symb) ;
     	tab=creer_tab_symb(size);
@@ -124,5 +124,14 @@ int main ( int argc, char *argv[] ) {
     /* ---------------- Free memory and terminate -------------------*/
 
     /* TODO free everything properly*/
+    
+	liberer_liste_L_TEXT(l_text) ;
+	liberer_liste_L_BSS(l_bss) ;
+	liberer_liste_L_DATA(l_data) ;
+	liberer_liste_L_SYMB(l_symb) ;
+    
+    
+    
+    
     exit( EXIT_SUCCESS );
 }

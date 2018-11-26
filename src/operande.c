@@ -2,54 +2,53 @@
 
 
 L_LEXEME charge_instruction (L_LEXEME l , int** dec, L_TEXT* pl_text, INSTRUCTION instruction, L_SYMB* pl_symb){
+
+	/* *** Déclaration des variables + initaisation *** */
 	int nb_op = instruction.nb_op ;
 	int i=0 ;
 	int j ;
 	char** type_op_attendu ;
 	TEXT donnee ;
+	OPERANDE operande ;
+	/*SMB symb ; */
 	strcpy(donnee.instruction, instruction.nom_inst) ;
 	donnee.ligne = (l->val).numero_ligne ;
 	donnee.decalage = **dec ;
 	**dec += 4 ;
 	donnee.nb_op = nb_op ;
 	if ( (type_op_attendu = calloc(3,sizeof(*type_op_attendu)) ) == NULL ) {
-		puts("Erreur d'allocation") ;
-		return NULL ;
-		}
-	else {
-		for (j=0 ; j<3 ; j++ ) {
+		puts("Erreur d'allocation") ; return NULL ;}
+	else {  for (j=0 ; j<3 ; j++ ) {
 			type_op_attendu[j]=calloc(10,sizeof(**type_op_attendu));
 			if (type_op_attendu[j] == NULL) {
-				puts("Erreur d'allocation") ;
-				return NULL ;
-			}
-		}
-	}
+				puts("Erreur d'allocation") ;  return NULL ; }
+			}}
+			
+	/* *** Début de "l'automate" *** */
 	if ( nb_op == 0 ) {
 		*pl_text = ajout_tete_L_TEXT (donnee,*pl_text) ;
 		return l ;
 	}
-	OPERANDE operande ;
-	/*SMB symb ; */
 	l=l->suiv ;
 	if (l==NULL) { return NULL ; } ;
+			printf("nb op : %d ", nb_op);
 	while ( i<nb_op ) {
 		type_op_attendu[i] = (instruction.type_op)[i] ;
-		if ( (l->val).nom_type == 4) {
-			WARNING_MSG("(ligne %d) [operande n°%d] Etiquette non géré pour le moment",l->val.numero_ligne,i+1);
-			strcpy(operande.val.etiq, (l->val).valeur) ;
-			/*if ( existence_symbole((l->val).valeur , *pl_symb) == FALSE ){
-				strcpy(symb.symbole, (l->val).valeur) ;
-				symb.defined=FALSE;
-				*pl_symb = ajout_tete_L_SYMB (symb,*pl_symb) ;
-			}*/
-			
+		printf(" OP : %s ",(l->val).valeur) ;
+		/* Etiquette */
+		if ( (l->val).nom_type == 7) { 
+			strcpy(operande.val.etiq.nom, (l->val).valeur) ;
+			strcpy(operande.val.etiq.attendu, (instruction.type_op)[i]);
+			operande.type = 4 ;
 		}
+		
+		/* Signe - */
 		else if ( (l->val).nom_type == 11 ) {
 			l = signe(l) ;
 			i-- ;
 		}
 		
+		/* Registre */
 		else if ( strcmp(type_op_attendu[i],"reg")==0 ) {
 			if ( l->val.nom_type != 5 ) {
 				WARNING_MSG("(ligne %d) [operande n°%d] Registre attendu (EXIT OPERANDE)",l->val.numero_ligne,i+1);
@@ -58,6 +57,8 @@ L_LEXEME charge_instruction (L_LEXEME l , int** dec, L_TEXT* pl_text, INSTRUCTIO
 			operande.type = 1 ;
 			(operande.val).reg = valeur_reg(l->val) ; 
 		}
+		
+		/* Immediat */
 		else if ( strcmp(type_op_attendu[i],"imm")==0 )    {
 			if ( l->val.nom_type != 8 && l->val.nom_type != 9) {
 				WARNING_MSG("(ligne %d) [operande n°%d] Immédiat attendu (EXIT OPERANDE)",l->val.numero_ligne,i+1);
@@ -67,6 +68,7 @@ L_LEXEME charge_instruction (L_LEXEME l , int** dec, L_TEXT* pl_text, INSTRUCTIO
 			(operande.val).imm = valeur_imm(l->val) ; 
 		}
 		
+		/* Shift amout */
 		else if ( strcmp(type_op_attendu[i],"sa")==0 ) 	   {
 			if ( l->val.nom_type != 8 && l->val.nom_type != 9) {
 				WARNING_MSG("(ligne %d) [operande n°%d] Shift amount attendu (EXIT OPERANDE)",l->val.numero_ligne,i+1);
@@ -76,19 +78,20 @@ L_LEXEME charge_instruction (L_LEXEME l , int** dec, L_TEXT* pl_text, INSTRUCTIO
 			(operande.val).sa = valeur_sa(l->val) ; 
 		}
 		
+		/* Base offset */
 		else if ( strcmp(type_op_attendu[i],"boff")==0 )   {
 			if (l->suiv == NULL) {return NULL;}
 			if ( l->val.nom_type != 8 && l->val.nom_type != 9 && l->suiv->val.nom_type != 13) {
 				WARNING_MSG("(ligne %d) [operande n°%d] Base offset attendu (EXIT OPERANDE)",l->val.numero_ligne,i+1);
 				return l ;
 			}
-			puts("ON Y EST");
 			operande.type = 8 ;
 			(operande.val).base_offset = valeur_base_off(l->val,l->suiv->val) ; 
 			l=l->suiv ;
 		
 		}
 		
+		/* Offset */
 		else if ( strcmp(type_op_attendu[i],"offset")==0 ) {
 			if ( l->val.nom_type != 8 && l->val.nom_type != 9) {
 				WARNING_MSG("(ligne %d) [operande n°%d] Offset attendu (EXIT OPERANDE)",l->val.numero_ligne,i+1);
@@ -98,6 +101,7 @@ L_LEXEME charge_instruction (L_LEXEME l , int** dec, L_TEXT* pl_text, INSTRUCTIO
 			(operande.val).imm = valeur_offset(l->val) ; 
 		}
 		
+		/* Target */
 		else if ( strcmp(type_op_attendu[i],"target")==0 ) {
 			if ( l->val.nom_type != 8 && l->val.nom_type != 9) {
 				WARNING_MSG("(ligne %d) [operande n°%d] Target attendu (EXIT OPERANDE)",l->val.numero_ligne,i+1);
@@ -106,13 +110,16 @@ L_LEXEME charge_instruction (L_LEXEME l , int** dec, L_TEXT* pl_text, INSTRUCTIO
 			operande.type = 9 ;
 			(operande.val).tar = valeur_target(l->val) ; 
 		}
+		
+		/* Erreur type */
 		else {
 			WARNING_MSG("(ligne %d)Problème d'operande (EXIT OPERANDE)",l->val.numero_ligne);
 			return l ;
 		}
 
 		donnee.t_operande[i] = operande ;
-		if ( i<(nb_op-1)) { /* Si on est pas au dernier opérande : on doit gérer les virgules */
+		/* Gestion des virgules */
+		if ( i<(nb_op-1)) { 
 			l=l->suiv ;
 			if (l==NULL) { return NULL ; } ;
 			if ( (l->val).nom_type != 2 ) {
@@ -133,6 +140,7 @@ L_LEXEME charge_instruction (L_LEXEME l , int** dec, L_TEXT* pl_text, INSTRUCTIO
 
 
 
+/* *** Fonctions utiles à l'automate *** */
 
 L_LEXEME signe (L_LEXEME l){ /* Consiste à modifier le lexeme suivant */
 	if ( (l=l->suiv)==NULL ) {

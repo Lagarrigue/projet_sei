@@ -225,8 +225,9 @@ L_LEXEME charge_word (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_BSS
 			(operande.val).nb = strtol( (l->val).valeur ,NULL, 16) ;
 		} 
 		else if ( l->val.nom_type == 7 ) { /* si symbole alpha*/
-			strcpy((operande.val).etiq, (l->val).valeur) ;
-			WARNING_MSG("(ligne %d)  Etiquette non géré pour le moment",l->val.numero_ligne);
+			strcpy((operande.val).etiq.nom, (l->val).valeur) ;
+			strcpy(operande.val.etiq.attendu, ".word");
+			operande.type = 4 ;
 		}
 		else { 
 			WARNING_MSG("(ligne %d) Valeur décimale, hexadécimale ou symboles alpha attendue",l->val.numero_ligne);
@@ -291,8 +292,9 @@ L_LEXEME charge_byte (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_BSS
 			(operande.val).nb = strtol( (l->val).valeur ,NULL, 16) ;
 		} 
 		else if ( l->val.nom_type == 7 ) { /* si symbole alpha*/
-			strcpy((operande.val).etiq, (l->val).valeur) ;
-			WARNING_MSG("(ligne %d)  Etiquette non géré pour le moment",l->val.numero_ligne);
+			strcpy((operande.val).etiq.nom, (l->val).valeur) ;
+			strcpy(operande.val.etiq.attendu, ".byte");
+			operande.type = 4 ;
 		}
 		else { /* sinon message d'erreur */
 			WARNING_MSG("(ligne %d)  Valeur décimale, hexadécimale ou symboles alpha attendue",l->val.numero_ligne);
@@ -346,7 +348,8 @@ L_LEXEME charge_asciiz (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_B
 		}
 		if ( l->val.nom_type == 12 ) { 
 		/* si expression qui est entre des guillemets */
-			strcpy((operande.val).etiq, (l->val).valeur) ;
+			strcpy((operande.val).etiq.nom, (l->val).valeur) ;
+			strcpy(operande.val.etiq.attendu, ".asciiz");
 		}
 		else { /* sinon message d'erreur A FAIRE */
 			WARNING_MSG("(ligne %d) Expression entre guillemets attendue",l->val.numero_ligne);
@@ -360,7 +363,7 @@ L_LEXEME charge_asciiz (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_B
 			strcpy(donnee1.instruction,".asciiz") ;
 			donnee1.t_operande[0]=operande  ;
 			*pl_text = ajout_tete_L_TEXT (donnee1,*pl_text) ;
-			**dec += strlen((operande.val).etiq)+1 ;
+			**dec += strlen((operande.val).etiq.nom)+1 ;
 				break ;
 	
 			case 2 :
@@ -374,7 +377,7 @@ L_LEXEME charge_asciiz (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_B
 			strcpy(donnee3.directive,".asciiz") ;
 			donnee3.operande=operande  ;
 			*pl_data = ajout_tete_L_DATA (donnee3,*pl_data) ;
-			**(dec+2) += strlen((operande.val).etiq)+1 ;
+			**(dec+2) += strlen((operande.val).etiq.nom)+1 ;
 				break ;
 
 		}

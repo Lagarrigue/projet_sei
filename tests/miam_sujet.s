@@ -1,24 +1,6 @@
-# TEST_RETURN_CODE = PASS
-# allons au ru
-.set noreorder
+
+#jzron
 .text
-LW $0 , lunchtime
-	rsfjhbrfsgdv
-ADDI $1,$0,8
-boucle:
-    BEQ $0 , $1 , byebye
-    NOP
-    addi $1 , $1 , 1
-    J boucle 
-    NOP
-byebye:
-    JAL viteviteauru
-.data
-lunchtime: 
-    .word 12
-    .word menu
-    .asciiz "ils disent : \"au ru!\""
-.bss 
-menu:
-    .space 24
+	ADDI $1,$20,byebye
+
 
