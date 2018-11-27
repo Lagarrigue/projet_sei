@@ -8,7 +8,6 @@ L_LEXEME suppression_maillon(L_LEXEME l, int num_lex){
 	L_LEXEME p2;
 	L_LEXEME p;
 	int m=0;
-	int num ;
 	if(l==NULL){
 		return NULL;
 	}
@@ -25,7 +24,6 @@ L_LEXEME suppression_maillon(L_LEXEME l, int num_lex){
 
 	else{
 		p1=l;
-		num=l->val.numero_lexeme;
 		m=0;
 		while( p1->suiv != NULL){
 			if(m==0 && p1->suiv !=NULL){
