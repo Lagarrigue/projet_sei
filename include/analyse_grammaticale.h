@@ -135,7 +135,7 @@ int valeur_sa(LEXEME lex) ;
 long valeur_target(LEXEME lex) ;
 long valeur_offset(LEXEME lex) ;
 unsigned char valeur_reg(LEXEME l) ;
-BASE_OFFSET valeur_base_off(LEXEME l, LEXEME suiv ) ;
+BASE_OFFSET valeur_base_off(L_LEXEME l, INSTRUCTION) ;
 
 /* ********** FONCTIONS DE LISTES ********** */
 
