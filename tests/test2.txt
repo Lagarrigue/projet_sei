@@ -3,7 +3,7 @@
 .set noreorder
 .text
     ADDI $1,$0,8
-    NOP
+    MOVE $1, $2
 boucle:
     BEQ $0 , $1 , 23
     NOP

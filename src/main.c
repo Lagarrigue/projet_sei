@@ -95,7 +95,7 @@ int main ( int argc, char *argv[] ) {
 	L_PSEUDO_INSTRUCTION* dico_pseudo;
     	int longueur_dico_pseudo=7;
     	dico_pseudo=lecture_dictionnaire_pseudo(longueur_dico_pseudo);
-        l_lexeme=verification_appartenance_pseudo_instruction(l_lexeme, dico_pseudo, longueur_dico_pseudo); 
+        l_lexeme=verification_appartenance_pseudo_instruction(l_lexeme, dico_pseudo, longueur_dico_pseudo);
 	puts("Analyse lexicale terminée.") ;
 	while (a == 0 ) {
 		puts("Afficher la liste des lexemes ?  OUI (1)  NON (2)") ;
@@ -109,7 +109,7 @@ int main ( int argc, char *argv[] ) {
     	puts("\n");
     	puts("Analyse grammaticale en cours ...") ;
     	init (l_lexeme, section, dec, &l_text, &l_bss, &l_data, &l_symb, &l_attente,dictionnaire) ;
-    	size=longueur_l_symb(l_symb) ;
+    	size=longueur_l_symb(l_symb);
     	tab=creer_tab_symb(size);
     	conversion_liste_symb_vers_tableau(tab,l_symb,size) ;
     	puts("Analyse grammaticale terminée.") ;
