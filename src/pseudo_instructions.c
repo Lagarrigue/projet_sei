@@ -160,7 +160,9 @@ L_LEXEME remplacement_pseudo_instruction(L_LEXEME l, int num_lex, char* nom_pseu
 	int k=0;
 	k=num_lex;
 	p1=l;
-		
+	puts("ON EST DANS pseudo");
+	if (num_lex == 0){
+		return l ;}
 	while(p1->val.numero_lexeme != k && p1->suiv !=NULL){
 		p1=p1->suiv;
 	}

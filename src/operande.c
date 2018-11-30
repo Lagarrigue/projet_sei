@@ -1,14 +1,16 @@
 #include "analyse_grammaticale.h"
 
 
-L_LEXEME charge_instruction (L_LEXEME l , int** dec, L_TEXT* pl_text, INSTRUCTION instruction, L_SYMB* pl_symb){
+L_LEXEME charge_instruction (L_LEXEME l , int** dec, L_TEXT* pl_text, INSTRUCTION instruction, L_SYMB* pl_symb, int* num, char* p_nom){
 
 	/* *** Déclaration des variables + initaisation *** */
 	int nb_op = instruction.nb_op ;
 	int i=0 ;
 	int j ;
 	int s=0 ;
-	int num=0
+	int reloc=0 ; 
+	int num_lexeme=l->val.numero_lexeme ;
+	strcpy(p_nom,instruction.nom_inst);
 	char** type_op_attendu ;
 	TEXT donnee ;
 	OPERANDE operande ;
@@ -36,6 +38,7 @@ L_LEXEME charge_instruction (L_LEXEME l , int** dec, L_TEXT* pl_text, INSTRUCTIO
 	while ( i<nb_op ) {
 		type_op_attendu[i] = (instruction.type_op)[i] ;
 		printf("ATTENDU %s",type_op_attendu[i]);
+		
 		/* Etiquette */
 		if ( (l->val).nom_type == 7) { 
 			strcpy(operande.val.etiq.nom, (l->val).valeur) ;
@@ -88,7 +91,13 @@ L_LEXEME charge_instruction (L_LEXEME l , int** dec, L_TEXT* pl_text, INSTRUCTIO
 				return l ;
 			}
 			operande.type = 8 ;
-			(operande.val).base_offset = valeur_base_off(l, instruction) ;
+			(operande.val).base_offset = valeur_base_off(l, instruction,&reloc) ;
+			puts("SORTIE DE BOF");
+			if (reloc==1) {
+				puts("ON RELOC LW OU SW");
+				*num = num_lexeme ;
+				printf("%d",*num);
+				return NULL;}
 			if (l->suiv == NULL) {return NULL;}
 			l=l->suiv ;
 		
@@ -119,8 +128,10 @@ L_LEXEME charge_instruction (L_LEXEME l , int** dec, L_TEXT* pl_text, INSTRUCTIO
 			WARNING_MSG("(ligne %d)Problème d'operande (EXIT OPERANDE)",l->val.numero_ligne);
 			return l ;
 		}
-
+		
+		/* Ajout de l'operande */
 		donnee.t_operande[i] = operande ;
+		
 		/* Gestion des virgules */
 		if ( i<(nb_op-1) && s == 0 ) { 
 			l=l->suiv ;
@@ -306,14 +317,16 @@ long valeur_offset(LEXEME lex){
 }
 
 /* l'offset est codé ici sur 16 bits signés*/
-BASE_OFFSET valeur_base_off(L_LEXEME l_lexeme, INSTRUCTION instruction ){
+BASE_OFFSET valeur_base_off(L_LEXEME l_lexeme, INSTRUCTION instruction,int* reloc ){
 	BASE_OFFSET b_o ;
 	LEXEME l = l_lexeme->val ;
 	LEXEME suiv ;
 	unsigned char reg;
 	short offset ;
-	printf(" 1er %s SUIV %s", l.valeur, suiv.valeur);
+	puts("ENTREE BOF");
+	puts(instruction.nom_inst);
 	if((l.nom_type==8 || l.nom_type==9) && ( (l_lexeme->suiv) != NULL ) && (l_lexeme->suiv->val).nom_type==13){
+		puts("1");
 		suiv= l_lexeme->suiv->val ;
 		if(l.nom_type==8){
 			offset = strtol(l.valeur, NULL, 10) ;
@@ -346,18 +359,28 @@ BASE_OFFSET valeur_base_off(L_LEXEME l_lexeme, INSTRUCTION instruction ){
 		return (b_o) ;
 	}
 	else if ( (l.nom_type==8 || l.nom_type==9) && (( (l_lexeme->suiv)==NULL ))) {
-		if ( strcmp(instruction.nom_inst,"SW") ==0 ){
-			
+		puts("2");
+		if ( (strcmp(instruction.nom_inst,"SW") ==0) || (strcmp(instruction.nom_inst,"LW") ==0)){
+			*reloc = 1 ;
+			puts("ON PASSE RELOC A 1");
 		}
-		else if ( strcmp(instruction.nom_inst,"LW") ==0 ){
+		else {
+			WARNING_MSG("(ligne %d) Base offset attendu ",l.numero_ligne) ;
 		}
 		return b_o ;
 	}
 	else if ( (l.nom_type==8 || l.nom_type==9) && ((l_lexeme->suiv->val).nom_type != 13)) {
-		if ( strcmp(instruction.nom_inst,"SW") ==0 ){
+		puts("3");
+		if ( strcmp(instruction.nom_inst,"SW") == 0 ){
+			(*reloc) = 1 ;
+			puts("ON PASSE RELOC A 1");
 		}
 		else if ( strcmp(instruction.nom_inst,"LW") ==0 ){
+			puts("OUIHIPUB");
+			(*reloc) = 1 ;
+			puts("ON PASSE RELOC A 1");
 		}
+		puts("3 fin");
 		return b_o ;
 		}
 	else{

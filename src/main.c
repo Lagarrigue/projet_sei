@@ -65,6 +65,9 @@ int main ( int argc, char *argv[] ) {
 		}
 	}
 	int a=0 ;
+	int num=0 ;
+	char nom[512] ;
+	char* p_nom = nom ;
 	L_TEXT l_text = creer_liste_L_TEXT() ;
 	L_BSS l_bss = creer_liste_L_BSS() ;
 	L_DATA l_data = creer_liste_L_DATA() ;
@@ -97,22 +100,31 @@ int main ( int argc, char *argv[] ) {
     	dico_pseudo=lecture_dictionnaire_pseudo(longueur_dico_pseudo);
         l_lexeme=verification_appartenance_pseudo_instruction(l_lexeme, dico_pseudo, longueur_dico_pseudo);
 	puts("Analyse lexicale terminée.") ;
-	while (a == 0 ) {
-		puts("Afficher la liste des lexemes ?  OUI (1)  NON (2)") ;
-		scanf("%d",&a) ;
-		if (a == 1) { lecture_liste_lexeme(l_lexeme)  ; } 
-	}
     
     /* ---------------- do the gramatical analysis ------------------*/
     	
     	a=0 ;
     	puts("\n");
     	puts("Analyse grammaticale en cours ...") ;
-    	init (l_lexeme, section, dec, &l_text, &l_bss, &l_data, &l_symb, &l_attente,dictionnaire) ;
+    	num=1 ;
+    	while ( num != 0 ) {
+    		num=0 ;
+    		init (l_lexeme, section, dec, &l_text, &l_bss, &l_data, &l_symb, &l_attente,dictionnaire,&num,p_nom) ;
+    		puts("fin init");
+    		puts(p_nom);
+    		l_lexeme = remplacement_pseudo_instruction(l_lexeme, num, p_nom) ;
+    		lecture_liste_lexeme(l_lexeme) ;
+    		}
     	size=longueur_l_symb(l_symb);
     	tab=creer_tab_symb(size);
     	conversion_liste_symb_vers_tableau(tab,l_symb,size) ;
     	puts("Analyse grammaticale terminée.") ;
+    	while (a == 0 ) {
+		puts("Afficher la liste des lexemes ?  OUI (1)  NON (2)") ;
+		scanf("%d",&a) ;
+		if (a == 1) { lecture_liste_lexeme(l_lexeme)  ; } 
+	}
+	a=0 ;
     	while (a == 0 ) {
 		puts("Afficher les sections ?  OUI (1)  NON (2)") ;
 		scanf("%d",&a) ;

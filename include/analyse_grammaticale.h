@@ -114,7 +114,7 @@ typedef struct l_symb {
 
 /* ********** FONCTIONS ANALYSE GRAMMATICALE ********** */
 
-void init (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_BSS* pl_bss, L_DATA* pl_data, L_SYMB* pl_symb, L_SYMB* pl_attente, L_INSTRUCTION* dictionnaire) ;
+void init (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_BSS* pl_bss, L_DATA* pl_data, L_SYMB* pl_symb, L_SYMB* pl_attente, L_INSTRUCTION* dicti, int* num, char * p_nom);
 
 L_LEXEME charge_space (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_BSS* pl_bss, L_DATA* pl_data ) ;
 L_LEXEME charge_word (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_BSS* pl_bss, L_DATA* pl_data ) ;
@@ -128,14 +128,14 @@ L_SYMB* maj_symbole(int** dec, int section, L_SYMB* pl_attente, L_SYMB* pl_symb,
 
 /* ********** FONCTIONS POUR LES OPERANDES ********** */
 
-L_LEXEME charge_instruction (L_LEXEME l , int** dec, L_TEXT* pl_text, INSTRUCTION instruction, L_SYMB*) ;
+L_LEXEME charge_instruction (L_LEXEME l , int** dec, L_TEXT* pl_text, INSTRUCTION instruction, L_SYMB* pl_symb, int* num,char* p_nom);
 L_LEXEME signe (L_LEXEME l) ;
 short valeur_imm(LEXEME lex) ;
 int valeur_sa(LEXEME lex) ;
 long valeur_target(LEXEME lex) ;
 long valeur_offset(LEXEME lex) ;
 unsigned char valeur_reg(LEXEME l) ;
-BASE_OFFSET valeur_base_off(L_LEXEME l, INSTRUCTION) ;
+BASE_OFFSET valeur_base_off(L_LEXEME l_lexeme, INSTRUCTION instruction,int* reloc ) ;
 
 /* ********** FONCTIONS DE LISTES ********** */
 

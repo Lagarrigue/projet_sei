@@ -46,7 +46,7 @@ L_TEXT supprimer_tete_L_TEXT(L_TEXT L)
 
 void liberer_liste_L_TEXT(L_TEXT l)
 {
-    while(liste_est_vide_L_TEXT(l) != 0)
+    while(l != NULL)
     {
         l=supprimer_tete_L_TEXT(l);
     }
@@ -94,7 +94,7 @@ L_OPERANDE supprimer_tete_L_OPERANDE(L_OPERANDE L)
 
 void liberer_liste_L_OPERANDE(L_OPERANDE l)
 {
-    while(liste_est_vide_L_OPERANDE(l) != 0)
+    while(l != NULL)
     {
         l=supprimer_tete_L_OPERANDE(l);
     }
@@ -127,25 +127,25 @@ L_DATA ajout_tete_L_DATA(DATA c, L_DATA L)
     return p;
 }
 
-L_DATA supprimer_tete_L_DATA(L_DATA L)
-{
-    if (!liste_est_vide_L_DATA(L))
-    {
-        L_DATA p;
-        p=L->suiv;
-        free(L);
-        return p;
-    }
-    else
-        return NULL;
+L_DATA supprimer_tete_L_DATA(L_DATA L) { 
+	L_DATA p ;
+	if (L==NULL){
+		return NULL ;}
+    	else
+    	{
+       	 	p = L->suiv;
+        	free(L);
+       		 return p;
+    	}
 }
 
 void liberer_liste_L_DATA(L_DATA l)
 {
-    while(liste_est_vide_L_DATA(l) != 0)
+    while(l != NULL)
     {
         l=supprimer_tete_L_DATA(l);
     }
+
 }
 
 
@@ -190,7 +190,7 @@ L_BSS supprimer_tete_L_BSS(L_BSS L)
 
 void liberer_liste_L_BSS(L_BSS l)
 {
-    while(liste_est_vide_L_BSS(l) != 0)
+    while(l != NULL)
     {
         l=supprimer_tete_L_BSS(l);
     }
@@ -239,7 +239,7 @@ L_SYMB supprimer_tete_L_SYMB(L_SYMB L)
 
 void liberer_liste_L_SYMB(L_SYMB l)
 {
-    while(liste_est_vide_L_SYMB(l) != 0)
+    while(l != NULL)
     {
         l=supprimer_tete_L_SYMB(l);
     }
