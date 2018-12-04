@@ -17,7 +17,6 @@ void init (L_LEXEME* pl, int section, int** dec, L_TEXT* pl_text, L_BSS* pl_bss,
 	INSTRUCTION* p_instruction ;
 	while ( l != NULL ) {
 		S=(l->val).nom_type ;
-		puts((l->val).valeur) ;
 		switch ( S ) {
 			case 6 : /* CAS DIRECTIVE */
 				if (strcmp(l->val.valeur,"space") == 0) {

@@ -408,9 +408,10 @@ L_LEXEME analyse_lexicale(char* nom_fichier){
 
                     else if (ligne[i]==')') /*on détecte la fin de la parenthèse et on ajoute le lexeme à la liste de lexemes*/
                     {
-			reg = recherche_element_reg(mot,dico_registre,10) ;
+			reg = recherche_element_reg(mot+1,dico_registre,10) ;
 			if ( reg !=NULL) {
 				strcpy(mot,(*reg).nom_chiffre);
+				printf("%s\n",mot);
 			}
 			else {
 				printf("Registre inexistant à la ligne %d",numero_ligne_programme) ;

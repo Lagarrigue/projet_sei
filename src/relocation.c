@@ -45,13 +45,13 @@ RELOC * relocation(SYMB* tab_symb, int size, L_TEXT * pl_text, L_DATA * pl_data,
 	
 	/* *** Relocation des sections .text et .data *** */
 	strcpy(reloc.nom,".text") ;
-	reloc.ad_rel=ad_text ;
-	reloc.type = R_MIPS_32 ;
-	reloc.p_symb = p_symb ;
-	rel_text[j]=reloc ;
+		reloc.ad_rel=ad_text ;
+		reloc.type = R_MIPS_32 ;
+		reloc.p_symb = p_symb ;
+		rel_text[j]=reloc ;
 	strcpy(reloc.nom,".data") ;
-	reloc.ad_rel=ad_data ; 
-	rel_data[j]=reloc ;
+		reloc.ad_rel=ad_data ; 
+		rel_data[j]=reloc ;	
 	j++ ;
 	/* *** Relocation des etiquettes *** */
 	

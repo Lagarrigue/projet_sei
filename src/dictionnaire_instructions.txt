@@ -1,5 +1,5 @@
-31
-LW 3 I reg boff non
+24
+LW 2 I reg boff non
 ADD 3 R reg reg reg
 ADDI 3 I reg reg imm
 SUB 3 R reg reg reg
@@ -12,10 +12,10 @@ ROTR 3 I reg reg sa
 SLL 3 I reg reg sa
 SRL 3 I reg reg sa
 SLT 3 R reg reg reg
-SW 3 I reg boff non
+SW 2 I reg boff non
 LUI 2 I reg imm non
 MFHI 1 R reg non non
-MFLO 1 R reg reg non
+MFLO 2 R reg reg non
 BEQ 3 I reg reg offset
 BNE 3 I reg reg offset
 BGTZ 2 I reg offset non
@@ -23,4 +23,3 @@ BLEZ 2 I reg offset non
 J 1 J target non non
 JAL 1 J target non non
 JR 1 R reg non non
-NOP 0 R non non non

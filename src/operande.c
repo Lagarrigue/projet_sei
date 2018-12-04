@@ -10,7 +10,6 @@ L_LEXEME charge_instruction (L_LEXEME l , int** dec, L_TEXT* pl_text, INSTRUCTIO
 	int s=0 ;
 	int reloc=0 ; 
 	int num_lexeme=l->val.numero_lexeme ;
-	printf("numlex=%d\n",num_lexeme);
 	strcpy(p_nom,instruction.nom_inst);
 	char** type_op_attendu ;
 	TEXT donnee ;
@@ -91,11 +90,8 @@ L_LEXEME charge_instruction (L_LEXEME l , int** dec, L_TEXT* pl_text, INSTRUCTIO
 			}
 			operande.type = 8 ;
 			(operande.val).base_offset = valeur_base_off(l, instruction,&reloc) ;
-			puts("On est sortit de boff");
 			if (reloc==1) {
-				printf("num lex a changer : %d",num_lexeme);
 				*num = num_lexeme ;
-				puts("On a rentré le num du lex a chager");
 				return NULL;}
 			if (l->suiv == NULL) {return NULL;}
 			l=l->suiv ;
@@ -147,9 +143,7 @@ L_LEXEME charge_instruction (L_LEXEME l , int** dec, L_TEXT* pl_text, INSTRUCTIO
 		i++ ;
 		s=0 ;
 	}
-	puts("on ajoute l'instrction à L_TEXT");
 	*pl_text = ajout_tete_L_TEXT (donnee,*pl_text) ;
-	puts("instrction ajoutée à L_TEXT");
 	return l ;		
 }
 
@@ -173,7 +167,7 @@ L_LEXEME signe (L_LEXEME l){ /* Consiste à modifier le lexeme suivant */
 }		
 	
 unsigned char valeur_reg(LEXEME l) {
-	if (l.nom_type != 5 && l.nom_type != 3) {
+	if (l.nom_type != 5 && l.nom_type != 3 && l.nom_type != 13) {
 			WARNING_MSG("(ligne %d) Registre (ou etiquette) attendu",l.numero_ligne);
 	}
 	unsigned char s=0 ;
@@ -324,8 +318,6 @@ BASE_OFFSET valeur_base_off(L_LEXEME l_lexeme, INSTRUCTION instruction,int* relo
 	LEXEME suiv ;
 	unsigned char reg;
 	short offset ;
-	puts("ENTREE BOF");
-	puts(instruction.nom_inst);
 	if((l.nom_type==8 || l.nom_type==9) && ( (l_lexeme->suiv) != NULL ) && (l_lexeme->suiv->val).nom_type==13){
 		suiv= l_lexeme->suiv->val ;
 		if(l.nom_type==8){
@@ -361,7 +353,6 @@ BASE_OFFSET valeur_base_off(L_LEXEME l_lexeme, INSTRUCTION instruction,int* relo
 	else if ( (l.nom_type==8 || l.nom_type==9) && (( (l_lexeme->suiv)==NULL ))) {
 		if ( (strcmp(instruction.nom_inst,"SW") ==0) || (strcmp(instruction.nom_inst,"LW") ==0)){
 			*reloc = 1 ;
-			puts("ON PASSE RELOC A 1");
 		}
 		else {
 			WARNING_MSG("(ligne %d) Base offset attendu ",l.numero_ligne) ;
@@ -369,16 +360,12 @@ BASE_OFFSET valeur_base_off(L_LEXEME l_lexeme, INSTRUCTION instruction,int* relo
 		return b_o ;
 	}
 	else if ( (l.nom_type==8 || l.nom_type==9) && ((l_lexeme->suiv->val).nom_type != 13)) {
-		puts("Detection reloc SW ou LW");
 		if ( strcmp(instruction.nom_inst,"SW") == 0 ){
 			(*reloc) = 1 ;
-			puts("ON PASSE RELOC A 1 pour SW");
 		}
 		else if ( strcmp(instruction.nom_inst,"LW") ==0 ){
 			(*reloc) = 1 ;
-			puts("ON PASSE RELOC A 1pour LW");
 		}
-		puts("On a passé reloc a un et n quitte boff");
 		return b_o ;
 		}
 	else{
