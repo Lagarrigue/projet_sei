@@ -1,10 +1,8 @@
 
 # TEST_RETURN_CODE = PASS
-# allons au ru
-.set noreorder
+
 .text
-    LW $1,$0,8
-boucle:
-    ADDI $0 , 200
-ioezhfc
-gyo
+    ADDI $2,$8,45
+    LW $1,200($3)
+    boucle:
+

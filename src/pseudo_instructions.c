@@ -222,15 +222,15 @@ L_LEXEME remplacement_pseudo_instruction(L_LEXEME l, int num_lex, char* nom_pseu
 		
 	    /* chargement du LW*/
 		strcpy(lex.valeur,p1->suiv->val.valeur);
-		lex.nom_type=p1->suiv->val.nom_type;
+		lex.nom_type=13;
 		lex.numero_ligne=p1->val.numero_ligne;
 		l2=ajout_tete(lex,l2);
-
+		/*
 		strcpy(lex.valeur,",");
 		lex.nom_type=2;
 		lex.numero_ligne=p1->val.numero_ligne;
 		l2=ajout_tete(lex,l2);
-
+*/
 		nb=0;
 		if(p1->suiv->suiv->suiv->val.nom_type==9) {
 			nb = strtol(p1->suiv->suiv->suiv->val.valeur,NULL, 16);
@@ -307,10 +307,10 @@ L_LEXEME remplacement_pseudo_instruction(L_LEXEME l, int num_lex, char* nom_pseu
 		lex.numero_ligne=p1->val.numero_ligne;
 		l2=ajout_tete(lex,l2);
 
-		strcpy(lex.valeur,",");
+		/*strcpy(lex.valeur,",");
 		lex.nom_type=2;
 		lex.numero_ligne=p1->val.numero_ligne;
-		l2=ajout_tete(lex,l2);
+		l2=ajout_tete(lex,l2);*/
 
 		nb=0;
 		if(p1->suiv->suiv->suiv->val.nom_type==9) {
@@ -582,10 +582,7 @@ L_LEXEME verification_appartenance_pseudo_instruction(L_LEXEME liste_lexemes, L_
 	while(p !=NULL){
 		if(p->val.nom_type==7){
 			pseudo=recherche_element_pseudo(p->val.valeur , dico, longueur_dico);
-			if(pseudo != NULL && (strcmp(p->val.valeur, "LW")==0 || strcmp(p->val.valeur, "SW")==0) ){ /* trouve rmeilleure solution avec les deux dico*/
-				liste_lexemes=remplacement_pseudo_instruction(liste_lexemes, p->val.numero_lexeme , p->val.valeur);
-			}
-			else if(pseudo != NULL){
+			if(pseudo != NULL && strcasecmp(p->val.valeur, "LW") !=0 && strcasecmp(p->val.valeur, "SW")!=0 ){ /* trouve rmeilleure solution avec les deux dico*/
 				liste_lexemes=remplacement_pseudo_instruction(liste_lexemes, p->val.numero_lexeme , p->val.valeur);
 			}
 		}

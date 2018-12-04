@@ -53,7 +53,14 @@ L_INSTRUCTION*  lecture_dictionnaire(int longueur_table)
         char lecture_type_operande_2[15];
         initialisation_tab_char_dictionnaire(lecture_type_operande_2, 15);
         char lecture_type_operande_3[15];
-        initialisation_tab_char_dictionnaire(lecture_type_operande_2, 15);
+        initialisation_tab_char_dictionnaire(lecture_type_operande_3, 15);
+        
+        char lecture_ordre_operande_1[15];
+        initialisation_tab_char_dictionnaire(lecture_ordre_operande_1, 15);
+        char lecture_ordre_operande_2[15];
+        initialisation_tab_char_dictionnaire(lecture_ordre_operande_2, 15);
+        char lecture_ordre_operande_3[15];
+        initialisation_tab_char_dictionnaire(lecture_ordre_operande_3, 15);
         
         INSTRUCTION instruction;
         fscanf(fichier, "%d ", &(nb_instruction));
@@ -68,6 +75,9 @@ L_INSTRUCTION*  lecture_dictionnaire(int longueur_table)
             strcpy(instruction.type_op[0],lecture_type_operande_1);
             strcpy(instruction.type_op[1],lecture_type_operande_2);
             strcpy(instruction.type_op[2],lecture_type_operande_3);
+            strcpy(instruction.ordre_op[0],lecture_ordre_operande_1);
+            strcpy(instruction.ordre_op[1],lecture_ordre_operande_2);
+            strcpy(instruction.ordre_op[2],lecture_ordre_operande_3);
           
             indice_tableau=hash(lecture_nom,longueur_table);/*changer taille tableau*/
 
@@ -77,6 +87,9 @@ L_INSTRUCTION*  lecture_dictionnaire(int longueur_table)
             initialisation_tab_char_dictionnaire(lecture_type_operande_1, 15);
             initialisation_tab_char_dictionnaire(lecture_type_operande_2, 15);
             initialisation_tab_char_dictionnaire(lecture_type_operande_3, 15);
+            initialisation_tab_char_dictionnaire(lecture_ordre_operande_1, 15);
+            initialisation_tab_char_dictionnaire(lecture_ordre_operande_2, 15);
+            initialisation_tab_char_dictionnaire(lecture_ordre_operande_3, 15);
         }
     }
     	

@@ -10,7 +10,8 @@ section :
 3 -> .data	
 */ 
 
-void init (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_BSS* pl_bss, L_DATA* pl_data, L_SYMB* pl_symb, L_SYMB* pl_attente, L_INSTRUCTION* dicti, int* num, char* p_nom) {
+void init (L_LEXEME* pl, int section, int** dec, L_TEXT* pl_text, L_BSS* pl_bss, L_DATA* pl_data, L_SYMB* pl_symb, L_SYMB* pl_attente, L_INSTRUCTION* dicti, int* num, char* p_nom) {
+	L_LEXEME l = *pl ;
 	int S = 0 ;
 	/*int nb_op=0 ; */
 	INSTRUCTION* p_instruction ;
@@ -72,8 +73,6 @@ void init (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_BSS* pl_bss, L
 					else {	
 						pl_attente = maj_symbole(dec,section, pl_attente, pl_symb, 0 ) ;
 						l=charge_instruction (l , dec, pl_text, *p_instruction,pl_symb,num,p_nom) ;
-						printf("%d",*num);
-						puts("SORTIE charge-instr");
 					}
 				}
 				break ;
@@ -93,23 +92,9 @@ void init (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_BSS* pl_bss, L
 			case 4 : /* CAS COMMENTAIRE */
 				break ;
 		}
-		puts("avant if suiv NULL");
 		if (l != NULL) {
-				puts("dans if suiv NULL");
 			l=l->suiv ;
 		}
-	}
-	puts("fin while");
-	printf("%d",*num);
-	puts("OK");
-	if (num != 0) {
-	/* FONCTIONS DE FREE A FAIRE */
-		pl_text=NULL ;
-		pl_data=NULL ;
-		pl_bss=NULL ;
-		pl_symb=NULL ;
-		pl_attente=NULL ;
-		
 	}	
 }
 

@@ -99,6 +99,7 @@ int main ( int argc, char *argv[] ) {
     	int longueur_dico_pseudo=7;
     	dico_pseudo=lecture_dictionnaire_pseudo(longueur_dico_pseudo);
         l_lexeme=verification_appartenance_pseudo_instruction(l_lexeme, dico_pseudo, longueur_dico_pseudo);
+        lecture_liste_lexeme(l_lexeme);
 	puts("Analyse lexicale terminée.") ;
     
     /* ---------------- do the gramatical analysis ------------------*/
@@ -109,12 +110,28 @@ int main ( int argc, char *argv[] ) {
     	num=1 ;
     	while ( num != 0 ) {
     		num=0 ;
-    		init (l_lexeme, section, dec, &l_text, &l_bss, &l_data, &l_symb, &l_attente,dictionnaire,&num,p_nom) ;
+    		init (&l_lexeme, section, dec, &l_text, &l_bss, &l_data, &l_symb, &l_attente,dictionnaire,&num,p_nom) ;
     		puts("fin init");
     		puts(p_nom);
+    		if (num != 0) {
+			liberer_liste_L_TEXT(l_text) ;
+			liberer_liste_L_DATA(l_data) ;
+			liberer_liste_L_BSS(l_bss)  ;
+			liberer_liste_L_SYMB(l_symb) ;
+			liberer_liste_L_SYMB(l_attente) ; 
+			l_text = creer_liste_L_TEXT() ;
+			l_bss = creer_liste_L_BSS() ;
+			l_data = creer_liste_L_DATA() ;
+			l_symb = creer_liste_L_SYMB() ;
+			l_attente = creer_liste_L_SYMB() ;
+			if (l_text==NULL){
+				puts("OKKKKKKK");
+				lecture_liste_L_TEXT(l_text)
+			;}
+			
+		}
     		l_lexeme = remplacement_pseudo_instruction(l_lexeme, num, p_nom) ;
-    		lecture_liste_lexeme(l_lexeme) ;
-    		}
+    	}
     	size=longueur_l_symb(l_symb);
     	tab=creer_tab_symb(size);
     	conversion_liste_symb_vers_tableau(tab,l_symb,size) ;

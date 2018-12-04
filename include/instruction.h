@@ -7,7 +7,8 @@ typedef struct {
     char nom_inst[512];
     int nb_op;
     char type_instruction[2];  
-    char type_op[3][10] ; } INSTRUCTION;
+    char type_op[3][10] ; 
+    char ordre_op[3][10] ;} INSTRUCTION;
 
 typedef struct maillonb {
     INSTRUCTION val;
