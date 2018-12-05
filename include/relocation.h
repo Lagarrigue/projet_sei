@@ -5,7 +5,7 @@
 typedef struct reloc {
 	char nom[512] ;
 	unsigned int ad_rel ;
-	enum type { R_MIPS_32, R_MIPS_26, R_MIPS_HI16, R_MIPS_LO16} type ;
+	enum type {UNDIFINED, R_MIPS_32, R_MIPS_26, R_MIPS_HI16, R_MIPS_LO16} type ;
 	SYMB * p_symb ; } RELOC ;
 	
 /* attendu : { REG , IMM , SA , ETIQ , AD_REL , AD_ABS , OFFSET , BASE_OFF , TARGAET, ASCIIZ } SINON = 0
