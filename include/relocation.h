@@ -15,7 +15,7 @@ typedef struct reloc {
 SYMB* p_symbole ( char etiq[512], SYMB* tab_etiq, int n ) ;
 RELOC** relocation(SYMB* tab_symb, int size, L_TEXT * pl_text, L_DATA * pl_data) ;
 int existence_symbole (char etiq[512] ,L_SYMB l_symb) ;
-SYMB* ajout_tab_symb (SYMB* tab_symb, TEXT text, int* size ,int j) ;
+SYMB* ajout_tab_symb (SYMB* tab_symb,int section, DATA data, BSS bss,  TEXT text, int* size ,int j);
 char* charge_nom_rel (SYMB symb, char nom[512]) ;
 int existence_HI16(SYMB symb, RELOC* tab_reloc, int size) ;
 

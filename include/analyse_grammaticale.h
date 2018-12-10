@@ -58,7 +58,7 @@ typedef struct text {
 	int ligne ;
 	int decalage ;
 	int nb_op ;
-	char type_instruction[1] ;
+	char type_instruction[2] ;
 	OPERANDE t_operande[3] ; } TEXT ;
 
 typedef struct l_text {
@@ -104,7 +104,7 @@ typedef struct symb {
 	char symbole[512] ;
 	int defined ;
 	int ligne ; /* ligne de definition dans le code et non pas d'utilisation ! */
-	int section ; /* 1=text 2=DATA 3=BSS */
+	int section ; /* 1=text 3=DATA 2=BSS */
 	int decalage ; } SYMB ;
 
 typedef struct l_symb {

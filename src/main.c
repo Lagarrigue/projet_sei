@@ -74,7 +74,7 @@ int main ( int argc, char *argv[] ) {
 	L_SYMB l_symb = creer_liste_L_SYMB() ;;
 	L_SYMB l_attente = creer_liste_L_SYMB() ;
 	L_INSTRUCTION* dictionnaire = lecture_dictionnaire(15) ;
-	RELOC** reloc = NULL ;
+	RELOC** reloc ;
 	
     if ( argc <2 ) {
         print_usage(argv[0]);
@@ -138,10 +138,7 @@ int main ( int argc, char *argv[] ) {
     	conversion_liste_symb_vers_tableau(tab,l_symb,size) ;
     	puts("Analyse grammaticale terminée.\n") ;
     	puts("Calcul des tables de relocation en cours...") ;
-    	printf("%d\n",size);
-    	
-    	/*reloc = relocation(tab, size*5, &l_text, &l_data) ;*/
-    	
+    	reloc = relocation(tab, size*5, &l_text, &l_data) ;
     	puts("Calcul des tables de relocation terminé.\n") ;
     	while (a == 0 ) {
 		puts("Afficher la liste des lexemes ?  OUI (1)  NON (2)") ;
@@ -167,12 +164,13 @@ int main ( int argc, char *argv[] ) {
 		puts("Afficher les reloc ?  OUI (1)  NON (2)") ;
 		scanf("%d",&a) ;
 		if (a == 1) { 
+			puts(" RELOCATION DANS .TEXT");
     			lecture_tab_reloc(*reloc, size) ; 
+    			puts("\n RELOCATION DANS .DATA");
+    			lecture_tab_reloc(*(reloc+2), size) ; 
     		}
    	 }
-
-
-	parcours_section_text(l_text, dictionnaire, 15);
+	/*parcours_section_text(l_text, dictionnaire, 15);*/
     /* ---------------- Free memory and terminate -------------------*/
 
     /* TODO free everything properly*/

@@ -16,6 +16,7 @@ L_LEXEME charge_instruction (L_LEXEME l , int** dec, L_TEXT* pl_text, INSTRUCTIO
 	OPERANDE operande ;
 	/*SMB symb ; */
 	strcpy(donnee.instruction, instruction.nom_inst) ;
+	strcpy(donnee.type_instruction, instruction.type_instruction) ;
 	donnee.ligne = (l->val).numero_ligne ;
 	donnee.decalage = **dec ;
 	**dec += 4 ;
@@ -144,6 +145,7 @@ L_LEXEME charge_instruction (L_LEXEME l , int** dec, L_TEXT* pl_text, INSTRUCTIO
 		s=0 ;
 	}
 	*pl_text = ajout_tete_L_TEXT (donnee,*pl_text) ;
+	
 	return l ;		
 }
 

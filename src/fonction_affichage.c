@@ -23,6 +23,7 @@ void lecture_liste_L_TEXT(L_TEXT L){
         	printf("* ligne : %d\n",p->val.ligne);
         	printf("* decalage : %d\n",p->val.decalage);
         	printf("* nb_op : %d\n",p->val.nb_op);
+        	printf("* type instruction : %s\n",p->val.type_instruction);
         	for (n=0 ; n<p->val.nb_op ; n++ ) {
         		if ( (p->val).t_operande[n].type ==  4){
         			printf(" # OP %d : %s  (ETIQ)\n",n+1,((p->val).t_operande[n]).val.etiq.nom);
@@ -179,14 +180,14 @@ void lecture_tab_symb( SYMB* tab, int size) {
 void lecture_tab_reloc(RELOC* tab, int size) {
  	int i ;
  	char type[512];
+ 	printf(" OFFSET         TYPE           VALUE        ETIQ \n") ;
 	for (i=0 ; i<size ; i++) {
 		if (tab[i].type == UNDIFINED) { strcpy(type,"UNDIFINED") ;}
-		else if (tab[i].type == R_MIPS_32) { strcpy(type,"R_MIPS_32") ;}
+		else if (tab[i].type == R_MIPS_32) { strcpy(type,"R_MIPS_32  ") ;}
 		else if (tab[i].type == R_MIPS_LO16) { strcpy(type,"R_MIPS_LO16") ;}
 		else if (tab[i].type == R_MIPS_HI16) { strcpy(type,"R_MIPS_HI16") ;}
-		else if (tab[i].type == R_MIPS_26) { strcpy(type,"R_MIPS_26") ;}
-		printf(" OFFSET     TYPE      VALUE \n") ;
-        	printf("   %d       %s         %s ", tab[i].ad_rel, type,(tab[i]).nom )  ;
+		else if (tab[i].type == R_MIPS_26) { strcpy(type,"R_MIPS_26  ") ;}
+        	printf("   %d       %s         %s       %s", tab[i].ad_rel, type,(tab[i]).nom, (*(tab[i].p_symb)).symbole )  ;
         	printf("\n");
 	}
 }
