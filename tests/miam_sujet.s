@@ -2,7 +2,7 @@
 # allons au ru
 .set noreorder
 .text
-    Lw $t0 , lunchtime
+    LW $t0 , lunchtime
     LW $6, -200
     ADDI $1,$0,8
 boucle:

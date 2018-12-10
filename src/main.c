@@ -14,7 +14,7 @@
 #include <notify.h>
 #include <lex.h>
 
-#include "analyse_grammaticale.h"
+#include "relocation.h"
 
 /**
  * @param exec Name of executable.
@@ -74,7 +74,8 @@ int main ( int argc, char *argv[] ) {
 	L_SYMB l_symb = creer_liste_L_SYMB() ;;
 	L_SYMB l_attente = creer_liste_L_SYMB() ;
 	L_INSTRUCTION* dictionnaire = lecture_dictionnaire(15) ;
-
+	RELOC** reloc = NULL ;
+	
     if ( argc <2 ) {
         print_usage(argv[0]);
         exit( EXIT_FAILURE );
@@ -93,6 +94,12 @@ int main ( int argc, char *argv[] ) {
 
     /* ---------------- do the lexical analysis -------------------*/
         puts("\nAnalyse lexicale en cours ...") ;
+	/*
+	printf("dictionnaire : %s\n",(dictionnaire[12])->val.nom_inst);
+	printf("dictionnaire : %d\n",(dictionnaire[12])->val.opcode);
+	printf("la valeur est : %u \n", operation_de_masquage_section_text(dictionnaire,15));
+	*/
+	
 	l_lexeme=analyse_lexicale(file) ;
 	l_lexeme=ajuster_numero_lexeme(l_lexeme);
 	L_PSEUDO_INSTRUCTION* dico_pseudo;
@@ -100,6 +107,7 @@ int main ( int argc, char *argv[] ) {
     	dico_pseudo=lecture_dictionnaire_pseudo(longueur_dico_pseudo);
         l_lexeme=verification_appartenance_pseudo_instruction(l_lexeme, dico_pseudo, longueur_dico_pseudo);
 	puts("Analyse lexicale terminée.") ;
+	
     
     /* ---------------- do the gramatical analysis ------------------*/
     	
@@ -129,6 +137,12 @@ int main ( int argc, char *argv[] ) {
     	tab=creer_tab_symb(size);
     	conversion_liste_symb_vers_tableau(tab,l_symb,size) ;
     	puts("Analyse grammaticale terminée.\n") ;
+    	puts("Calcul des tables de relocation en cours...") ;
+    	printf("%d\n",size);
+    	
+    	/*reloc = relocation(tab, size*5, &l_text, &l_data) ;*/
+    	
+    	puts("Calcul des tables de relocation terminé.\n") ;
     	while (a == 0 ) {
 		puts("Afficher la liste des lexemes ?  OUI (1)  NON (2)") ;
 		scanf("%d",&a) ;
@@ -147,8 +161,18 @@ int main ( int argc, char *argv[] ) {
     			lecture_liste_L_TEXT(l_text) ;
     			lecture_tab_symb(tab, size) ; 
     		}
-    }
-    
+    	}
+    	a=0;
+    	while (a == 0 ) {
+		puts("Afficher les reloc ?  OUI (1)  NON (2)") ;
+		scanf("%d",&a) ;
+		if (a == 1) { 
+    			lecture_tab_reloc(*reloc, size) ; 
+    		}
+   	 }
+
+
+	parcours_section_text(l_text, dictionnaire, 15);
     /* ---------------- Free memory and terminate -------------------*/
 
     /* TODO free everything properly*/

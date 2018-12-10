@@ -70,18 +70,19 @@ SYMB* ajout_tab_symb (SYMB* tab_symb, TEXT text, int* size ,int j){
 	return nouv_tab ;
 }
 
-RELOC * relocation(SYMB* tab_symb, int size, L_TEXT * pl_text, L_DATA * pl_data, int** dec, int ad_data, int ad_text ){
+RELOC** relocation(SYMB* tab_symb, int size, L_TEXT * pl_text, L_DATA * pl_data){
 	
 	/* *** Déclaration et initialisation des variables *** */
 	RELOC* rel_text ;
 	RELOC* rel_data ;
+	RELOC* rel_bss ;
+	RELOC** rel; 
 	RELOC reloc ;
 	SYMB* p_symb = NULL ;
 	L_TEXT l_text = *pl_text ;
 	L_DATA l_data = *pl_data ;
 	char nom[512];
 	int i ;
-	int j=0 ;
 	int compt_t=0 ;
 	int compt_d=0 ;
 	if ( (rel_text=calloc(size, sizeof(rel_text))) == NULL ) {
@@ -90,9 +91,13 @@ RELOC * relocation(SYMB* tab_symb, int size, L_TEXT * pl_text, L_DATA * pl_data,
 	if ( (rel_data=calloc(size, sizeof(rel_data))) == NULL ) {
 		return NULL ;
 	}
-	
-		
-		
+	if ( (rel_bss=calloc(size, sizeof(rel_bss))) == NULL ) {
+		return NULL ;
+	}
+	if ( (rel=calloc(3, sizeof(RELOC*))) == NULL ) {
+		return NULL ;
+	}	
+	rel[0]=rel_text ;rel[1]=rel_data ; rel[2]=rel_bss ;	
 	/* *** Gestion des etiquettes dans .text *** */
 	l_text = *pl_text ;
 	while ( l_text != NULL ){
@@ -144,12 +149,15 @@ RELOC * relocation(SYMB* tab_symb, int size, L_TEXT * pl_text, L_DATA * pl_data,
 					/* On l'ajoute dans la table de symboles */
 					tab_symb = ajout_tab_symb (tab_symb, l_text->val, &size,i) ;
 					strcpy(reloc.nom,l_text->val.t_operande[i].val.etiq.nom);
+					reloc.type = R_MIPS_26 ;
+					reloc.ad_rel = l_text->val.decalage ;
+					rel_text[compt_t]=reloc ;
+					compt_t ++ ;	
 				}
 			}
 		}
 		l_text = l_text->suiv ;
 	}
-	j=1 ;	
 			
 	/* *** Gestion des etiquettes dans .data *** */	
 	l_data = *pl_data ;
@@ -162,12 +170,11 @@ RELOC * relocation(SYMB* tab_symb, int size, L_TEXT * pl_text, L_DATA * pl_data,
 			else {
 				/* Cas ou symbole défini ailleurs ou non défini */
 			}
-		rel_data[j]=reloc ;
-		j++ ;
+		
 		}
 		l_data = l_data->suiv ;
 	}
-	return rel_text ;	
+	return rel ;	
 }	
 
 

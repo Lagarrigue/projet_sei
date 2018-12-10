@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
-#include "analyse_grammaticale.h"
+#include "relocation.h"
 
 void lecture_liste_L_TEXT(L_TEXT L){
     L_TEXT p;
@@ -173,5 +173,20 @@ void lecture_tab_symb( SYMB* tab, int size) {
         	printf("* section : %d\n", tab[i].section);
         	printf("* decalage : %d\n",tab[i].decalage);
 		puts("") ;
+	}
+}
+
+void lecture_tab_reloc(RELOC* tab, int size) {
+ 	int i ;
+ 	char type[512];
+	for (i=0 ; i<size ; i++) {
+		if (tab[i].type == UNDIFINED) { strcpy(type,"UNDIFINED") ;}
+		else if (tab[i].type == R_MIPS_32) { strcpy(type,"R_MIPS_32") ;}
+		else if (tab[i].type == R_MIPS_LO16) { strcpy(type,"R_MIPS_LO16") ;}
+		else if (tab[i].type == R_MIPS_HI16) { strcpy(type,"R_MIPS_HI16") ;}
+		else if (tab[i].type == R_MIPS_26) { strcpy(type,"R_MIPS_26") ;}
+		printf(" OFFSET     TYPE      VALUE \n") ;
+        	printf("   %d       %s         %s ", tab[i].ad_rel, type,(tab[i]).nom )  ;
+        	printf("\n");
 	}
 }

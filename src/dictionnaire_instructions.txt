@@ -1,25 +1,25 @@
 24
-LW 2 I reg boff non
-ADD 3 R reg reg reg
-ADDI 3 I reg reg imm
-SUB 3 R reg reg reg
-MULT 2 R reg reg non
-DIV 2 R reg reg non
-AND 3 R reg reg reg
-OR 3 R reg reg reg
-XOR 3 R reg reg reg
-ROTR 3 I reg reg sa
-SLL 3 I reg reg sa
-SRL 3 I reg reg sa
-SLT 3 R reg reg reg
-SW 2 I reg boff non
-LUI 2 I reg imm non
-MFHI 1 R reg non non
-MFLO 2 R reg reg non
-BEQ 3 I reg reg offset
-BNE 3 I reg reg offset
-BGTZ 2 I reg offset non
-BLEZ 2 I reg offset non
-J 1 J target non non
-JAL 1 J target non non
-JR 1 R reg non non
+ADD 3 R reg reg reg rd rs rt 32
+ADDI 3 I reg reg imm rt rs imm 8
+SUB 3 R reg reg reg rd rs rt 34
+MULT 2 R reg reg non rs rt non 24
+DIV 2 R reg reg non rs rt non 26
+AND 3 R reg reg reg rd rs rt 36
+OR 3 R reg reg reg rd rs rt 37
+XOR 3 R reg reg reg rd rs rt 38
+ROTR 3 R reg reg sa rd rt sa 999
+SLL 3 R reg reg sa rd rs sa 0
+SRL 3 R reg reg sa rd rs sa 2
+SLT 3 R reg reg reg rd rs rt 42
+SW 2 I reg boff non rt boff non 43
+LW 2 I reg boff non rt boff non 35
+LUI 2 I reg imm non rt imm non 15
+MFHI 1 R reg non non rd non non 16
+MFLO 1 R reg non non rd non non 18
+BEQ 3 I reg reg offset rs rt offset 4 
+BNE 3 I reg reg offset rs rt offset 5
+BGTZ 2 I reg offset non rs offset non 7
+BLEZ 2 I reg offset non rs offset non 6
+J 1 J target non non target non non 2
+JAL 1 J target non non target non non 3
+JR 1 R reg non non rs non non 8

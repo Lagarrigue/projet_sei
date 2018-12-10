@@ -5,7 +5,11 @@
 .set noreorder
 .text
    
-   LW $4, $5, 700
+   ADD $3, $7, $15
+  
+   
+   
+   
 
 .text
 .data

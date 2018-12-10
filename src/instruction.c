@@ -45,6 +45,7 @@ L_INSTRUCTION*  lecture_dictionnaire(int longueur_table)
         char lecture_type_instruc[2];
         initialisation_tab_char_dictionnaire(lecture_type_instruc, 2);
         int nb_instruction=0;
+        unsigned int lecture_opcode=0;
         int i;
         int indice_tableau=0;
         
@@ -67,9 +68,10 @@ L_INSTRUCTION*  lecture_dictionnaire(int longueur_table)
 
         for(i=0; i<nb_instruction; i++) /*on lit ligne par ligne le fichier des instructions*/
         {
-            fscanf(fichier, "%s %d %s %s %s %s", lecture_nom, &(lecture_nb_operandes), lecture_type_instruc, lecture_type_operande_1, lecture_type_operande_2, lecture_type_operande_3);/*espace après le dernier %d pour lire un caractère en plus (ici le \n)*/
+            fscanf(fichier, "%s %d %s %s %s %s %s %s %s %d ", lecture_nom, &(lecture_nb_operandes), lecture_type_instruc, lecture_type_operande_1, lecture_type_operande_2, lecture_type_operande_3, lecture_ordre_operande_1, lecture_ordre_operande_2, lecture_ordre_operande_3, &(lecture_opcode));/*espace après le dernier %d pour lire un caractère en plus (ici le \n)*/
             
             instruction.nb_op=lecture_nb_operandes;
+            instruction.opcode=lecture_opcode;
             strcpy(instruction.type_instruction, lecture_type_instruc);
             strcpy(instruction.nom_inst,lecture_nom);
             strcpy(instruction.type_op[0],lecture_type_operande_1);
