@@ -148,7 +148,19 @@ void liberer_liste_L_DATA(L_DATA l)
 
 }
 
+L_DATA retournement_de_liste_L_DATA(L_DATA L1){
+	L_DATA p;
+	p=L1;
+	L_DATA L2;
+	L2=creer_liste_L_DATA();
+	
+	while(p!=NULL){
+		L2=ajout_tete_L_DATA(p->val,L2);
+		p=p->suiv;
+	}
+	return L2;
 
+}
 
 /* ********** liste de BSS ********** */
 

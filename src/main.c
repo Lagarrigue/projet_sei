@@ -14,7 +14,7 @@
 #include <notify.h>
 #include <lex.h>
 
-#include "relocation.h"
+#include "masquage.h"
 
 /**
  * @param exec Name of executable.
@@ -167,7 +167,20 @@ int main ( int argc, char *argv[] ) {
     			puts("\n RELOCATION DANS .DATA");
     		}
    	 }
-	/*parcours_section_text(l_text, dictionnaire, 15);*/
+   	 
+   	 
+	puts("generation binaire");
+	L_CODE_32 l_bin_text;
+	l_bin_text=parcours_section_text(l_text, dictionnaire, 15);
+	
+	L_CODE_32 l_bin_data;
+	l_bin_data=operation_de_masquage_section_data(l_data);
+	
+	mise_en_memoire_listes_binaire(l_bin_text);
+	mise_en_memoire_listes_binaire(l_bin_data);
+	
+	puts("generation binaire reussie");
+
     /* ---------------- Free memory and terminate -------------------*/
 
     /* TODO free everything properly*/

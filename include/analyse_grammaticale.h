@@ -166,6 +166,7 @@ L_DATA ajout_tete_L_DATA(DATA c, L_DATA L) ;
 L_DATA supprimer_tete_L_DATA(L_DATA L) ;
 void liberer_liste_L_DATA(L_DATA l) ;
 void lecture_liste_L_DATA(L_DATA L);
+L_DATA retournement_de_liste_L_DATA(L_DATA L1);
 
 /*  BSS  */
 
