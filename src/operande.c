@@ -84,19 +84,20 @@ L_LEXEME charge_instruction (L_LEXEME l , int** dec, L_TEXT* pl_text, INSTRUCTIO
 		}
 		
 		/* Base offset */
-		else if ( strcmp(type_op_attendu[i],"boff")==0 )   {
-			if ( l->val.nom_type != 8 && l->val.nom_type != 9/*&& l->suiv->val.nom_type != 13*/) {
+		else if ( strcmp(type_op_attendu[i],"boff")==0 )   { 
+			if ( (l->val.nom_type == 8) || (l->val.nom_type == 9) ) {
+				operande.type = 8 ;
+				(operande.val).base_offset = valeur_base_off(l, instruction,&reloc) ;
+				if (reloc==1) {
+					*num = num_lexeme ;
+					return NULL;}
+				if (l->suiv == NULL) {return NULL;}
+				l=l->suiv ;
+			}
+			else {
 				WARNING_MSG("(ligne %d) [operande n°%d] Base offset attendu (EXIT OPERANDE)",l->val.numero_ligne,i+1);
 				return l ;
 			}
-			operande.type = 8 ;
-			(operande.val).base_offset = valeur_base_off(l, instruction,&reloc) ;
-			if (reloc==1) {
-				*num = num_lexeme ;
-				return NULL;}
-			if (l->suiv == NULL) {return NULL;}
-			l=l->suiv ;
-			
 		}
 		
 		/* Offset */
@@ -160,6 +161,7 @@ L_LEXEME signe (L_LEXEME l){ /* Consiste à modifier le lexeme suivant */
 	char signe[512] = "-" ;
 	if ( (l->val).nom_type == 8 ) {
 		strcpy( (l->val).valeur, strcat(signe,(l->val).valeur) ) ;
+		
 	}
 	else {
 		WARNING_MSG("(ligne %d) Valeur décimale attendue apres '-'",(l->val).numero_ligne);

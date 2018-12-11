@@ -17,6 +17,7 @@ void init (L_LEXEME* pl, int section, int** dec, L_TEXT* pl_text, L_BSS* pl_bss,
 	INSTRUCTION* p_instruction ;
 	while ( l != NULL ) {
 		S=(l->val).nom_type ;
+		/*puts((l->val).valeur) ;*/
 		switch ( S ) {
 			case 6 : /* CAS DIRECTIVE */
 				if (strcmp(l->val.valeur,"space") == 0) {
@@ -327,7 +328,7 @@ L_LEXEME charge_byte (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_BSS
 				break ;
 
 		}
-	} while ( (l->suiv==NULL) && (l->suiv)->val.nom_type == 2 ) ; /* Si on a une virgule donc une autre opérande ensuite, on recommence */
+	} while ( (l->suiv!=NULL) && (l->suiv)->val.nom_type == 2 ) ; /* Si on a une virgule donc une autre opérande ensuite, on recommence */
 	
 	return l ;
 }
@@ -382,7 +383,7 @@ L_LEXEME charge_asciiz (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_B
 				break ;
 
 		}
-	} while ( (l->suiv==NULL) && (l->suiv)->val.nom_type == 2 ) ; /* Si on a une virgule donc une autre opérande ensuite, on recommence */
+	} while ( (l->suiv!=NULL) && (l->suiv)->val.nom_type == 2 ) ; /* Si on a une virgule donc une autre opérande ensuite, on recommence */
 	return l ;
 }
 

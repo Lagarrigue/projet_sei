@@ -53,14 +53,14 @@ int main ( int argc, char *argv[] ) {
 	
 	if ( (dec = calloc(3,sizeof(int*)) ) == NULL ) {
 		puts("Erreur d'allocation") ;
-		return 1 ;
+		exit( EXIT_FAILURE );
 		}
 	else {
 		for (i=0 ; i<3 ; i++ ) {
 			dec[i]=calloc(1,sizeof(int));
 			if (dec[i] == NULL) {
 				puts("Erreur d'allocation") ;
-				return 1 ;
+				exit( EXIT_FAILURE );
 			}
 		}
 	}
@@ -74,7 +74,8 @@ int main ( int argc, char *argv[] ) {
 	L_SYMB l_symb = creer_liste_L_SYMB() ;;
 	L_SYMB l_attente = creer_liste_L_SYMB() ;
 	L_INSTRUCTION* dictionnaire = lecture_dictionnaire(15) ;
-	RELOC** reloc ;
+	L_RELOC l_rel_text = creer_liste_L_RELOC() ; ;
+	L_RELOC l_rel_data = creer_liste_L_RELOC() ;;
 	
     if ( argc <2 ) {
         print_usage(argv[0]);
@@ -93,12 +94,6 @@ int main ( int argc, char *argv[] ) {
 
 
     /* ---------------- do the lexical analysis -------------------*/
-        puts("\nAnalyse lexicale en cours ...") ;
-	/*
-	printf("dictionnaire : %s\n",(dictionnaire[12])->val.nom_inst);
-	printf("dictionnaire : %d\n",(dictionnaire[12])->val.opcode);
-	printf("la valeur est : %u \n", operation_de_masquage_section_text(dictionnaire,15));
-	*/
 	
 	l_lexeme=analyse_lexicale(file) ;
 	l_lexeme=ajuster_numero_lexeme(l_lexeme);
@@ -106,14 +101,11 @@ int main ( int argc, char *argv[] ) {
     	int longueur_dico_pseudo=7;
     	dico_pseudo=lecture_dictionnaire_pseudo(longueur_dico_pseudo);
         l_lexeme=verification_appartenance_pseudo_instruction(l_lexeme, dico_pseudo, longueur_dico_pseudo);
-	puts("Analyse lexicale terminée.") ;
 	
     
     /* ---------------- do the gramatical analysis ------------------*/
     	
     	a=0 ;
-    	puts("\n");
-    	puts("Analyse grammaticale en cours ...") ;
     	num=1 ;
     	while ( num != 0 ) {
     		num=0 ;
@@ -131,15 +123,22 @@ int main ( int argc, char *argv[] ) {
 			l_attente = creer_liste_L_SYMB() ;
 			
 		}
-    		l_lexeme = remplacement_pseudo_instruction(l_lexeme, num, p_nom) ;
+    		l_lexeme = remplacement_pseudo_instruction(l_lexeme, num, p_nom) ; 
     	}
     	size=longueur_l_symb(l_symb);
     	tab=creer_tab_symb(size);
     	conversion_liste_symb_vers_tableau(tab,l_symb,size) ;
-    	puts("Analyse grammaticale terminée.\n") ;
-    	puts("Calcul des tables de relocation en cours...") ;
-    	reloc = relocation(tab, size*5, &l_text, &l_data) ;
-    	puts("Calcul des tables de relocation terminé.\n") ;
+    	/*int size_reloc=size*size ;
+    	if ( (rel_text=calloc(size_reloc, sizeof(rel_text))) == NULL ) {
+    		printf("Erreur d'allocation");
+		exit( EXIT_FAILURE );
+	}
+	if ( (rel_data=calloc(size_reloc, sizeof(rel_data))) == NULL ) {
+		printf("Erreur d'allocation");
+		exit( EXIT_FAILURE );
+	}*/
+	
+    	relocation(tab, size, &l_text, &l_data, &l_rel_text, &l_rel_data) ;
     	while (a == 0 ) {
 		puts("Afficher la liste des lexemes ?  OUI (1)  NON (2)") ;
 		scanf("%d",&a) ;
@@ -165,9 +164,7 @@ int main ( int argc, char *argv[] ) {
 		scanf("%d",&a) ;
 		if (a == 1) { 
 			puts(" RELOCATION DANS .TEXT");
-    			lecture_tab_reloc(*reloc, size) ; 
     			puts("\n RELOCATION DANS .DATA");
-    			lecture_tab_reloc(*(reloc+2), size) ; 
     		}
    	 }
 	/*parcours_section_text(l_text, dictionnaire, 15);*/

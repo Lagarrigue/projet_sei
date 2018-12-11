@@ -1,7 +1,6 @@
 # TEST_RETURN_CODE = PASS
 # allons au ru
 .set noreorder
-
 .text
     LW $t0 , lunchtime
     LW $6, 200
@@ -13,18 +12,16 @@ boucle:
     J boucle 
     NOP
 byebye:
-      ADDI $1 , $1 , 1
-      NOP
-   
+    JAL viteauru
 
 .data
 lunchtime: 
     .word 12
     .word menu
     .asciiz "ils disent : \"au ru!\""
-    
 .bss 
 menu:
     .space 24
+
 
 

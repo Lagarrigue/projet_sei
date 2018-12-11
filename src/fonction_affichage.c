@@ -179,15 +179,16 @@ void lecture_tab_symb( SYMB* tab, int size) {
 
 void lecture_tab_reloc(RELOC* tab, int size) {
  	int i ;
+ 	printf("%d\n",size);
  	char type[512];
- 	printf(" OFFSET         TYPE           VALUE        ETIQ \n") ;
+ 	printf("|  OFFSET    |     TYPE      |     VALUE    |    ETIQ \n") ;
 	for (i=0 ; i<size ; i++) {
 		if (tab[i].type == UNDIFINED) { strcpy(type,"UNDIFINED") ;}
 		else if (tab[i].type == R_MIPS_32) { strcpy(type,"R_MIPS_32  ") ;}
 		else if (tab[i].type == R_MIPS_LO16) { strcpy(type,"R_MIPS_LO16") ;}
 		else if (tab[i].type == R_MIPS_HI16) { strcpy(type,"R_MIPS_HI16") ;}
 		else if (tab[i].type == R_MIPS_26) { strcpy(type,"R_MIPS_26  ") ;}
-        	printf("   %d       %s         %s       %s", tab[i].ad_rel, type,(tab[i]).nom, (*(tab[i].p_symb)).symbole )  ;
+        	printf("|   %d    |   %s     |    %s   |    %s    |", tab[i].ad_rel, type,(tab[i]).nom, (*(tab[i].p_symb)).symbole )  ;
         	printf("\n");
 	}
 }
