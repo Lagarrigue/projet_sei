@@ -114,7 +114,7 @@ void relocation(SYMB* tab_symb, int size, L_TEXT * pl_text, L_DATA * pl_data, L_
 						reloc.ad_rel = (*p_symb).decalage ;
 						strcpy(reloc.nom,charge_nom_rel(*p_symb,nom));
 						reloc.type = R_MIPS_26 ;
-						ajout_tete_L_RELOC(reloc, *pl_rel_text) ;
+						*pl_rel_text = ajout_tete_L_RELOC(reloc, *pl_rel_text) ;
 					}
 					
 					/* Cas R_MIPS_HI16/R_MIPS_LO16 */
@@ -124,12 +124,12 @@ void relocation(SYMB* tab_symb, int size, L_TEXT * pl_text, L_DATA * pl_data, L_
 						if ( existence_HI16(*p_symb,*pl_rel_text) == FALSE ) {
 							reloc.type = R_MIPS_HI16 ; 
 							reloc.ad_rel = (*p_symb).decalage ;
-							ajout_tete_L_RELOC(reloc, *pl_rel_text) ;
+							*pl_rel_text = ajout_tete_L_RELOC(reloc, *pl_rel_text) ;
 						}
 						/* LO16 */
 						reloc.type = R_MIPS_LO16 ; 
 						reloc.ad_rel = (l_text)->val.decalage ;
-						ajout_tete_L_RELOC(reloc, *pl_rel_text) ;
+						*pl_rel_text = ajout_tete_L_RELOC(reloc, *pl_rel_text) ;
 					
 					}
 					
@@ -137,7 +137,7 @@ void relocation(SYMB* tab_symb, int size, L_TEXT * pl_text, L_DATA * pl_data, L_
 					else if ( (strcmp((l_text)->val.t_operande[i].val.etiq.attendu,".word") ==0) || (strcmp((l_text)->val.type_instruction,"R") ==0) ){
 						strcpy(reloc.nom,charge_nom_rel(*p_symb,nom));
 						reloc.type = R_MIPS_32 ;
-						ajout_tete_L_RELOC(reloc, *pl_rel_text) ;
+						*pl_rel_text = ajout_tete_L_RELOC(reloc, *pl_rel_text) ;
 					}
 				}
 				/* Cas ou symbole défini ailleurs ou non défini */
@@ -150,7 +150,7 @@ void relocation(SYMB* tab_symb, int size, L_TEXT * pl_text, L_DATA * pl_data, L_
 					strcpy(reloc.nom,(l_text)->val.t_operande[i].val.etiq.nom);
 					reloc.type = R_MIPS_26 ;
 					reloc.ad_rel = (l_text)->val.decalage ;
-					ajout_tete_L_RELOC(reloc, *pl_rel_text) ;
+					*pl_rel_text = ajout_tete_L_RELOC(reloc, *pl_rel_text) ;
 						
 				}
 			}
@@ -167,7 +167,7 @@ void relocation(SYMB* tab_symb, int size, L_TEXT * pl_text, L_DATA * pl_data, L_
 				reloc.p_symb=p_symb ;
 				strcpy(reloc.nom,charge_nom_rel(*p_symb,nom));
 				reloc.type = R_MIPS_32 ;
-				ajout_tete_L_RELOC(reloc, *pl_rel_data) ;
+				*pl_rel_data = ajout_tete_L_RELOC(reloc, *pl_rel_data) ;
 				
 			}
 			/* Cas ou symbole défini ailleurs ou non défini */
@@ -177,7 +177,7 @@ void relocation(SYMB* tab_symb, int size, L_TEXT * pl_text, L_DATA * pl_data, L_
 				strcpy(reloc.nom,l_data->val.operande.val.etiq.nom);
 				reloc.type = R_MIPS_26 ;
 				reloc.ad_rel = l_data->val.decalage ;
-				ajout_tete_L_RELOC(reloc, *pl_rel_data) ;	
+				*pl_rel_data = ajout_tete_L_RELOC(reloc, *pl_rel_data) ;	
 			}
 		}
 		l_data = l_data->suiv ;
@@ -201,13 +201,9 @@ L_RELOC creer_liste_L_RELOC(void)
 }
 
 L_RELOC ajout_tete_L_RELOC(RELOC c, L_RELOC L)
-{
-    L_RELOC p=calloc(1,sizeof(*p));
-
-    if (p==NULL)
-    {
-        return NULL;
-    }
+{ 
+    L_RELOC p=calloc(1,sizeof(c));
+    if (p==NULL) {puts("Erreur d'alloc"); return NULL ;}
     p->val=c;
     p->suiv=L;
     return p;
@@ -234,6 +230,26 @@ void liberer_liste_L_RELOC(L_RELOC l)
     }
 }
 
+
+RELOC* liste_to_tab( L_RELOC l_reloc, int* size){
+	int i=0 ;
+	int j;
+	RELOC* tab ;
+	L_RELOC l=l_reloc ;
+	while (l!=NULL){
+		i++ ;
+		l=l->suiv ;
+	}
+	if ( (tab=calloc(i,sizeof(RELOC))) == NULL) {
+		puts("Error de calloc") ;
+	}
+	for (j=0;j<i;j++){
+		tab[j]= (l_reloc->val) ;
+		l_reloc = l_reloc->suiv ;
+	}
+	*size = i ;
+	return tab ;
+}
 
 
 

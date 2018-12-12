@@ -18,7 +18,8 @@ typedef struct lexeme {
 	int nom_type ;
 	int numero_lexeme;
 	int numero_ligne;
-	char valeur[512] ;} LEXEME ;
+	char valeur[512] ;
+	int reloc ;} LEXEME ;
 
 
 /*
@@ -76,7 +77,7 @@ void initialisation_tab_char(char tab[], int taille) ;
 
 void lecture_liste_lexeme(L_LEXEME L) ;
 
-
+L_LEXEME signe (L_LEXEME liste ) ;
 /* ********** FONCTIONS LISTES DE LEXEMES ********** */
 
 L_LEXEME creer_liste (void) ;

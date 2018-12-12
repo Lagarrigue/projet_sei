@@ -2,9 +2,8 @@
 # allons au ru
 .set noreorder
 .text
-    LW $t0 , lunchtime
-    LW $6, 200
-    ADDI $1,$0,8
+    LW $6, 200($3)
+    ADDI $1,$0,-8
 boucle:
     BEQ $0 , $1 , byebye
     NOP

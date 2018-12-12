@@ -138,7 +138,17 @@ L_CODE_32 operation_de_masquage_section_text(L_INSTRUCTION* dicti, int longueur_
         {
 		
             strcpy(type_instruction, (*model_instruction).ordre_op[i]);
-            instruction=valeur_operande(instruction_TEXT.t_operande, i, 0);
+            
+            if (instruction_TEXT.t_operande[i].type==4){
+            
+            	instruction=0;
+            	/*remplacer adresse etiquette*/
+            }
+            
+            else {
+            
+            	instruction=valeur_operande(instruction_TEXT.t_operande, i, 0);
+            	}
 			
             if(strcmp(type_instruction, "rs")==0)
             {
@@ -277,6 +287,7 @@ L_CODE_32 operation_de_masquage_section_data(L_DATA section)
 			if(p->val.operande.type==4){
 			
 				valeur=0;
+				/*charger valeur de l'etiquette*/
 			}
 			else {
 				valeur=p->val.operande.val.nb;
@@ -316,6 +327,7 @@ L_CODE_32 operation_de_masquage_section_data(L_DATA section)
 			code=0;
 			if(p->val.operande.type==4){
 				code=0;
+				/*charger valeur de l'etiquette*/
 			}
 			else{
 				code=p->val.operande.val.nb;

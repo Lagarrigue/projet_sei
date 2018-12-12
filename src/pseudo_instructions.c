@@ -152,8 +152,7 @@ L_LEXEME fonction_chainage(L_LEXEME l, int num_lex, L_LEXEME l2, int nb_operande
 
 L_LEXEME remplacement_pseudo_instruction(L_LEXEME l, int num_lex, char* nom_pseudo){
 	LEXEME lex;
-	initialisation_lexeme(&lex);
-	int nb=0;
+	/*initialisation_lexeme(&lex);	*/
 	L_LEXEME l2;
 	l2=creer_liste();
 	L_LEXEME p1;
@@ -223,13 +222,17 @@ L_LEXEME remplacement_pseudo_instruction(L_LEXEME l, int num_lex, char* nom_pseu
 		strcpy(lex.valeur,p1->suiv->val.valeur);
 		lex.nom_type=13;
 		lex.numero_ligne=p1->val.numero_ligne;
+		lex.reloc=2;
 		l2=ajout_tete(lex,l2);
-		/*
+	/*
 		strcpy(lex.valeur,",");
 		lex.nom_type=2;
 		lex.numero_ligne=p1->val.numero_ligne;
 		l2=ajout_tete(lex,l2);
+		
 */
+		
+		/*
 		nb=0;
 		if(p1->suiv->suiv->suiv->val.nom_type==9) {
 			nb = strtol(p1->suiv->suiv->suiv->val.valeur,NULL, 16);
@@ -243,17 +246,25 @@ L_LEXEME remplacement_pseudo_instruction(L_LEXEME l, int num_lex, char* nom_pseu
 		}
 		nb=nb & 0xFFFF;
 		sprintf(lex.valeur, "%d", nb);
+		*/
+		
+		strcpy(lex.valeur, p1->suiv->suiv->suiv->val.valeur);
+		lex.nom_type=7;
+		lex.reloc=2;
 		lex.numero_ligne=p1->val.numero_ligne;
 		l2=ajout_tete(lex,l2);
+		lex.reloc=0;
 
 		strcpy(lex.valeur,",");
 		lex.nom_type=2;
 		lex.numero_ligne=p1->val.numero_ligne;
 		l2=ajout_tete(lex,l2);
+		
 
 		strcpy(lex.valeur,p1->suiv->val.valeur);
 		lex.nom_type=p1->suiv->val.nom_type;
 		lex.numero_ligne=p1->val.numero_ligne;
+		lex.reloc=2;
 		l2=ajout_tete(lex,l2);
 
 		strcpy(lex.valeur,"LW");
@@ -263,6 +274,7 @@ L_LEXEME remplacement_pseudo_instruction(L_LEXEME l, int num_lex, char* nom_pseu
 
 
 		/* chargement du LUI*/
+		/*
 		nb=0;
 		if(p1->suiv->suiv->suiv->val.nom_type==9) {
 			nb = strtol(p1->suiv->suiv->suiv->val.valeur,NULL, 16);
@@ -276,8 +288,14 @@ L_LEXEME remplacement_pseudo_instruction(L_LEXEME l, int num_lex, char* nom_pseu
 		}
 		nb=nb & 0x3FF0000;
 		sprintf(lex.valeur, "%d", nb);
+		*/
+		
+		strcpy(lex.valeur, p1->suiv->suiv->suiv->val.valeur);
+		lex.nom_type=7;
+		lex.reloc=1;
 		lex.numero_ligne=p1->val.numero_ligne;
 		l2=ajout_tete(lex,l2);
+		lex.reloc=0;
 
 		strcpy(lex.valeur,",");
 		lex.nom_type=2;
@@ -300,9 +318,10 @@ L_LEXEME remplacement_pseudo_instruction(L_LEXEME l, int num_lex, char* nom_pseu
 	}
 	else if (strcasecmp(nom_pseudo, "SW")==0){
 
-		/* chargement du LW*/
+		/* chargement du SW*/
 		strcpy(lex.valeur,"1");
 		lex.nom_type=13;
+		lex.reloc=2;
 		lex.numero_ligne=p1->val.numero_ligne;
 		l2=ajout_tete(lex,l2);
 
@@ -310,7 +329,8 @@ L_LEXEME remplacement_pseudo_instruction(L_LEXEME l, int num_lex, char* nom_pseu
 		lex.nom_type=2;
 		lex.numero_ligne=p1->val.numero_ligne;
 		l2=ajout_tete(lex,l2);*/
-
+		
+		/*
 		nb=0;
 		if(p1->suiv->suiv->suiv->val.nom_type==9) {
 			nb = strtol(p1->suiv->suiv->suiv->val.valeur,NULL, 16);
@@ -324,9 +344,14 @@ L_LEXEME remplacement_pseudo_instruction(L_LEXEME l, int num_lex, char* nom_pseu
 		}
 		nb=nb & 0xFFFF;
 		sprintf(lex.valeur, "%d", nb);
+		*/
+		
+		strcpy(lex.valeur, p1->suiv->suiv->suiv->val.valeur);
+		lex.nom_type=7;
+		lex.reloc=2;
 		lex.numero_ligne=p1->val.numero_ligne;
 		l2=ajout_tete(lex,l2);
-
+		
 		strcpy(lex.valeur,",");
 		lex.nom_type=2;
 		lex.numero_ligne=p1->val.numero_ligne;
@@ -344,6 +369,7 @@ L_LEXEME remplacement_pseudo_instruction(L_LEXEME l, int num_lex, char* nom_pseu
 
 
 		/* chargement du LUI*/
+		/*
 		nb=0;
 		if(p1->suiv->suiv->suiv->val.nom_type==9) {
 			nb = strtol(p1->suiv->suiv->suiv->val.valeur,NULL, 16);
@@ -357,9 +383,15 @@ L_LEXEME remplacement_pseudo_instruction(L_LEXEME l, int num_lex, char* nom_pseu
 		}
 		nb=nb & 0x3FF0000;
 		sprintf(lex.valeur, "%d", nb);
+		*/
+		
+		strcpy(lex.valeur, p1->suiv->suiv->suiv->val.valeur);
+		lex.nom_type=7;
+		lex.reloc=1;
 		lex.numero_ligne=p1->val.numero_ligne;
 		l2=ajout_tete(lex,l2);
-
+		lex.reloc=0;
+		
 		strcpy(lex.valeur,",");
 		lex.nom_type=2;
 		lex.numero_ligne=p1->val.numero_ligne;

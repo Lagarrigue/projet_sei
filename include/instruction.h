@@ -28,4 +28,4 @@ void liberer_liste_dictionnaire(L_INSTRUCTION l);
 int hash(char nom[], int l);
 L_INSTRUCTION*  lecture_dictionnaire(int longueur_table) ;
 INSTRUCTION* recherche_element(char mot[], L_INSTRUCTION* dicti, int longueur_table) ;
-
+int conversion_min_maj(int lettre);

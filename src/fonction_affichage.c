@@ -192,3 +192,26 @@ void lecture_tab_reloc(RELOC* tab, int size) {
         	printf("\n");
 	}
 }
+
+
+void lecture_liste_L_RELOC(L_RELOC* pl){
+    L_RELOC p=(*pl) ;
+    char type[512] ;
+    if(p!=NULL) {
+    	printf("|  OFFSET    |     TYPE      |     VALUE    |    ETIQ \n") ;
+	while(p!=NULL){
+		if (p->val.type == UNDIFINED) { strcpy(type,"UNDIFINED") ;}
+		else if (p->val.type == R_MIPS_32) { strcpy(type,"R_MIPS_32  ") ;}
+		else if (p->val.type == R_MIPS_LO16) { strcpy(type,"R_MIPS_LO16") ;}
+		else if (p->val.type == R_MIPS_HI16) { strcpy(type,"R_MIPS_HI16") ;}
+		else { strcpy(type,"R_MIPS_26  ") ;} puts("ok");
+        	printf("|   %d    |   %s     |    %s   |    %s    |", p->val.ad_rel, type,(p->val).nom, (*(p->val.p_symb)).symbole )  ;
+        	p=p->suiv ;
+	}
+     }
+
+     else 
+     {
+     printf("La liste est vide\n");
+     }
+}

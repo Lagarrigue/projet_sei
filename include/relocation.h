@@ -31,4 +31,5 @@ L_RELOC creer_liste_L_RELOC(void);
 L_RELOC ajout_tete_L_RELOC(RELOC c, L_RELOC L) ;
 L_RELOC supprimer_tete_L_RELOC(L_RELOC L) ;
 void liberer_liste_L_RELOC(L_RELOC l) ;
-void lecture_liste_L_RELOC(L_RELOC L) ;
+void lecture_liste_L_RELOC(L_RELOC* L) ;
+RELOC* liste_to_tab( L_RELOC l_reloc, int* size) ;

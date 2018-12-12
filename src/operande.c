@@ -8,7 +8,7 @@ L_LEXEME charge_instruction (L_LEXEME l , int** dec, L_TEXT* pl_text, INSTRUCTIO
 	int i=0 ;
 	int j ;
 	int s=0 ;
-	int reloc=0 ; 
+	int relocb=0 ; 
 	int num_lexeme=l->val.numero_lexeme ;
 	strcpy(p_nom,instruction.nom_inst);
 	char** type_op_attendu ;
@@ -39,19 +39,41 @@ L_LEXEME charge_instruction (L_LEXEME l , int** dec, L_TEXT* pl_text, INSTRUCTIO
 	while ( i<nb_op ) {
 		type_op_attendu[i] = (instruction.type_op)[i] ;
 		
+		/* Base offset */
+		if ( strcmp(type_op_attendu[i],"boff")==0 )   { 
+			if ( (l->val.nom_type == 7) || (l->val.nom_type == 9) || (l->val.nom_type == 8)  ) {
+				if ( l->val.reloc == 0 ){
+					puts("\n ======= ");
+					puts(l->val.valeur) ;
+					printf("  reloc=%d",l->val.reloc);
+					operande.type = 8 ;
+					(operande.val).base_offset = valeur_base_off(l, instruction,&relocb) ;
+					if (relocb==1) {
+						puts("ON VA changer pseudo");
+						*num = num_lexeme ;
+						return NULL;}
+				}
+				else if ( (l->val.nom_type == 7)){
+					strcpy(operande.val.etiq.nom, (l->val).valeur) ;
+					strcpy(operande.val.etiq.attendu, (instruction.type_op)[i]);
+					operande.type = 4 ;
+				}
+				if (l->suiv == NULL) {return NULL;}
+				l=l->suiv ;
+			}
+			else {
+				WARNING_MSG("(ligne %d) [operande n°%d] Base offset attendu (EXIT OPERANDE)",l->val.numero_ligne,i+1);
+				return l ;
+			}
+		}
+		
 		/* Etiquette */
-		if ( (l->val).nom_type == 7) { 
+		else if ( (l->val).nom_type == 7) { 
 			strcpy(operande.val.etiq.nom, (l->val).valeur) ;
 			strcpy(operande.val.etiq.attendu, (instruction.type_op)[i]);
 			operande.type = 4 ;
 		}
 		
-		/* Signe - */
-		else if ( (l->val).nom_type == 11 ) {
-			l = signe(l) ;
-			i-- ;
-			s = 1 ;
-		}
 		
 		/* Registre */
 		else if ( strcmp(type_op_attendu[i],"reg")==0 ) {
@@ -83,22 +105,6 @@ L_LEXEME charge_instruction (L_LEXEME l , int** dec, L_TEXT* pl_text, INSTRUCTIO
 			(operande.val).sa = valeur_sa(l->val) ; 
 		}
 		
-		/* Base offset */
-		else if ( strcmp(type_op_attendu[i],"boff")==0 )   { 
-			if ( (l->val.nom_type == 8) || (l->val.nom_type == 9) ) {
-				operande.type = 8 ;
-				(operande.val).base_offset = valeur_base_off(l, instruction,&reloc) ;
-				if (reloc==1) {
-					*num = num_lexeme ;
-					return NULL;}
-				if (l->suiv == NULL) {return NULL;}
-				l=l->suiv ;
-			}
-			else {
-				WARNING_MSG("(ligne %d) [operande n°%d] Base offset attendu (EXIT OPERANDE)",l->val.numero_ligne,i+1);
-				return l ;
-			}
-		}
 		
 		/* Offset */
 		else if ( strcmp(type_op_attendu[i],"offset")==0 ) {
@@ -155,13 +161,13 @@ L_LEXEME charge_instruction (L_LEXEME l , int** dec, L_TEXT* pl_text, INSTRUCTIO
 
 /* *** Fonctions utiles à l'automate *** */
 
-L_LEXEME signe (L_LEXEME l){ /* Consiste à modifier le lexeme suivant */
-	if ( (l=l->suiv)==NULL ) {
+L_LEXEME sign (L_LEXEME l){ /* Consiste à modifier le lexeme suivant */
+	if ( (l->suiv)==NULL ) {
 		return NULL ;}
+	l=l->suiv ;
 	char signe[512] = "-" ;
 	if ( (l->val).nom_type == 8 ) {
 		strcpy( (l->val).valeur, strcat(signe,(l->val).valeur) ) ;
-		
 	}
 	else {
 		WARNING_MSG("(ligne %d) Valeur décimale attendue apres '-'",(l->val).numero_ligne);
@@ -316,7 +322,7 @@ long valeur_offset(LEXEME lex){
 }
 
 /* l'offset est codé ici sur 16 bits signés*/
-BASE_OFFSET valeur_base_off(L_LEXEME l_lexeme, INSTRUCTION instruction,int* reloc ){
+BASE_OFFSET valeur_base_off(L_LEXEME l_lexeme, INSTRUCTION instruction,int* relocb ){
 	BASE_OFFSET b_o ;
 	LEXEME l = l_lexeme->val ;
 	LEXEME suiv ;
@@ -346,33 +352,22 @@ BASE_OFFSET valeur_base_off(L_LEXEME l_lexeme, INSTRUCTION instruction,int* relo
 				return b_o;
 			}
 		}
-		else {
-			WARNING_MSG("(ligne %d) Valeur décimale ou hexadécimale attendue ",l.numero_ligne) ;
-		}
 		reg=valeur_reg(suiv);
 		b_o.reg = reg ;
 		b_o.offset = offset ;
 		return (b_o) ;
 	}
-	else if ( (l.nom_type==8 || l.nom_type==9) && (( (l_lexeme->suiv)==NULL ))) {
-		if ( (strcmp(instruction.nom_inst,"SW") ==0) || (strcmp(instruction.nom_inst,"LW") ==0)){
-			*reloc = 1 ;
-		}
+	else if ( l.nom_type==7 ) {
+		if ( (strcmp(instruction.nom_inst,"SW") == 0) || (strcmp(instruction.nom_inst,"LW") ==0) ){
+			(*relocb) = 1 ;
+			puts("On a SW ou LW ");
+			}
 		else {
 			WARNING_MSG("(ligne %d) Base offset attendu ",l.numero_ligne) ;
 		}
 		return b_o ;
 	}
-	else if ( (l.nom_type==8 || l.nom_type==9) && ((l_lexeme->suiv->val).nom_type != 13)) {
-		if ( strcmp(instruction.nom_inst,"SW") == 0 ){
-			(*reloc) = 1 ;
-		}
-		else if ( strcmp(instruction.nom_inst,"LW") ==0 ){
-			(*reloc) = 1 ;
-		}
-		return b_o ;
-		}
-	else{
+	else {
 		WARNING_MSG("(ligne %d) Base offset attendu ",l.numero_ligne) ;
 		return (b_o) ;
 	}

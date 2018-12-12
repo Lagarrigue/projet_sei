@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <strings.h>
 #include "instruction.h"
 
 /* à changer : ajouter num ligne au lexeme */
@@ -16,13 +17,122 @@ int hash(char* nom, int l) /* fonction qui calcul l'indice d'un élément dans l
 {
     int i=0;
     int h=0;
+    
+    int num=0;
     while(nom[i]!='\0')
     {
-        h=h+nom[i];
+        num=nom[i];
+        num=conversion_min_maj(num);
+        h=h+num;
         i++;
     }
     return h%l;
 }
+
+int conversion_min_maj(int lettre){
+	if(lettre==97){
+		return 65;
+	}
+
+	else if(lettre==98){
+		return 66;
+	}
+	
+	else if(lettre==99){
+		return 67;
+	}
+	
+	else if(lettre==100){
+		return 68;
+	}
+	
+	else if(lettre==101){
+		return 69;
+	}
+	
+	else if(lettre==102){
+		return 70;
+	}
+	
+	else if(lettre==103){
+		return 71;
+	}
+	
+	else if(lettre==104){
+		return 72;
+	}
+	
+	else if(lettre==105){
+		return 73;
+	}
+	
+	else if(lettre==106){
+		return 74;
+	}
+	
+	else if(lettre==107){
+		return 75;
+	}
+	
+	else if(lettre==108){
+		return 76;
+	}
+	
+	else if(lettre==109){
+		return 77;
+	}
+	
+	else if(lettre==110){
+		return 78;
+	}
+	
+	else if(lettre==111){
+		return 79;
+	}
+	
+	else if(lettre==112){
+		return 80;
+	}
+	
+	else if(lettre==113){
+		return 81;
+	}
+	
+	else if(lettre==114){
+		return 82;
+	}
+	else if(lettre==115){
+		return 83;
+	}
+	else if(lettre==116){
+		return 84;
+	}
+	else if(lettre==117){
+		return 85;
+	}
+	else if(lettre==118){
+		return 86;
+	}
+	else if(lettre==119){
+		return 87;
+	}
+	else if(lettre==120){
+		return 88;
+	}
+	else if(lettre==121){
+		return 89;
+	}
+	else if(lettre==122){
+		return 90;
+	}
+	
+	else{
+		return lettre;
+	}
+	
+
+}
+
 
 /*format des fichiers : on met l'ensemble de champs à la suite que l'on sépare par une virgule ex ADD, 3, 3, 0*/
 L_INSTRUCTION*  lecture_dictionnaire(int longueur_table) 
@@ -108,7 +218,7 @@ INSTRUCTION* recherche_element(char mot[], L_INSTRUCTION* dicti, int longueur_ta
     L_INSTRUCTION p;
     p=dicti[val_hash];
     while (p !=NULL){ /* parcours de la liste si les clefs de plusieurs éléments sont identiques */
-        if( strcmp(p->val.nom_inst,mot)==0 ){/*comparaison des chaines non sensible à la case*/
+        if( strcasecmp(p->val.nom_inst,mot)==0 ){/*comparaison des chaines non sensible à la case*/
             return &(p->val);
         }
         p=p->suiv;

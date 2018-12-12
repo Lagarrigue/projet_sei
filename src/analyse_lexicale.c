@@ -31,6 +31,7 @@ void initialisation_lexeme(LEXEME* l){
     int i=0;
     l->nom_type=0;
     l->numero_ligne=0;
+    l->reloc=4 ;
     for(i=0;i<512;i++){
         l->valeur[i]='\0';
     }
@@ -56,6 +57,7 @@ void lecture_liste_lexeme(L_LEXEME L){
        	 	printf("------------------------------\n");
         	printf("lexeme n° %d\n",j);
         	printf("type : %d\n",p->val.nom_type);
+        	printf("reloc : %d\n",p->val.reloc);
         	printf("ligne : %d\n",p->val.numero_ligne);
 
 
@@ -90,6 +92,36 @@ void lecture_liste_lexeme(L_LEXEME L){
      printf("error liste vide\n");
      }
 }
+
+
+L_LEXEME signe (L_LEXEME liste ) {
+	L_LEXEME p = liste ;
+	char s[512] = "-" ;
+	while (p!=NULL && (p->suiv !=NULL) ) {
+		if (p->suiv->val.nom_type == 11) {
+		puts(p->suiv->suiv->val.valeur);
+		printf("s=");
+		puts(s);
+			if ( (p->suiv->suiv) != NULL) {
+				if ( ((p->suiv->suiv->val).nom_type == 8) || ((p->suiv->suiv->val).nom_type == 9) ) {
+					strcpy( (p->suiv->suiv->val).valeur, strcat(s,p->suiv->suiv->val.valeur) ) ;
+					puts(p->suiv->suiv->val.valeur);
+					p->suiv=p->suiv->suiv ;
+				}
+				else {
+					WARNING_MSG("[ligne %d] Le signe n'est pas suivi d'une valeur hexa ou décimale", p->val.numero_ligne);
+				}
+			}
+			else {
+				WARNING_MSG("[ligne %d] Le signe n'est pas suivi d'une valeur hexa ou décimale", p->val.numero_ligne);
+			}
+		}
+		p=p->suiv ;
+		strcpy(s,"-");	
+	}
+	return liste ;
+}
+		
 
 /* ici commence la fonction principale qui permet de lire le fichier assembleur */
 
@@ -496,6 +528,7 @@ L_LEXEME analyse_lexicale(char* nom_fichier){
     }
     fclose(fichier);
     liste_lecture_instructions=renversement_liste(liste_lecture_instructions);
+    liste_lecture_instructions = signe (liste_lecture_instructions );
     return liste_lecture_instructions;
 }
 
