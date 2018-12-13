@@ -115,7 +115,6 @@ int main ( int argc, char *argv[] ) {
     	while ( num != 0 ) {
     		num=0 ;
     		init (&l_lexeme, section, dec, &l_text, &l_bss, &l_data, &l_symb, &l_attente,dictionnaire,&num,p_nom) ;
-    		lecture_liste_lexeme(l_lexeme)  ;
     		if (num != 0) {
 			liberer_liste_L_TEXT(l_text) ;
 			liberer_liste_L_DATA(l_data) ;

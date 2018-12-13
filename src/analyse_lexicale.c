@@ -31,7 +31,6 @@ void initialisation_lexeme(LEXEME* l){
     int i=0;
     l->nom_type=0;
     l->numero_ligne=0;
-    l->reloc=4 ;
     for(i=0;i<512;i++){
         l->valeur[i]='\0';
     }

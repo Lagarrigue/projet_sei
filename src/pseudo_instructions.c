@@ -1,3 +1,5 @@
+
+
 #include "analyse_lexicale.h"
 
 
@@ -253,7 +255,6 @@ L_LEXEME remplacement_pseudo_instruction(L_LEXEME l, int num_lex, char* nom_pseu
 		lex.reloc=2;
 		lex.numero_ligne=p1->val.numero_ligne;
 		l2=ajout_tete(lex,l2);
-		lex.reloc=0;
 
 		strcpy(lex.valeur,",");
 		lex.nom_type=2;
@@ -295,7 +296,6 @@ L_LEXEME remplacement_pseudo_instruction(L_LEXEME l, int num_lex, char* nom_pseu
 		lex.reloc=1;
 		lex.numero_ligne=p1->val.numero_ligne;
 		l2=ajout_tete(lex,l2);
-		lex.reloc=0;
 
 		strcpy(lex.valeur,",");
 		lex.nom_type=2;
@@ -390,7 +390,6 @@ L_LEXEME remplacement_pseudo_instruction(L_LEXEME l, int num_lex, char* nom_pseu
 		lex.reloc=1;
 		lex.numero_ligne=p1->val.numero_ligne;
 		l2=ajout_tete(lex,l2);
-		lex.reloc=0;
 		
 		strcpy(lex.valeur,",");
 		lex.nom_type=2;

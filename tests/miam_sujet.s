@@ -2,7 +2,7 @@
 # allons au ru
 .set noreorder
 .text
-    LW $6, 200($3)
+    LW $6, menu
     ADDI $1,$0,-8
 boucle:
     BEQ $0 , $1 , byebye

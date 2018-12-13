@@ -43,13 +43,10 @@ L_LEXEME charge_instruction (L_LEXEME l , int** dec, L_TEXT* pl_text, INSTRUCTIO
 		if ( strcmp(type_op_attendu[i],"boff")==0 )   { 
 			if ( (l->val.nom_type == 7) || (l->val.nom_type == 9) || (l->val.nom_type == 8)  ) {
 				if ( l->val.reloc == 0 ){
-					puts("\n ======= ");
-					puts(l->val.valeur) ;
-					printf("  reloc=%d",l->val.reloc);
 					operande.type = 8 ;
 					(operande.val).base_offset = valeur_base_off(l, instruction,&relocb) ;
 					if (relocb==1) {
-						puts("ON VA changer pseudo");
+		
 						*num = num_lexeme ;
 						return NULL;}
 				}

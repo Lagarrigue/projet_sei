@@ -127,6 +127,7 @@ void relocation(SYMB* tab_symb, int size, L_TEXT * pl_text, L_DATA * pl_data, L_
 							*pl_rel_text = ajout_tete_L_RELOC(reloc, *pl_rel_text) ;
 						}
 						/* LO16 */
+						strcpy(reloc.nom,".text");
 						reloc.type = R_MIPS_LO16 ; 
 						reloc.ad_rel = (l_text)->val.decalage ;
 						*pl_rel_text = ajout_tete_L_RELOC(reloc, *pl_rel_text) ;
