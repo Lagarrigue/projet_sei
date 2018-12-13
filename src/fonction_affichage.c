@@ -26,7 +26,7 @@ void lecture_liste_L_TEXT(L_TEXT L){
         	printf("* type instruction : %s\n",p->val.type_instruction);
         	for (n=0 ; n<p->val.nb_op ; n++ ) {
         		if ( (p->val).t_operande[n].type ==  4){
-        			printf(" # OP %d : %s  (ETIQ)\n",n+1,((p->val).t_operande[n]).val.etiq.nom);
+        			printf(" # OP %d : %s [reloc=%d] (ETIQ)\n",n+1,((p->val).t_operande[n]).val.etiq.nom,((p->val).t_operande[n]).val.etiq.reloc);
         		}
         		else if ( (p->val).t_operande[n].type ==  10 ){
         			printf(" # OP %d : %s  (STR)\n",n+1,((p->val).t_operande[n]).val.etiq.nom);

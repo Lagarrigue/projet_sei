@@ -22,6 +22,7 @@ int existence_symbole (char etiq[512] ,L_SYMB l_symb) ;
 SYMB* ajout_tab_symb (SYMB* tab_symb,int section, DATA data, BSS bss,  TEXT text, int* size ,int j);
 char* charge_nom_rel (SYMB symb, char nom[512]) ;
 int existence_HI16(SYMB symb, L_RELOC l_reloc) ;
+OPERANDE replacement_operande( char type_attendu[10] , int dec, VAL_OPERANDE etiq ,SYMB symb) ;
 
 void lecture_tab_reloc(RELOC* tab, int size) ;
 

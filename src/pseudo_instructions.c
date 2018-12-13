@@ -154,7 +154,6 @@ L_LEXEME fonction_chainage(L_LEXEME l, int num_lex, L_LEXEME l2, int nb_operande
 
 L_LEXEME remplacement_pseudo_instruction(L_LEXEME l, int num_lex, char* nom_pseudo){
 	LEXEME lex;
-	/*initialisation_lexeme(&lex);	*/
 	L_LEXEME l2;
 	l2=creer_liste();
 	L_LEXEME p1;
@@ -166,19 +165,6 @@ L_LEXEME remplacement_pseudo_instruction(L_LEXEME l, int num_lex, char* nom_pseu
 	while(p1->val.numero_lexeme != k && p1->suiv !=NULL){
 		p1=p1->suiv;
 	}
-
-	/* gerer les else en cas de probleme sur target ou immediate utiliser fonction déjà utilisées*/
-	/* on ne fait pas ce sera fait tout seul par la partie de theo la verification des operandes doit etre faite juste après l'entree dans ma condition else if*/
-	/*revoir les histoires de signe avec le mail : pas clair du tout que faire si on a un - dans le code assemble ??????*/
-	/*verification dans analyse lexicale des registres parenthèse*/
-	/* comment controler le registre des base offsets utiliser : utiliser le dico de analyse lex*/
-	/*à faire dans analyse lexicalz*/
-	/* ajoute rles numeros de lexeme*/
-	/* dans l'analyse lexicale donner le num aux lexeme et modition fonction affichage*/
-	/* verifier les parentheses pour les base offf*/
-	
-	/* faire absolument verification oeprandes des pseudo*/
-
 
 
 
@@ -226,29 +212,6 @@ L_LEXEME remplacement_pseudo_instruction(L_LEXEME l, int num_lex, char* nom_pseu
 		lex.numero_ligne=p1->val.numero_ligne;
 		lex.reloc=2;
 		l2=ajout_tete(lex,l2);
-	/*
-		strcpy(lex.valeur,",");
-		lex.nom_type=2;
-		lex.numero_ligne=p1->val.numero_ligne;
-		l2=ajout_tete(lex,l2);
-		
-*/
-		
-		/*
-		nb=0;
-		if(p1->suiv->suiv->suiv->val.nom_type==9) {
-			nb = strtol(p1->suiv->suiv->suiv->val.valeur,NULL, 16);
-			lex.nom_type=9;
-		}
-		else if (p1->suiv->suiv->suiv->val.nom_type==8){
-			nb = strtol(p1->suiv->suiv->suiv->val.valeur,NULL, 10);
-			lex.nom_type=8;
-		}
-		else {
-		}
-		nb=nb & 0xFFFF;
-		sprintf(lex.valeur, "%d", nb);
-		*/
 		
 		strcpy(lex.valeur, p1->suiv->suiv->suiv->val.valeur);
 		lex.nom_type=7;
@@ -272,24 +235,6 @@ L_LEXEME remplacement_pseudo_instruction(L_LEXEME l, int num_lex, char* nom_pseu
 		lex.nom_type=7;
 		lex.numero_ligne=p1->val.numero_ligne;
 		l2=ajout_tete(lex,l2);
-
-
-		/* chargement du LUI*/
-		/*
-		nb=0;
-		if(p1->suiv->suiv->suiv->val.nom_type==9) {
-			nb = strtol(p1->suiv->suiv->suiv->val.valeur,NULL, 16);
-			lex.nom_type=9;
-		}
-		else if (p1->suiv->suiv->suiv->val.nom_type==8){
-			nb = strtol(p1->suiv->suiv->suiv->val.valeur,NULL, 10);
-			lex.nom_type=8;
-		}
-		else {
-		}
-		nb=nb & 0x3FF0000;
-		sprintf(lex.valeur, "%d", nb);
-		*/
 		
 		strcpy(lex.valeur, p1->suiv->suiv->suiv->val.valeur);
 		lex.nom_type=7;
@@ -324,27 +269,6 @@ L_LEXEME remplacement_pseudo_instruction(L_LEXEME l, int num_lex, char* nom_pseu
 		lex.reloc=2;
 		lex.numero_ligne=p1->val.numero_ligne;
 		l2=ajout_tete(lex,l2);
-
-		/*strcpy(lex.valeur,",");
-		lex.nom_type=2;
-		lex.numero_ligne=p1->val.numero_ligne;
-		l2=ajout_tete(lex,l2);*/
-		
-		/*
-		nb=0;
-		if(p1->suiv->suiv->suiv->val.nom_type==9) {
-			nb = strtol(p1->suiv->suiv->suiv->val.valeur,NULL, 16);
-			lex.nom_type=9;
-		}
-		else if (p1->suiv->suiv->suiv->val.nom_type==8){
-			nb = strtol(p1->suiv->suiv->suiv->val.valeur,NULL, 10);
-			lex.nom_type=8;
-		}
-		else {
-		}
-		nb=nb & 0xFFFF;
-		sprintf(lex.valeur, "%d", nb);
-		*/
 		
 		strcpy(lex.valeur, p1->suiv->suiv->suiv->val.valeur);
 		lex.nom_type=7;
@@ -367,23 +291,6 @@ L_LEXEME remplacement_pseudo_instruction(L_LEXEME l, int num_lex, char* nom_pseu
 		lex.numero_ligne=p1->val.numero_ligne;
 		l2=ajout_tete(lex,l2);
 
-
-		/* chargement du LUI*/
-		/*
-		nb=0;
-		if(p1->suiv->suiv->suiv->val.nom_type==9) {
-			nb = strtol(p1->suiv->suiv->suiv->val.valeur,NULL, 16);
-			lex.nom_type=9;
-		}
-		else if (p1->suiv->suiv->suiv->val.nom_type==8){
-			nb = strtol(p1->suiv->suiv->suiv->val.valeur,NULL, 10);
-			lex.nom_type=8;
-		}
-		else {
-		}
-		nb=nb & 0x3FF0000;
-		sprintf(lex.valeur, "%d", nb);
-		*/
 		
 		strcpy(lex.valeur, p1->suiv->suiv->suiv->val.valeur);
 		lex.nom_type=7;
@@ -605,14 +512,11 @@ L_LEXEME verification_appartenance_pseudo_instruction(L_LEXEME liste_lexemes, L_
 	
 	PSEUDO_INSTRUCTION* pseudo;
 	
-	/*int longueur_dico=7;*/
-	/*L_PSEUDO_INSTRUCTION* dico*/
-	/*dico=lecture_dictionnaire_pseudo(longueur_dico);*/
 	
 	while(p !=NULL){
 		if(p->val.nom_type==7){
 			pseudo=recherche_element_pseudo(p->val.valeur , dico, longueur_dico);
-			if(pseudo != NULL && strcasecmp(p->val.valeur, "LW") !=0 && strcasecmp(p->val.valeur, "SW")!=0 ){ /* trouve rmeilleure solution avec les deux dico*/
+			if(pseudo != NULL && strcasecmp(p->val.valeur, "LW") !=0 && strcasecmp(p->val.valeur, "SW")!=0 ){ 
 				liste_lexemes=remplacement_pseudo_instruction(liste_lexemes, p->val.numero_lexeme , p->val.valeur);
 			}
 		}
@@ -623,70 +527,4 @@ L_LEXEME verification_appartenance_pseudo_instruction(L_LEXEME liste_lexemes, L_
 	return liste_lexemes;
 }
 
-/*
-int main(){
-int a=0;
-	printf("///////// %d\n",a |0X0F);
-	L_LEXEME l;
-	l=creer_liste();
-	LEXEME lex7;
-	lex7.nom_type=7;
-	strcpy(lex7.valeur, "HDJDJD");
-	lex7.numero_ligne=45;
-	lex7.numero_lexeme=1;
-	LEXEME lex0;
-	lex0.nom_type=2;
-	strcpy(lex0.valeur, "BLT");
-	lex0.numero_ligne=45;
-	lex0.numero_lexeme=2;
-	LEXEME lex1;
-	lex1.nom_type=5;
-	strcpy(lex1.valeur, "VAL1");
-	lex1.numero_ligne=45;
-	lex1.numero_lexeme=3;
-	LEXEME lex2;
-	lex2.nom_type=2;
-	strcpy(lex2.valeur, ",");
-	lex2.numero_ligne=45;
-	lex2.numero_lexeme=4;
-	LEXEME lex3;
-	lex3.nom_type=8;
-	strcpy(lex3.valeur, "500");
-	lex3.numero_ligne=45;
-	lex3.numero_lexeme=5;
-	LEXEME lex4;
-	lex4.nom_type=2;
-	strcpy(lex4.valeur, ",");
-	lex4.numero_ligne=45;
-	lex4.numero_lexeme=6;
-	LEXEME lex5;
-	lex5.nom_type=8;
-	strcpy(lex5.valeur, "VAL3");
-	lex5.numero_ligne=45;
-	lex5.numero_lexeme=7;
-	LEXEME lex6;
-	lex6.nom_type=8;
-	strcpy(lex6.valeur, "FIN");
-	lex6.numero_ligne=45;
-	lex6.numero_lexeme=8;
-	l=ajout_tete(lex6, l);
-	l=ajout_tete(lex5, l);
-	l=ajout_tete(lex4, l);
-	l=ajout_tete(lex3, l);
-	l=ajout_tete(lex2, l);
-	l=ajout_tete(lex1, l);
-	l=ajout_tete(lex0, l);
-	l=ajout_tete(lex7, l);
-	
-	
-	printf("------------------------------------------------\n");
-	printf("------------------------------------------------\n");
-	
-	l=remplacement_pseudo_instruction(l, 2 , "BLT");
-	
-	
-	lecture_liste_lexeme(l);
-	
-	return 1;
-}
-*/
+

@@ -22,7 +22,8 @@ typedef struct bo {
 	
 typedef struct etiq {
 	char nom[512] ;
-	char attendu[10] ; } ETIQ ;
+	char attendu[10] ;
+	int reloc ; } ETIQ ;
 
 typedef union {
 	unsigned char reg;

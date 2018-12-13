@@ -1,9 +1,9 @@
 #include "relocation.h"
 
-SYMB* p_symbole ( char etiq[512], SYMB* tab_etiq, int n ) {
+SYMB* p_symbole ( char etiq[512], SYMB* tab_etiq, int n) {
 	int i ;
 	for (i=0 ; i<n ; i++ ){
-		if ( strcmp(etiq,tab_etiq[i].symbole)==0){
+		if ( strcmp(etiq,tab_etiq[i].symbole)==0 ){
 			return (tab_etiq+i) ; 
 		}
 	}
@@ -87,6 +87,36 @@ SYMB* ajout_tab_symb (SYMB* tab_symb,int section, DATA data, BSS bss,  TEXT text
 	return nouv_tab ;
 }
 
+
+OPERANDE replacement_operande( char type_attendu[10] , int dec, VAL_OPERANDE etiq ,SYMB symb) {
+	int valeur = symb.decalage-dec ;
+	OPERANDE operande ;
+	LEXEME lex ;
+	lex.nom_type = 8 ;
+	sprintf(lex.valeur, "%d", valeur) ;
+	if ( strcmp(etiq.etiq.attendu,"imm")==0 ) {
+		operande.type = 2 ;
+		(operande.val).imm = valeur_imm(lex) ; 
+	}
+	else if ( strcmp(etiq.etiq.attendu,"sa")==0 ) {
+		operande.type = 3 ;
+		(operande.val).sa = valeur_sa(lex) ;
+	}
+	else if ( strcmp(etiq.etiq.attendu,"offset")==0 ) {
+		operande.type = 7 ;
+		(operande.val).imm = valeur_offset(lex) ; 
+	}
+	else if ( strcmp(etiq.etiq.attendu,"target")==0 ) {
+		operande.type = 9 ;
+		(operande.val).tar = valeur_target(lex) ; 
+	}
+	else {
+		WARNING_MSG("L'etiquette '%s' ne pointe pas vers une operande valide (EXIT OPERANDE)",etiq.etiq.nom);
+		exit( EXIT_FAILURE );
+	}
+	return operande ;
+}
+
 void relocation(SYMB* tab_symb, int size, L_TEXT * pl_text, L_DATA * pl_data, L_RELOC* pl_rel_text, L_RELOC* pl_rel_data){
 	/* *** Déclaration et initialisation des variables *** */
 	RELOC reloc ;
@@ -120,17 +150,26 @@ void relocation(SYMB* tab_symb, int size, L_TEXT * pl_text, L_DATA * pl_data, L_
 					/* Cas R_MIPS_HI16/R_MIPS_LO16 */
 					else if ( strcmp((l_text)->val.type_instruction,"I") ==0 ){
 						strcpy(reloc.nom,charge_nom_rel(*p_symb,nom));
-						/* HI16 : On vérifie que le R_MIPS_HI16 n'existe pas déjà */
-						if ( existence_HI16(*p_symb,*pl_rel_text) == FALSE ) {
-							reloc.type = R_MIPS_HI16 ; 
-							reloc.ad_rel = (*p_symb).decalage ;
+						if ( (l_text->val).t_operande[i].val.etiq.reloc == 1) {
+							reloc.type = R_MIPS_HI16 ;
+							reloc.ad_rel = (l_text)->val.decalage ;
 							*pl_rel_text = ajout_tete_L_RELOC(reloc, *pl_rel_text) ;
 						}
-						/* LO16 */
-						strcpy(reloc.nom,".text");
-						reloc.type = R_MIPS_LO16 ; 
-						reloc.ad_rel = (l_text)->val.decalage ;
-						*pl_rel_text = ajout_tete_L_RELOC(reloc, *pl_rel_text) ;
+						else if ( (l_text->val).t_operande[i].val.etiq.reloc == 2) {
+							reloc.type = R_MIPS_LO16 ;
+							reloc.ad_rel = (l_text)->val.decalage ;
+							*pl_rel_text = ajout_tete_L_RELOC(reloc, *pl_rel_text) ;
+						}
+						/* HI16 : On vérifie que le R_MIPS_HI16 n'existe pas déjà */
+						else {
+							if ( (*p_symb).section != 1 ) {
+								WARNING_MSG("Le symbole '%s' appelé est dans un autre section",(*p_symb).symbole) ;	
+								exit( EXIT_FAILURE );				
+							}
+							else {
+								(l_text->val).t_operande[i] = replacement_operande((l_text->val).t_operande[i].val.etiq.attendu , (l_text->val).decalage , (l_text->val).t_operande[i].val, *p_symb);
+							}
+						}	
 					
 					}
 					
@@ -204,7 +243,7 @@ L_RELOC creer_liste_L_RELOC(void)
 L_RELOC ajout_tete_L_RELOC(RELOC c, L_RELOC L)
 { 
     L_RELOC p=calloc(1,sizeof(c));
-    if (p==NULL) {puts("Erreur d'alloc"); return NULL ;}
+    if (p==NULL) {puts("Erreur d'alloc"); exit( EXIT_FAILURE ) ;}
     p->val=c;
     p->suiv=L;
     return p;
@@ -243,6 +282,7 @@ RELOC* liste_to_tab( L_RELOC l_reloc, int* size){
 	}
 	if ( (tab=calloc(i,sizeof(RELOC))) == NULL) {
 		puts("Error de calloc") ;
+		exit( EXIT_FAILURE );
 	}
 	for (j=0;j<i;j++){
 		tab[j]= (l_reloc->val) ;

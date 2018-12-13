@@ -22,11 +22,13 @@ L_LEXEME charge_instruction (L_LEXEME l , int** dec, L_TEXT* pl_text, INSTRUCTIO
 	**dec += 4 ;
 	donnee.nb_op = nb_op ;
 	if ( (type_op_attendu = calloc(3,sizeof(*type_op_attendu)) ) == NULL ) {
-		puts("Erreur d'allocation") ; return NULL ;}
+		puts("Erreur d'allocation") ;
+		exit( EXIT_FAILURE ) ;
+	}
 	else {  for (j=0 ; j<3 ; j++ ) {
 			type_op_attendu[j]=calloc(10,sizeof(**type_op_attendu));
 			if (type_op_attendu[j] == NULL) {
-				puts("Erreur d'allocation") ;  return NULL ; }
+				puts("Erreur d'allocation") ; exit( EXIT_FAILURE ); }
 			}}
 			
 	/* *** Début de "l'automate" *** */
@@ -54,12 +56,15 @@ L_LEXEME charge_instruction (L_LEXEME l , int** dec, L_TEXT* pl_text, INSTRUCTIO
 					strcpy(operande.val.etiq.nom, (l->val).valeur) ;
 					strcpy(operande.val.etiq.attendu, (instruction.type_op)[i]);
 					operande.type = 4 ;
+					**dec -= 4 ;
+					operande.val.etiq.reloc = l->val.reloc ;
 				}
 				if (l->suiv == NULL) {return NULL;}
 				l=l->suiv ;
 			}
 			else {
 				WARNING_MSG("(ligne %d) [operande n°%d] Base offset attendu (EXIT OPERANDE)",l->val.numero_ligne,i+1);
+				exit( EXIT_FAILURE );
 				return l ;
 			}
 		}
@@ -68,6 +73,7 @@ L_LEXEME charge_instruction (L_LEXEME l , int** dec, L_TEXT* pl_text, INSTRUCTIO
 		else if ( (l->val).nom_type == 7) { 
 			strcpy(operande.val.etiq.nom, (l->val).valeur) ;
 			strcpy(operande.val.etiq.attendu, (instruction.type_op)[i]);
+			operande.val.etiq.reloc = l->val.reloc ;
 			operande.type = 4 ;
 		}
 		
@@ -76,6 +82,7 @@ L_LEXEME charge_instruction (L_LEXEME l , int** dec, L_TEXT* pl_text, INSTRUCTIO
 		else if ( strcmp(type_op_attendu[i],"reg")==0 ) {
 			if ( l->val.nom_type != 5 ) {
 				WARNING_MSG("(ligne %d) [operande n°%d] Registre attendu (EXIT OPERANDE)",l->val.numero_ligne,i+1);
+				exit( EXIT_FAILURE );
 				return l ;
 			}
 			operande.type = 1 ;
@@ -86,6 +93,7 @@ L_LEXEME charge_instruction (L_LEXEME l , int** dec, L_TEXT* pl_text, INSTRUCTIO
 		else if ( strcmp(type_op_attendu[i],"imm")==0 )    {
 			if ( l->val.nom_type != 8 && l->val.nom_type != 9) {
 				WARNING_MSG("(ligne %d) [operande n°%d] Immédiat attendu (EXIT OPERANDE)",l->val.numero_ligne,i+1);
+				exit( EXIT_FAILURE );
 				return l ;
 			}
 			operande.type = 2 ;
@@ -96,6 +104,7 @@ L_LEXEME charge_instruction (L_LEXEME l , int** dec, L_TEXT* pl_text, INSTRUCTIO
 		else if ( strcmp(type_op_attendu[i],"sa")==0 ) 	   {
 			if ( l->val.nom_type != 8 && l->val.nom_type != 9) {
 				WARNING_MSG("(ligne %d) [operande n°%d] Shift amount attendu (EXIT OPERANDE)",l->val.numero_ligne,i+1);
+				exit( EXIT_FAILURE );
 				return l ;
 			}
 			operande.type = 3 ;
@@ -107,6 +116,7 @@ L_LEXEME charge_instruction (L_LEXEME l , int** dec, L_TEXT* pl_text, INSTRUCTIO
 		else if ( strcmp(type_op_attendu[i],"offset")==0 ) {
 			if ( l->val.nom_type != 8 && l->val.nom_type != 9) {
 				WARNING_MSG("(ligne %d) [operande n°%d] Offset attendu (EXIT OPERANDE)",l->val.numero_ligne,i+1);
+				exit( EXIT_FAILURE );
 				return l ;
 			}
 			operande.type = 7 ;
@@ -117,6 +127,7 @@ L_LEXEME charge_instruction (L_LEXEME l , int** dec, L_TEXT* pl_text, INSTRUCTIO
 		else if ( strcmp(type_op_attendu[i],"target")==0 ) {
 			if ( l->val.nom_type != 8 && l->val.nom_type != 9) {
 				WARNING_MSG("(ligne %d) [operande n°%d] Target attendu (EXIT OPERANDE)",l->val.numero_ligne,i+1);
+				exit( EXIT_FAILURE );
 				return l ;
 			}		
 			operande.type = 9 ;
@@ -126,6 +137,7 @@ L_LEXEME charge_instruction (L_LEXEME l , int** dec, L_TEXT* pl_text, INSTRUCTIO
 		/* Erreur type */
 		else {
 			WARNING_MSG("(ligne %d)Problème d'operande (EXIT OPERANDE)",l->val.numero_ligne);
+			exit( EXIT_FAILURE );
 			return l ;
 		}
 		
@@ -138,6 +150,7 @@ L_LEXEME charge_instruction (L_LEXEME l , int** dec, L_TEXT* pl_text, INSTRUCTIO
 			if (l==NULL) { return NULL ; } ;
 			if ( (l->val).nom_type != 2 ) {
 				WARNING_MSG("(ligne %d) Virgule attendue apres operande n°%d (EXIT OPERANDE) ",l->val.numero_ligne,i+1);
+				exit( EXIT_FAILURE );
 				return l ; 
 			}
 			else {
@@ -168,7 +181,7 @@ L_LEXEME sign (L_LEXEME l){ /* Consiste à modifier le lexeme suivant */
 	}
 	else {
 		WARNING_MSG("(ligne %d) Valeur décimale attendue apres '-'",(l->val).numero_ligne);
-		return NULL ;
+		exit( EXIT_FAILURE );
 	}
 	return l ;
 }		
@@ -176,6 +189,7 @@ L_LEXEME sign (L_LEXEME l){ /* Consiste à modifier le lexeme suivant */
 unsigned char valeur_reg(LEXEME l) {
 	if (l.nom_type != 5 && l.nom_type != 3 && l.nom_type != 13) {
 			WARNING_MSG("(ligne %d) Registre (ou etiquette) attendu",l.numero_ligne);
+			exit( EXIT_FAILURE );
 	}
 	unsigned char s=0 ;
 	long int val= strtol(l.valeur , NULL, 10) ;
@@ -185,6 +199,7 @@ unsigned char valeur_reg(LEXEME l) {
 	}
 	else {
 		WARNING_MSG("(ligne %d) Registre inconnu ",l.numero_ligne) ;
+		exit( EXIT_FAILURE );
 		return 0 ;
 	}
 }
@@ -203,7 +218,7 @@ short valeur_imm(LEXEME lex){/* on met en argument le lexeme voulut !*/
 			
 		else{
 			WARNING_MSG("valeur instruction ligne n°%d trop grande, c'est un short",lex.numero_ligne);
-			return 0;
+			exit( EXIT_FAILURE );
 			}
 	}
 	else if(lex.nom_type==9){
@@ -215,13 +230,13 @@ short valeur_imm(LEXEME lex){/* on met en argument le lexeme voulut !*/
 		}
 		else{
 			WARNING_MSG("valeur instruction ligne n°%d trop grande, c'est un short",lex.numero_ligne);
-			return 0;
+			exit( EXIT_FAILURE );
 		}
 	}
 	
 	else {
 		WARNING_MSG("(ligne %d) Valeur hexa, décimale ou etiquette attendue",lex.numero_ligne);
-		return 0 ;
+		exit( EXIT_FAILURE );
 	}
 }
 
@@ -239,7 +254,7 @@ int valeur_sa(LEXEME lex){
 			
 		else{
 			WARNING_MSG("valeur instruction ligne n°%d trop grande comprise entre 0 et 31 inclus ou erreur de signe",lex.numero_ligne);
-			return 0;
+			exit( EXIT_FAILURE );
 		}
 	}
 	else if(lex.nom_type==9){
@@ -251,10 +266,13 @@ int valeur_sa(LEXEME lex){
 		}
 		else{
 			WARNING_MSG("valeur instruction ligne n°%d trop grande comprise entre 0 et 31 inclus ou erreur de signe",lex.numero_ligne);
-			return 0;
+			exit( EXIT_FAILURE );
 		}
 	}
-	return 69 ;
+	else {
+		WARNING_MSG("(ligne %d) Valeur hexa, décimale ou etiquette attendue",lex.numero_ligne);
+		exit( EXIT_FAILURE );
+	}
 }
 
 /* codage sur 28 bits non signes et divisible par 4 */
@@ -268,6 +286,7 @@ long valeur_target(LEXEME lex){
 			
 		else{
 			WARNING_MSG("valeur instruction ligne n°%d trop grande qui doit etre positive, divisible par 4 , c'est codé sur 28 bits",lex.numero_ligne);
+			exit( EXIT_FAILURE );
 			return 0;
 		}
 	}
@@ -278,12 +297,12 @@ long valeur_target(LEXEME lex){
 		}
 		else{
 			WARNING_MSG("valeur instruction ligne n°%d trop grande qui doit etre positive, divisible par 4, c'est codé sur 28 bits",lex.numero_ligne);
-			return 0;
+			exit( EXIT_FAILURE );
 		}
 	}
 	else {
 		WARNING_MSG("(ligne %d) Valeur hexa, décimale ou etiquette attendue",lex.numero_ligne);
-		return 0 ;
+		exit( EXIT_FAILURE );
 	}
 }
 
@@ -299,7 +318,7 @@ long valeur_offset(LEXEME lex){
 			
 		else{
 			WARNING_MSG("valeur instruction ligne n°%d trop grande, c'est codé sur 18 bits signés",lex.numero_ligne);
-			return 0 ;
+			exit( EXIT_FAILURE );
 		}
 	}
 	else if(lex.nom_type==9){
@@ -309,12 +328,12 @@ long valeur_offset(LEXEME lex){
 		}
 		else{
 			WARNING_MSG("valeur instruction ligne n°%d trop grande c'est codé sur 18 bits signés",lex.numero_ligne);
-			return 0;
+			exit( EXIT_FAILURE );
 		}
 	}
 	else {
 		WARNING_MSG("(ligne %d) Valeur hexa, décimale ou etiquette attendue",lex.numero_ligne);
-		return 0 ;
+		exit( EXIT_FAILURE );
 	}
 }
 
@@ -334,8 +353,7 @@ BASE_OFFSET valeur_base_off(L_LEXEME l_lexeme, INSTRUCTION instruction,int* relo
 			}
 			else{
 				WARNING_MSG("valeur instruction ligne n°%d trop grande, c'est codé sur 16 bits signés en complément à 2",l.numero_ligne);
-				b_o.offset=0 ;
-				return b_o;
+				exit( EXIT_FAILURE );
 			}
 		}
 		else if (l.nom_type==9){
@@ -345,8 +363,7 @@ BASE_OFFSET valeur_base_off(L_LEXEME l_lexeme, INSTRUCTION instruction,int* relo
 			}
 			else{
 				WARNING_MSG("valeur instruction ligne n°%d trop grande, c'est codé sur 16 bits signés en complément à 2",l.numero_ligne);
-				b_o.offset=0 ;
-				return b_o;
+				exit( EXIT_FAILURE );
 			}
 		}
 		reg=valeur_reg(suiv);
@@ -357,16 +374,16 @@ BASE_OFFSET valeur_base_off(L_LEXEME l_lexeme, INSTRUCTION instruction,int* relo
 	else if ( l.nom_type==7 ) {
 		if ( (strcmp(instruction.nom_inst,"SW") == 0) || (strcmp(instruction.nom_inst,"LW") ==0) ){
 			(*relocb) = 1 ;
-			puts("On a SW ou LW ");
 			}
 		else {
 			WARNING_MSG("(ligne %d) Base offset attendu ",l.numero_ligne) ;
+			exit( EXIT_FAILURE );
 		}
 		return b_o ;
 	}
 	else {
 		WARNING_MSG("(ligne %d) Base offset attendu ",l.numero_ligne) ;
-		return (b_o) ;
+		exit( EXIT_FAILURE );
 	}
 }
 

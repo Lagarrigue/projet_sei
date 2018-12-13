@@ -98,21 +98,19 @@ L_LEXEME signe (L_LEXEME liste ) {
 	char s[512] = "-" ;
 	while (p!=NULL && (p->suiv !=NULL) ) {
 		if (p->suiv->val.nom_type == 11) {
-		puts(p->suiv->suiv->val.valeur);
-		printf("s=");
-		puts(s);
 			if ( (p->suiv->suiv) != NULL) {
 				if ( ((p->suiv->suiv->val).nom_type == 8) || ((p->suiv->suiv->val).nom_type == 9) ) {
 					strcpy( (p->suiv->suiv->val).valeur, strcat(s,p->suiv->suiv->val.valeur) ) ;
-					puts(p->suiv->suiv->val.valeur);
 					p->suiv=p->suiv->suiv ;
 				}
 				else {
 					WARNING_MSG("[ligne %d] Le signe n'est pas suivi d'une valeur hexa ou décimale", p->val.numero_ligne);
+					exit( EXIT_FAILURE );
 				}
 			}
 			else {
 				WARNING_MSG("[ligne %d] Le signe n'est pas suivi d'une valeur hexa ou décimale", p->val.numero_ligne);
+				exit( EXIT_FAILURE );
 			}
 		}
 		p=p->suiv ;
@@ -131,6 +129,7 @@ L_LEXEME analyse_lexicale(char* nom_fichier){
 	fichier=fopen(nom_fichier,"r");
 	if (fichier==NULL){
 		perror("Erreur ouverture du fichier");
+		exit( EXIT_FAILURE );
 		}
 
 	else
@@ -235,7 +234,8 @@ L_LEXEME analyse_lexicale(char* nom_fichier){
                     lexeme_ligne.numero_ligne=numero_ligne_programme;
                     if (isdigit(liste_lecture_instructions->val.valeur[0])) /*on gère le cas particulier d'une nouvelle ligne*/
                     {
-                        printf("erreur syntaxe nom_etiquette ligne n° %d\n", numero_ligne_programme);
+                        WARNING_MSG("erreur syntaxe nom_etiquette ligne n° %d\n", numero_ligne_programme);
+                        exit( EXIT_FAILURE );
                     }
                     S=DEBUT;
                     i++;
@@ -276,7 +276,8 @@ L_LEXEME analyse_lexicale(char* nom_fichier){
                                 strcpy(mot,(*reg).nom_chiffre);
                             }
                             else{
-                                printf("erreur, registre inexistant a la ligne n° %d\n",numero_ligne_programme);
+                                WARNING_MSG("erreur, registre inexistant a la ligne n° %d\n",numero_ligne_programme);
+                                exit( EXIT_FAILURE );
                             }
 
                         j=0;
@@ -412,7 +413,8 @@ L_LEXEME analyse_lexicale(char* nom_fichier){
                     if((ligne[i]=='\n') & (verif_guillemets%2 !=0))/*par la fonction modulot on vérifie qu'on a un nombre paire de guillemets sinon on aurait oublié de fermer les guillemets*/
                     {
 
-                        printf("erreur de syntaxe guillemets ligne %d\n", numero_ligne_programme);
+                        WARNING_MSG("erreur de syntaxe guillemets ligne %d\n", numero_ligne_programme);
+                        exit( EXIT_FAILURE );
                         S=DEBUT;
                         verif_guillemets=0;
                     }
@@ -445,7 +447,8 @@ L_LEXEME analyse_lexicale(char* nom_fichier){
 				printf("%s\n",mot);
 			}
 			else {
-				printf("Registre inexistant à la ligne %d",numero_ligne_programme) ;
+				WARNING_MSG("Registre inexistant à la ligne %d",numero_ligne_programme) ;
+				exit( EXIT_FAILURE );
 			}	
                         j=0;
                         i++;
@@ -471,7 +474,8 @@ L_LEXEME analyse_lexicale(char* nom_fichier){
                                 int hex=liste_lecture_instructions->val.valeur[l];
                                 if( (hex<48 || hex>57) && (hex<65|| hex>70) && (hex<97 || hex>102) ){
 
-                                    printf("erreur a la ligne n° %d, ce n'est pas une valeur hexadecimal\n",numero_ligne_programme);
+                                    WARNING_MSG("erreur a la ligne n° %d, ce n'est pas une valeur hexadecimal\n",numero_ligne_programme);
+                                    exit( EXIT_FAILURE );
                                 }
                                 l++;
                             }
@@ -495,7 +499,8 @@ L_LEXEME analyse_lexicale(char* nom_fichier){
 				{
 					if(isalpha(liste_lecture_instructions->val.valeur[k]) && liste_lecture_instructions->val.valeur[0] != '0' )
 					{
-						printf("type 1 erreur de syntaxe ligne n° %d : mélange de symbole digit et alpha\n",numero_ligne_programme);
+						WARNING_MSG("type 1 erreur de syntaxe ligne n° %d : mélange de symbole digit et alpha\n",numero_ligne_programme);
+						exit( EXIT_FAILURE );
 					}
 					k++;
 				}
@@ -512,7 +517,8 @@ L_LEXEME analyse_lexicale(char* nom_fichier){
 				{
 					if(isdigit(liste_lecture_instructions->val.valeur[k]))
 					{
-						printf("type 2 erreur de syntaxe ligne n° %d : mélange de symbole digit et alpha\n",numero_ligne_programme);
+						WARNING_MSG("type 2 erreur de syntaxe ligne n° %d : mélange de symbole digit et alpha\n",numero_ligne_programme);
+						exit( EXIT_FAILURE );
 					}
 					k++;
 				}

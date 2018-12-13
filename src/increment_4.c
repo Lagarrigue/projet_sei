@@ -66,7 +66,7 @@ L_CODE_32 retournement_de_liste(L_CODE_32 L1){
 unsigned int conversion_LittleEndian_vers_Big_Indian(unsigned int code)
 {
 
-    code = ((code >> 24)& 0x000000FF) | ((code << 24)& 0xFF000000) | ((code >> 8)& 0x0000FF00) | ((code << 8)& 0x00FF0000);
+   /* code = ((code >> 24)& 0x000000FF) | ((code << 24)& 0xFF000000) | ((code >> 8)& 0x0000FF00) | ((code << 8)& 0x00FF0000);*/
 
     return code;
 }
@@ -246,6 +246,9 @@ int valeur_operande(OPERANDE op[3], int num, int cas_boff){
 		
 		else if(op[num].type==9 && cas_boff==0){
 			return op[num].val.tar;
+		}
+		else {
+			return 0 ;
 		}
 }
 
@@ -471,6 +474,7 @@ int mise_en_memoire_listes_binaire(L_CODE_32 liste_binaire){
 
 	
 	}
+	return 0 ;
 }
 /*egrouper les listes de binaire de data et texte à passer en arggumtn*/
 

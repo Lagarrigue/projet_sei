@@ -17,7 +17,6 @@ void init (L_LEXEME* pl, int section, int** dec, L_TEXT* pl_text, L_BSS* pl_bss,
 	INSTRUCTION* p_instruction ;
 	while ( l != NULL ) {
 		S=(l->val).nom_type ;
-		/*puts((l->val).valeur) ;*/
 		switch ( S ) {
 			case 6 : /* CAS DIRECTIVE */
 				if (strcmp(l->val.valeur,"space") == 0) {
@@ -28,6 +27,7 @@ void init (L_LEXEME* pl, int section, int** dec, L_TEXT* pl_text, L_BSS* pl_bss,
 					if ( section != 0 ) {
 						/* Erreur car .set ne peut etre que au debut */
 						WARNING_MSG("(ligne %d) .set doit être au début du programme",l->val.numero_ligne); 
+						exit( EXIT_FAILURE );
 					/* A CORRIGER : si noredor suit le .set, il va etre lu dans case instruction */
 					}
 					else { 
@@ -58,6 +58,7 @@ void init (L_LEXEME* pl, int section, int** dec, L_TEXT* pl_text, L_BSS* pl_bss,
 				}
 				else { 
 					WARNING_MSG("(ligne %d) Directive non reconnue",l->val.numero_ligne);
+					exit( EXIT_FAILURE );
 				}
 				break ;
 	
@@ -65,10 +66,12 @@ void init (L_LEXEME* pl, int section, int** dec, L_TEXT* pl_text, L_BSS* pl_bss,
 				if (section != 1 ) { 
 				/* Erreur car les instructions doivent etre dans .text */
 					WARNING_MSG("(ligne %d) Les instructions doivent être dans la section .text",l->val.numero_ligne);
+					exit( EXIT_FAILURE );
 				}
 				else {
 					if ( (p_instruction = recherche_element(l->val.valeur, dicti, 15)) == NULL ) {
 						WARNING_MSG("(ligne %d)  Instruction non reconnue",l->val.numero_ligne);
+						exit( EXIT_FAILURE );
 					}
 					else {	
 						pl_attente = maj_symbole(dec,section, pl_attente, pl_symb, 0 ) ;
@@ -80,6 +83,7 @@ void init (L_LEXEME* pl, int section, int** dec, L_TEXT* pl_text, L_BSS* pl_bss,
 			case 3 : /* CAS ETIQUETTE (ou DEUX_PTS d'apres notre analyse lexicale */
 				if (section==0) { 
 					WARNING_MSG("(ligne %d) Les étiquettes doivent être dans une section ",l->val.numero_ligne);
+					exit( EXIT_FAILURE );
 				}
 				else {
 					l=charge_symbole( l, section, dec , pl_attente) ;
@@ -165,12 +169,14 @@ L_LEXEME charge_space (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_BS
 	}
 	else { /* sinon message d'erreur */
 		WARNING_MSG("(ligne %d) Valeur décimale ou hexadicimale attendue ",l->val.numero_ligne);
+		exit( EXIT_FAILURE );
 	}
 	switch (section) {
 
 		case 1 :
 		/* Erreur car impossible dans .text */
 			WARNING_MSG("(ligne %d) .space impossible dans .text",l->val.numero_ligne);
+			exit( EXIT_FAILURE );
 			break ;
 
 		case 2 :
@@ -201,6 +207,7 @@ L_LEXEME charge_set (L_LEXEME l) {
 	l=l->suiv ;
 	if ( strcmp(l->val.valeur, "noreorder") != 0) {
 		WARNING_MSG("(ligne %d) .set ne prend que en compte noreorder",l->val.numero_ligne);
+		exit( EXIT_FAILURE );
 	} 
 	return l ;
 }
@@ -233,6 +240,7 @@ L_LEXEME charge_word (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_BSS
 		}
 		else { 
 			WARNING_MSG("(ligne %d) Valeur décimale, hexadécimale ou symboles alpha attendue",l->val.numero_ligne);
+			exit( EXIT_FAILURE );
 		}
 		switch (section) {
 			
@@ -249,6 +257,7 @@ L_LEXEME charge_word (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_BSS
 	
 			case 2 :
 				WARNING_MSG("(ligne %d) .word impossible dans .bss",l->val.numero_ligne);
+				exit( EXIT_FAILURE );
 				break ;
 	
 			case 3 :
@@ -300,6 +309,7 @@ L_LEXEME charge_byte (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_BSS
 		}
 		else { /* sinon message d'erreur */
 			WARNING_MSG("(ligne %d)  Valeur décimale, hexadécimale ou symboles alpha attendue",l->val.numero_ligne);
+			exit( EXIT_FAILURE );
 		}
 		switch (section) {
 	
@@ -316,6 +326,7 @@ L_LEXEME charge_byte (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_BSS
 			case 2 :
 			/* Erreur car impossible dans .bss*/
 			WARNING_MSG("(ligne %d) .byte impossible dans .bss",l->val.numero_ligne);
+			exit( EXIT_FAILURE );
 				break ;
 	
 			case 3 :
@@ -355,6 +366,7 @@ L_LEXEME charge_asciiz (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_B
 		}
 		else { /* sinon message d'erreur A FAIRE */
 			WARNING_MSG("(ligne %d) Expression entre guillemets attendue",l->val.numero_ligne);
+			exit( EXIT_FAILURE );
 		}
 		switch (section) {
 	
@@ -371,6 +383,7 @@ L_LEXEME charge_asciiz (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_B
 			case 2 :
 			/* Erreur car impossible dans .bss*/
 				WARNING_MSG("(ligne %d) .asciiz impossible dans .bss",l->val.numero_ligne);
+				exit( EXIT_FAILURE );
 				break ;
 	
 			case 3 :
