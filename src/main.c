@@ -82,6 +82,11 @@ int main ( int argc, char *argv[] ) {
 	RELOC* rel_data ;
 	int size_rel_text ;
 	int size_rel_data ;
+	unsigned int* bin_text ;
+	unsigned int* bin_data ;
+	 int bin_text_size ;
+	int bin_data_size ;
+	int e = 0 ;
 	
     if ( argc <2 ) {
         print_usage(argv[0]);
@@ -148,7 +153,7 @@ int main ( int argc, char *argv[] ) {
     	relocation(tab, size, &l_text, &l_data, &l_rel_text, &l_rel_data) ;
     	rel_text = liste_to_tab(l_rel_text, &size_rel_text);
     	rel_data = liste_to_tab(l_rel_data, &size_rel_data);
-    	while (a == 0 ) {
+    	/*while (a == 0 ) {
 		puts("Afficher la liste des lexemes ?  OUI (1)  NON (2)") ;
 		scanf("%d",&a) ;
 		if (a == 1) { 
@@ -166,32 +171,33 @@ int main ( int argc, char *argv[] ) {
     			lecture_liste_L_TEXT(l_text) ;
     			lecture_tab_symb(tab, size) ; 
     		}
-    	}
+    	
     	a=0;
     	while (a == 0 ) {
 		puts("Afficher les reloc ?  OUI (1)  NON (2)") ;
 		scanf("%d",&a) ;
-		if (a == 1) { 
+		if (a == 1) { */
 			puts(" RELOCATION DANS .TEXT");
 			lecture_tab_reloc(rel_text,size_rel_text) ;
     			puts("\n RELOCATION DANS .DATA");
-    			lecture_tab_reloc(rel_data,size_rel_data) ;
+    			lecture_tab_reloc(rel_data,size_rel_data) ;/*
     		}
    	 }
    	 
-	puts("Generation du binaire");
+	puts("Generation du binaire");*/
 	L_CODE_32 l_bin_text;
 	l_bin_text=parcours_section_text(l_text, dictionnaire, 15);
 	
 	L_CODE_32 l_bin_data;
 	l_bin_data=operation_de_masquage_section_data(l_data);
+	bin_text = mise_en_memoire_listes_binaire(l_bin_text, &bin_text_size);
+	bin_data = mise_en_memoire_listes_binaire(l_bin_data, &bin_data_size);
+	char* sym_char[]={"lunchtime","boucle","byebye","viteviteauru","menu"} ;
+	e = elf ( bin_text , bin_text_size , bin_data , bin_data_size , sym_char, 5 , file , &l_bss, tab, size , rel_text, size_rel_text, rel_data, size_rel_data  ) ;
+	if (e != 0 ) {
+		exit(EXIT_FAILURE);
+	}
 	
-	mise_en_memoire_listes_binaire(l_bin_text);
-	mise_en_memoire_listes_binaire(l_bin_data);
-	
-	/*int elf = elf ( int text_prog[] , int text_size , int data_prog[] , int data_size,char * sym_char[], int sym_size,char* name,L_BSS* pl_bss, SYMB* tab_symb, int symb_size,RELOC* rel_text,int rel_text_size, RELOC* rel_data, int rel_data_size  )*/
-	
-	puts("generation binaire reussie");
 
     /* ---------------- Free memory and terminate -------------------*/
 

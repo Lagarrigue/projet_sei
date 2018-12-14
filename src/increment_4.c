@@ -5,7 +5,7 @@
 
 
 
-/* definition des types */
+
 
 
 /* fonction des listes */
@@ -456,41 +456,23 @@ int taille_liste_binaire(L_CODE_32 liste){
 }
 
 
-int mise_en_memoire_listes_binaire(L_CODE_32 liste_binaire){
-	int taille=0;
-	taille=taille_liste_binaire(liste_binaire);
+unsigned int* mise_en_memoire_listes_binaire(L_CODE_32 liste_binaire,int* taille){
+	*taille=taille_liste_binaire(liste_binaire);
 	
-	unsigned* t=NULL;
-	t=calloc(taille, sizeof(*t));
+	unsigned int* t=NULL;
+	t=calloc(*taille, sizeof(*t));
+	puts("apres calloc");
 	int i=0;
 	
 	L_CODE_32 p;
 	p=liste_binaire;
 	
-	for(i=0;i<taille;i++){
+	for(i=0;i<*taille;i++){
 		
 		t[i]=p->val.donnee;
 		p=p->suiv;
 
 	
 	}
-	return 0 ;
+	return t ;
 }
-/*egrouper les listes de binaire de data et texte à passer en arggumtn*/
-
-
-/*il manque le fait d'aller chercher les donnees dans les deux section, il faut retourner les listes également*/
-/*teste le cas des base offset */
-/*probleme avec deux instructions pour les opcodes*/
-
-/*
-int main()
-{
-    printf("Hello world!\n");
-
-
-    printf("la valeur sera %d\n",operation_de_masquage());
-    return 0;
-}
-
-*/

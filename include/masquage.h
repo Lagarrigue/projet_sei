@@ -11,6 +11,7 @@
 
 #ifndef _MASQUAGE_H
 #define _MASQUAGE_H
+
 /* ********** STRUCTURES ********** */
 
 typedef struct code_32 {
@@ -35,6 +36,6 @@ int valeur_operande(OPERANDE op[3], int num, int cas_boff);
 L_CODE_32 operation_de_masquage_section_data(L_DATA section);
 void affichage_liste_binaire(L_CODE_32 liste);
 int taille_liste_binaire(L_CODE_32 liste);
-int mise_en_memoire_listes_binaire(L_CODE_32 liste_binaire);
+unsigned int* mise_en_memoire_listes_binaire(L_CODE_32 liste_binaire, int*);
 
 #endif

@@ -63,23 +63,23 @@ Elf32_Rel* charge_elf32_rel(RELOC* rel, int size, char section[6],SECTION symtab
 	Elf32_Rel* reloc = calloc(size, sizeof(Elf32_Rel)) ;
 	if (rel == NULL) { exit(FAILURE) ;}
 	for (i=0 ; i<size ; i ++) {
-		reloc[i].r_offset = rel[i].ad_rel ;
 		if (rel[i].type == R_MIPS_LO16 ) {
     			reloc[i].r_info = ELF32_R_INFO(elf_get_sym_index_from_name(symtab, shstrtab, strtab,section),R_MIPS_LO16);
+    			reloc[i].r_offset = rel[i].ad_rel ;
     		}
     		else if (rel[i].type == R_MIPS_HI16 ) {
     			reloc[i].r_info = ELF32_R_INFO(elf_get_sym_index_from_name(symtab, shstrtab, strtab,section),R_MIPS_HI16);
+    			reloc[i].r_offset = rel[i].ad_rel ;
     		}
     		else if (rel[i].type == R_MIPS_32 ) {
     			reloc[i].r_info = ELF32_R_INFO(elf_get_sym_index_from_name(symtab, shstrtab, strtab,section),R_MIPS_HI16);
+    			reloc[i].r_offset = rel[i].ad_rel ;
     		}
     		else if (rel[i].type == R_MIPS_26 ) {
     			reloc[i].r_info = ELF32_R_INFO(elf_get_sym_index_from_name(symtab, shstrtab, strtab,section),R_MIPS_HI16);
+    			reloc[i].r_offset = rel[i].ad_rel ;
     		}
-    		else {
-    			WARNING_MSG("Symbole de type UNDIFINED" ) ;
-    			exit( FAILURE ) ;
-    		}
+    			
     	}
     	return reloc ;   		
 }
