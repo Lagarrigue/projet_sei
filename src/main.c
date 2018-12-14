@@ -193,7 +193,7 @@ int main ( int argc, char *argv[] ) {
 	bin_text = mise_en_memoire_listes_binaire(l_bin_text, &bin_text_size);
 	bin_data = mise_en_memoire_listes_binaire(l_bin_data, &bin_data_size);
 	char* sym_char[]={"lunchtime","boucle","byebye","viteviteauru","menu"} ;
-	e = elf ( bin_text , bin_text_size , bin_data , bin_data_size , sym_char, 5 , file , &l_bss, tab, size , rel_text, size_rel_text, rel_data, size_rel_data  ) ;
+	e = elf ( bin_text , bin_text_size , bin_data , bin_data_size , sym_char, 5 , "tests/miam_sujet.o.ref" , &l_bss, tab, size , rel_text, size_rel_text, rel_data, size_rel_data  ) ;
 	if (e != 0 ) {
 		exit(EXIT_FAILURE);
 	}

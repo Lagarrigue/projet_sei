@@ -2,21 +2,24 @@
 # allons au ru
 .set noreorder
 .text
-    ADDI $1,$0,8
-    MOVE $1, $2
+    Lw $t0 , lunchtime
+    LW $6, -200($7)
+    ADDI $t1,$zero,8
 boucle:
-    BEQ $0 , $1 , 23
+    BEQ $t0 , $t1 , byebye
     NOP
-    ADDI $1 , $1 , 1
-    J 89 
+    addi $t1 , $t1 , 1
+    J boucle 
+    NOP
 byebye:
-    JAL 90
+    JAL viteviteauru
 
 .data
 lunchtime: 
-    .space 14
     .word 12
+    .word menu
     .asciiz "ils disent : \"au ru!\""
 .bss 
 menu:
     .space 24
+

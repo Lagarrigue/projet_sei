@@ -12,6 +12,7 @@ DOCDIR=doc
 
 GARBAGE=*~ $(SRCDIR)/*~ $(INCDIR)/*~ $(TESTDIR)/*~
 
+
 INCLUDE=-I$(INCDIR)
 
 # Pour activer les sorties INFO_MSG, ajouter -DVERBOSE aux CFLAGS 
@@ -58,4 +59,5 @@ clean :
 archive : 
 	make clean 
 	cd .. && tar -czvf as-mips-`whoami`-`date +%d-%m-%H-%M`.tgz $(DIRNAME) && cd $(DIRNAME) 
+
 

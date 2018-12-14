@@ -291,7 +291,7 @@ int elf ( int text_prog[] , int text_size , int data_prog[] , int data_size,char
     /* 
     ***** make predefined section table *****
     */
-    puts("1");
+
     shstrtab = make_shstrtab_section();
 
     /*
@@ -305,12 +305,12 @@ int elf ( int text_prog[] , int text_size , int data_prog[] , int data_size,char
     int data_prog[]= {0x10000000};
     int data_size
     */
-    puts("2");
+
     int bss_prog = bss_size( pl_bss) ; 
         
     /*char * sym_char[] = {"boucle","tab"};*/ /*FAIRE UNE FONCTION POUR RECUP LE TAB DE SYMB DANS l4ORDRE D'APPARITION*/  
     /*int sym_size ;*/
-    puts("3");
+
     char* machine = "mips";        
     /*char* name = "exemple.o"; */
     
@@ -324,7 +324,7 @@ int elf ( int text_prog[] , int text_size , int data_prog[] , int data_size,char
     /* 
     ***** Create text, data and bss sections ***** 
     */
-    puts("4");
+
     text = make_text_section(text_prog, text_size);
 
     if ( !text ) {
@@ -347,7 +347,7 @@ int elf ( int text_prog[] , int text_size , int data_prog[] , int data_size,char
     /* 
     ***** Write all string linked to symbols *****
     */
-    puts("5");
+
     strtab   = make_strtab_section( sym_char, sym_size);
 
 
@@ -359,7 +359,7 @@ int elf ( int text_prog[] , int text_size , int data_prog[] , int data_size,char
     ***** => Remplir le tableau de symbole avec nom, ad_rel, size=0 (car inutile), 
     *****    st_info (??Attributs sur le type et le binding du symbole ??) ,st_other=0 (inutile), st_shndx=indice section du symb
     */
-    puts("6");
+
     Elf32_Sym* syms = charge_elf32_sym (tab_symb, symb_size, strtab, shstrtab) ;/* Fonction ajoutée : permet de remplir le tab de symb elf */
     
     /*Elf32_Sym syms[2]= {{0}};
@@ -375,7 +375,7 @@ int elf ( int text_prog[] , int text_size , int data_prog[] , int data_size,char
     syms[1].st_info = ELF32_ST_INFO( STB_LOCAL, STT_NOTYPE );
     syms[1].st_other = 0;
     syms[1].st_shndx = elf_get_string_index( shstrtab->start, shstrtab->sz, ".bss" );*/
-	puts("7");
+
     symtab   = make_symtab_section( shstrtab, strtab, syms,symb_size);
 
 
@@ -388,7 +388,7 @@ int elf ( int text_prog[] , int text_size , int data_prog[] , int data_size,char
     *****
     ***** => Remplir les tabs de reloc
     */
-    puts("8");
+
     Elf32_Rel* text_reloc = charge_elf32_rel(rel_text,rel_text_size, ".text", symtab, shstrtab, strtab) ;
     Elf32_Rel* data_reloc = charge_elf32_rel(rel_data,rel_data_size, ".data", symtab, shstrtab, strtab) ;
    
@@ -400,11 +400,11 @@ int elf ( int text_prog[] , int text_size , int data_prog[] , int data_size,char
     data_reloc[0].r_offset =0;
     data_reloc[0].r_info=ELF32_R_INFO(elf_get_sym_index_from_name(symtab, shstrtab,strtab,".bss"),R_MIPS_32);
     */
-    puts("9");
+
     reltext  = make_rel32_section( ".rel.text", text_reloc,rel_text_size);
     reldata  = make_rel32_section( ".rel.data", data_reloc,rel_data_size);
 
-	puts("10");
+
     /*
     ***** write these sections in file
     */
@@ -418,14 +418,12 @@ int elf ( int text_prog[] , int text_size , int data_prog[] , int data_size,char
                            reltext->start, reltext->sz,
                            reldata->start, reldata->sz);
 
-puts("11");
     print_section( text );
     print_section( data );
     print_section( bss );
     print_section( strtab );
     print_section( symtab );
 
-puts("12");
     /*clean up */
     del_section(     text );
     del_section(     data );
