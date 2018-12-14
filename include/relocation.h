@@ -1,6 +1,9 @@
-
 #include "analyse_grammaticale.h"
+#include "pelf/elf.h"
 
+#ifndef _RELOCATION_H_
+#define _RELOCATION_H_
+ 
 
 typedef struct reloc {
 	char nom[512] ;
@@ -34,3 +37,5 @@ L_RELOC supprimer_tete_L_RELOC(L_RELOC L) ;
 void liberer_liste_L_RELOC(L_RELOC l) ;
 void lecture_liste_L_RELOC(L_RELOC* L) ;
 RELOC* liste_to_tab( L_RELOC l_reloc, int* size) ;
+
+#endif

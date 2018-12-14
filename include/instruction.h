@@ -1,6 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+
+#ifndef _INSTRUCTION_H
+#define _INSTRUCTION_H
+
 /* ********** STRUCTURES ********** */
 
 typedef struct {
@@ -29,3 +33,5 @@ int hash(char nom[], int l);
 L_INSTRUCTION*  lecture_dictionnaire(int longueur_table) ;
 INSTRUCTION* recherche_element(char mot[], L_INSTRUCTION* dicti, int longueur_table) ;
 int conversion_min_maj(int lettre);
+
+#endif

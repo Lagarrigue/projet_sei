@@ -14,7 +14,9 @@
 #include <notify.h>
 #include <lex.h>
 
+
 #include "masquage.h"
+
 
 /**
  * @param exec Name of executable.
@@ -186,6 +188,8 @@ int main ( int argc, char *argv[] ) {
 	
 	mise_en_memoire_listes_binaire(l_bin_text);
 	mise_en_memoire_listes_binaire(l_bin_data);
+	
+	/*int elf = elf ( int text_prog[] , int text_size , int data_prog[] , int data_size,char * sym_char[], int sym_size,char* name,L_BSS* pl_bss, SYMB* tab_symb, int symb_size,RELOC* rel_text,int rel_text_size, RELOC* rel_data, int rel_data_size  )*/
 	
 	puts("generation binaire reussie");
 

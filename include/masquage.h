@@ -6,9 +6,11 @@
 
 #include "notify.h"
 */
+
 #include "relocation.h"
 
-
+#ifndef _MASQUAGE_H
+#define _MASQUAGE_H
 /* ********** STRUCTURES ********** */
 
 typedef struct code_32 {
@@ -35,3 +37,4 @@ void affichage_liste_binaire(L_CODE_32 liste);
 int taille_liste_binaire(L_CODE_32 liste);
 int mise_en_memoire_listes_binaire(L_CODE_32 liste_binaire);
 
+#endif

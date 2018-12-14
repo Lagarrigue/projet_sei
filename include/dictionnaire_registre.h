@@ -5,6 +5,9 @@
 #include "analyse_lexicale.h"
 #include "notify.h"
 
+#ifndef _DICTIONNAIRE_REGISTRE_H
+#define _DICTIONNAIRE_REGISTRE_H
+
 /* ********** STRUCTURES ********** */
 
 typedef struct {
@@ -28,3 +31,5 @@ int hash_reg(char* nom, int l);
 L_REGISTRE_reg*  lecture_dictionnaire_reg(int longueur_table);
 REGISTRE_reg* recherche_element_reg(char mot[], L_REGISTRE_reg* dicti, int longueur_table);
 L_REGISTRE_reg ajout_tete_dictionnaire_reg(REGISTRE_reg c, L_REGISTRE_reg L) ;
+
+#endif

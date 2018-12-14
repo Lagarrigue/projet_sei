@@ -94,7 +94,12 @@ OPERANDE replacement_operande( char type_attendu[10] , int dec, VAL_OPERANDE eti
 	LEXEME lex ;
 	lex.nom_type = 8 ;
 	sprintf(lex.valeur, "%d", valeur) ;
-	if ( strcmp(etiq.etiq.attendu,"imm")==0 ) {
+	if ( strcmp(etiq.etiq.attendu,"offset")==0 ) {
+		operande.type = 7 ;
+		(operande.val).imm = valeur_offset(lex) ; 
+	}
+	/*
+	else if ( strcmp(etiq.etiq.attendu,"imm")==0 ) {
 		operande.type = 2 ;
 		(operande.val).imm = valeur_imm(lex) ; 
 	}
@@ -102,16 +107,14 @@ OPERANDE replacement_operande( char type_attendu[10] , int dec, VAL_OPERANDE eti
 		operande.type = 3 ;
 		(operande.val).sa = valeur_sa(lex) ;
 	}
-	else if ( strcmp(etiq.etiq.attendu,"offset")==0 ) {
-		operande.type = 7 ;
-		(operande.val).imm = valeur_offset(lex) ; 
-	}
+	
 	else if ( strcmp(etiq.etiq.attendu,"target")==0 ) {
 		operande.type = 9 ;
 		(operande.val).tar = valeur_target(lex) ; 
 	}
+	*/
 	else {
-		WARNING_MSG("L'etiquette '%s' ne pointe pas vers une operande valide (EXIT OPERANDE)",etiq.etiq.nom);
+		WARNING_MSG("L'etiquette '%s' ne pointe pas vers une operande valide pour un offset (EXIT OPERANDE)",etiq.etiq.nom);
 		exit( EXIT_FAILURE );
 	}
 	return operande ;
@@ -166,10 +169,16 @@ void relocation(SYMB* tab_symb, int size, L_TEXT * pl_text, L_DATA * pl_data, L_
 								WARNING_MSG("Le symbole '%s' appelé est dans un autre section",(*p_symb).symbole) ;	
 								exit( EXIT_FAILURE );				
 							}
-							else {
+							else if ( strcmp((l_text->val).t_operande[i].val.etiq.attendu,"offset") !=0 ) {
+								reloc.type = R_MIPS_LO16 ;
+								reloc.ad_rel = (l_text)->val.decalage ;
+								*pl_rel_text = ajout_tete_L_RELOC(reloc, *pl_rel_text) ;
+							}
+							else{
 								(l_text->val).t_operande[i] = replacement_operande((l_text->val).t_operande[i].val.etiq.attendu , (l_text->val).decalage , (l_text->val).t_operande[i].val, *p_symb);
 							}
-						}	
+						}
+							
 					
 					}
 					

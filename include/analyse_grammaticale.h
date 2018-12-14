@@ -4,8 +4,9 @@
 #include <string.h>
 #include "analyse_lexicale.h"
 #include "instruction.h"
-#include "notify.h"
-#include <global.h>
+
+#ifndef _ANALYSE_GRAMMATICALE_H_
+#define _ANALYSE_GRAMMATICALE_H_
 
 
 
@@ -195,4 +196,4 @@ void conversion_liste_symb_vers_tableau(SYMB* tab, L_SYMB L, int size) ;
 void lecture_tab_symb( SYMB* tab, int size) ;
 int longueur_l_symb(L_SYMB) ;
 
-
+#endif

@@ -3,7 +3,11 @@
 #include <math.h>
 #include <strings.h>
 #include <string.h>
-#include "notify.h"
+#include <global.h>
+#include <notify.h>
+
+#ifndef _ANALYSE_LEXICALE_H
+#define _ANALYSE_LEXICALE_H
 
 
 /* ********** STRUCTURES ********** */
@@ -124,10 +128,4 @@ L_LEXEME verification_appartenance_pseudo_instruction(L_LEXEME liste_lexemes, L_
 
 
 
-
-
-
-
-
-
-
+#endif
