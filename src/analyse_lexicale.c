@@ -30,6 +30,7 @@ void copie_tab_char(char a[], char b[], int taille){
 void initialisation_lexeme(LEXEME* l){
     int i=0;
     l->nom_type=0;
+    l->reloc=0;
     l->numero_ligne=0;
     for(i=0;i<512;i++){
         l->valeur[i]='\0';
@@ -130,7 +131,7 @@ L_LEXEME analyse_lexicale(char* nom_fichier){
 	if (fichier==NULL){
 		perror("Erreur ouverture du fichier");
 		exit( EXIT_FAILURE );
-		}
+	}
 
 	else
 	{
@@ -267,7 +268,7 @@ L_LEXEME analyse_lexicale(char* nom_fichier){
                     }
 
                    /*on détecte la fin du nom de registre on stock donc dans la liste de lexemes*/
-                      else if (ligne[i]==',' || ligne[i]==' ' || ligne[i]=='\n' || ligne[i]=='"')
+                      else if (ligne[i]==',' || ligne[i]==' ' || ligne[i]=='\n' || ligne[i]=='"' || ligne[i]=='#')
                     {
 
 
@@ -310,7 +311,7 @@ L_LEXEME analyse_lexicale(char* nom_fichier){
                     }
 
                     /* else if (isalpha(ligne[i])==0) */ /*on détecte autre chose qu'un alpha le nom de la directive est terminé on ajoute le lexeme à la liste de lexemes*/
-                   else if (ligne[i]==',' || ligne[i]==' ' || ligne[i]=='"' || ligne[i]=='\n')
+                   else if (ligne[i]==',' || ligne[i]==' ' || ligne[i]=='"' || ligne[i]=='\n' || ligne[i]=='#')
                     {
                         j=0;
                         /*strcpy(lexeme_ligne.valeur,mot);*/
@@ -325,7 +326,7 @@ L_LEXEME analyse_lexicale(char* nom_fichier){
 
                 case SYMBOL_ALPHA_NUM:  /*ici on ajoute dans un lexeme tous les caractère alpha_numériques puis on ajoute dans la liste de lexeme, le type (alpha, num, hexa, ou étiquette) sera redéfinit plus tard*/
 
-                    if (isalpha(ligne[i]) || isdigit(ligne[i]))/*le caractère est de type alpha ou digit on j'ajoute au tableau intermédiaire mot*/
+                    if (isalpha(ligne[i]) || isdigit(ligne[i]) || ligne[i]=='_')/*le caractère est de type alpha ou digit on j'ajoute au tableau intermédiaire mot*/
                     {
                         mot[j]=ligne[i];
                         j++;
@@ -334,7 +335,7 @@ L_LEXEME analyse_lexicale(char* nom_fichier){
                     }
 
                     /*le caractère est différents de alpha ou digit, on ajoute alors un nouveau lexeme à la liste de lexeme*/
-                    else if (ligne[i]==',' || ligne[i]==' ' || ligne[i]=='"' || ligne[i]==':' ||ligne[i]=='\n' || ligne[i]=='(' )
+                    else if (ligne[i]==',' || ligne[i]==' ' || ligne[i]=='"' || ligne[i]==':' ||ligne[i]=='\n' || ligne[i]=='(' || ligne[i]=='#')
                     {
                         j=0;
                         lexeme_ligne.nom_type=10;
@@ -441,15 +442,15 @@ L_LEXEME analyse_lexicale(char* nom_fichier){
 
                     else if (ligne[i]==')') /*on détecte la fin de la parenthèse et on ajoute le lexeme à la liste de lexemes*/
                     {
-			reg = recherche_element_reg(mot+1,dico_registre,10) ;
-			if ( reg !=NULL) {
-				strcpy(mot,(*reg).nom_chiffre);
-				printf("%s\n",mot);
-			}
-			else {
-				WARNING_MSG("Registre inexistant à la ligne %d",numero_ligne_programme) ;
-				exit( EXIT_FAILURE );
-			}	
+						reg = recherche_element_reg(mot+1,dico_registre,10) ;
+						if ( reg !=NULL) {
+							strcpy(mot,(*reg).nom_chiffre);
+							printf("%s\n",mot);
+						}
+						else {
+							WARNING_MSG("Registre inexistant à la ligne %d",numero_ligne_programme) ;
+							exit( EXIT_FAILURE );
+						}	
                         j=0;
                         i++;
                         /*strcpy(lexeme_ligne.valeur,mot);*/
@@ -487,42 +488,33 @@ L_LEXEME analyse_lexicale(char* nom_fichier){
                         else
                         {
 
-			    k=0;
+							k=0;
 
-			    if(isdigit(liste_lecture_instructions->val.valeur[k]))/*gestion des erreurs et attribution type_lexemme pour caractère décimal*/
-			    {
-				k=0;
-				liste_lecture_instructions->val.nom_type=8;
-				lexeme_ligne.numero_ligne=numero_ligne_programme;
+							if(isdigit(liste_lecture_instructions->val.valeur[k]))/*gestion des erreurs et attribution type_lexemme pour caractère décimal*/
+							{
+								k=0;
+								liste_lecture_instructions->val.nom_type=8;
+								lexeme_ligne.numero_ligne=numero_ligne_programme;
 
-				while(liste_lecture_instructions->val.valeur[k]!='\0')/*gestion de l'erreur*/
-				{
-					if(isalpha(liste_lecture_instructions->val.valeur[k]) && liste_lecture_instructions->val.valeur[0] != '0' )
-					{
-						WARNING_MSG("type 1 erreur de syntaxe ligne n° %d : mélange de symbole digit et alpha\n",numero_ligne_programme);
-						exit( EXIT_FAILURE );
-					}
-					k++;
-				}
-			    }
+								while(liste_lecture_instructions->val.valeur[k]!='\0')/*gestion de l'erreur*/
+								{
+									if(isalpha(liste_lecture_instructions->val.valeur[k]) && liste_lecture_instructions->val.valeur[0] != '0' )
+									{
+										WARNING_MSG("type 1 erreur de syntaxe ligne n° %d : mélange de symbole digit et alpha\n",numero_ligne_programme);
+										exit( EXIT_FAILURE );
+									}
+									k++;
+								}
+							}
 
-			    else if(isalpha(liste_lecture_instructions->val.valeur[k]) && liste_lecture_instructions->val.valeur[i]!=':')/*gestion des erreurs et attribution type_lexemme pour caractère alpha*/
-			    {
+							else if(isalpha(liste_lecture_instructions->val.valeur[k]) && liste_lecture_instructions->val.valeur[i]!=':')/*gestion des erreurs et attribution type_lexemme pour caractère alpha*/
+							{
 
-				k=0;
-				liste_lecture_instructions->val.nom_type=7;
-				lexeme_ligne.numero_ligne=numero_ligne_programme;
+								k=0;
+								liste_lecture_instructions->val.nom_type=7;
+								lexeme_ligne.numero_ligne=numero_ligne_programme;
 
-				while(liste_lecture_instructions->val.valeur[k]!='\0')/*gestion de l'erreur*/
-				{
-					if(isdigit(liste_lecture_instructions->val.valeur[k]))
-					{
-						WARNING_MSG("type 2 erreur de syntaxe ligne n° %d : mélange de symbole digit et alpha\n",numero_ligne_programme);
-						exit( EXIT_FAILURE );
-					}
-					k++;
-				}
-			    }
+							}
 
                         }
                     }
@@ -536,4 +528,5 @@ L_LEXEME analyse_lexicale(char* nom_fichier){
     liste_lecture_instructions = signe (liste_lecture_instructions );
     return liste_lecture_instructions;
 }
+
 

@@ -36,7 +36,7 @@ Elf32_Sym* charge_elf32_sym (SYMB* tab_symb, int symb_size, SECTION strtab, SECT
     		syms[i].st_size = 0 ; 
     		syms[i].st_other = 0 ;
    		syms[i].st_value = tab_symb[i].decalage ;
-   		syms[i].st_info = ELF32_ST_INFO( STB_LOCAL, STT_NOTYPE ); /* JE SAIS PAS !!!!!!!!!!! */
+   		syms[i].st_info = ELF32_ST_INFO( STB_LOCAL, STT_NOTYPE ); 
    		if ( tab_symb[i].defined == FALSE ){
     			syms[i].st_shndx = 0 ;
     		}
@@ -63,20 +63,24 @@ Elf32_Rel* charge_elf32_rel(RELOC* rel, int size, char section[6],SECTION symtab
 	Elf32_Rel* reloc = calloc(size, sizeof(Elf32_Rel)) ;
 	if (rel == NULL) { exit(FAILURE) ;}
 	for (i=0 ; i<size ; i ++) {
-		if (rel[i].type == R_MIPS_LO16 ) {
-    			reloc[i].r_info = ELF32_R_INFO(elf_get_sym_index_from_name(symtab, shstrtab, strtab,section),R_MIPS_LO16);
+		if ( (*(rel[i].p_symb)).defined == FALSE ){
+			reloc[i].r_info = ELF32_R_INFO(elf_get_sym_index_from_name(symtab, shstrtab, strtab,rel[i].nom),4);
+			reloc[i].r_offset = rel[i].ad_rel ;
+		}
+		else if (rel[i].type == 4 ) {
+    			reloc[i].r_info = ELF32_R_INFO(elf_get_sym_index_from_name(symtab, shstrtab, strtab,rel[i].nom),6);
     			reloc[i].r_offset = rel[i].ad_rel ;
     		}
-    		else if (rel[i].type == R_MIPS_HI16 ) {
-    			reloc[i].r_info = ELF32_R_INFO(elf_get_sym_index_from_name(symtab, shstrtab, strtab,section),R_MIPS_HI16);
+    		else if (rel[i].type == 3 ) {
+    			reloc[i].r_info = ELF32_R_INFO(elf_get_sym_index_from_name(symtab, shstrtab, strtab,rel[i].nom),5);
     			reloc[i].r_offset = rel[i].ad_rel ;
     		}
-    		else if (rel[i].type == R_MIPS_32 ) {
-    			reloc[i].r_info = ELF32_R_INFO(elf_get_sym_index_from_name(symtab, shstrtab, strtab,section),R_MIPS_32);
+    		else if (rel[i].type == 1 ) {
+    			reloc[i].r_info = ELF32_R_INFO(elf_get_sym_index_from_name(symtab, shstrtab, strtab,rel[i].nom),2);
     			reloc[i].r_offset = rel[i].ad_rel ;
     		}
-    		else if (rel[i].type == R_MIPS_26 ) {
-    			reloc[i].r_info = ELF32_R_INFO(elf_get_sym_index_from_name(symtab, shstrtab, strtab,section),R_MIPS_26);
+    		else if (rel[i].type == 2 ) {
+    			reloc[i].r_info = ELF32_R_INFO(elf_get_sym_index_from_name(symtab, shstrtab, strtab,rel[i].nom),4);
     			reloc[i].r_offset = rel[i].ad_rel ;
     		}
     			

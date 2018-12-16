@@ -21,6 +21,7 @@ L_LEXEME charge_instruction (L_LEXEME l , int** dec, L_TEXT* pl_text, INSTRUCTIO
 	donnee.decalage = **dec ;
 	**dec += 4 ;
 	donnee.nb_op = nb_op ;
+	unsigned char registre ;
 	if ( (type_op_attendu = calloc(3,sizeof(*type_op_attendu)) ) == NULL ) {
 		puts("Erreur d'allocation") ;
 		exit( EXIT_FAILURE ) ;
@@ -40,9 +41,12 @@ L_LEXEME charge_instruction (L_LEXEME l , int** dec, L_TEXT* pl_text, INSTRUCTIO
 	if (l==NULL) { return NULL ; } ;
 	while ( i<nb_op ) {
 		type_op_attendu[i] = (instruction.type_op)[i] ;
-		
+		if (i==0 && strcmp(type_op_attendu[i],"reg")==0 ){
+			registre=valeur_reg(l->val) ;
+			}
 		/* Base offset */
 		if ( strcmp(type_op_attendu[i],"boff")==0 )   { 
+			
 			if ( (l->val.nom_type == 7) || (l->val.nom_type == 9) || (l->val.nom_type == 8)  ) {
 				if ( l->val.reloc == 0 ){
 					operande.type = 8 ;
@@ -55,7 +59,8 @@ L_LEXEME charge_instruction (L_LEXEME l , int** dec, L_TEXT* pl_text, INSTRUCTIO
 				else if ( (l->val.nom_type == 7)){
 					strcpy(operande.val.etiq.nom, (l->val).valeur) ;
 					strcpy(operande.val.etiq.attendu, (instruction.type_op)[i]);
-					operande.type = 4 ;
+					operande.val.etiq.reg = registre ;
+					operande.type = 11 ;
 					**dec -= 4 ;
 					operande.val.etiq.reloc = l->val.reloc ;
 				}

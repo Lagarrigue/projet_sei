@@ -66,7 +66,7 @@ L_CODE_32 retournement_de_liste(L_CODE_32 L1){
 unsigned int conversion_LittleEndian_vers_Big_Indian(unsigned int code)
 {
 
-   /* code = ((code >> 24)& 0x000000FF) | ((code << 24)& 0xFF000000) | ((code >> 8)& 0x0000FF00) | ((code << 8)& 0x00FF0000);*/
+   code = ((code >> 24)& 0x000000FF) | ((code << 24)& 0xFF000000) | ((code >> 8)& 0x0000FF00) | ((code << 8)& 0x00FF0000);
 
     return code;
 }
@@ -139,7 +139,7 @@ L_CODE_32 operation_de_masquage_section_text(L_INSTRUCTION* dicti, int longueur_
 		
             strcpy(type_instruction, (*model_instruction).ordre_op[i]);
             
-            if (instruction_TEXT.t_operande[i].type==4){
+            if (instruction_TEXT.t_operande[i].type==4 ){
             
             	instruction=0;
             	/*remplacer adresse etiquette*/
@@ -213,11 +213,21 @@ int valeur_operande(OPERANDE op[3], int num, int cas_boff){
 	/*proobleme dans inst j operande imm doit etre multiple de 4*/
 	
 		if(cas_boff==1){
-			return op[num].val.base_offset.offset;
+			if (op[num].type==11){
+				return op[num].val.etiq.add;
+				}
+			else {
+				return op[num].val.base_offset.offset;
+			}
 		}
 		
 		else if(cas_boff==2){
-			return op[num].val.base_offset.reg;
+			if (op[num].type==11){
+				return op[num].val.etiq.reg;
+				}
+			else {
+				return op[num].val.base_offset.reg;
+			}
 		}
 		
 		else if(op[num].type==1 && cas_boff==0){
@@ -233,7 +243,7 @@ int valeur_operande(OPERANDE op[3], int num, int cas_boff){
 		}
 	
 		else if(op[num].type==4 && cas_boff==0){
-			return 0;
+			return 0 ;
 		}
 		
 		else if(op[num].type==5 && cas_boff==0){
@@ -383,7 +393,7 @@ L_CODE_32 operation_de_masquage_section_data(L_DATA section)
 					else if((i+1)%4==0){
 						
 						code=code | ((valeur<<24) & 0xFF000000);
-						code=conversion_LittleEndian_vers_Big_Indian(code);
+						/*code=conversion_LittleEndian_vers_Big_Indian(code);*/
 						mon_code.donnee=code;
 						liste_binaire=ajout_tete_code(mon_code, liste_binaire);
 				
@@ -405,7 +415,7 @@ L_CODE_32 operation_de_masquage_section_data(L_DATA section)
 				
 			}
 			else if((i+1)%4==0){
-				code=conversion_LittleEndian_vers_Big_Indian(code);
+				/*code=conversion_LittleEndian_vers_Big_Indian(code);*/
 				mon_code.donnee=code;
 				liste_binaire=ajout_tete_code(mon_code, liste_binaire);
 			}
@@ -416,7 +426,7 @@ L_CODE_32 operation_de_masquage_section_data(L_DATA section)
 	}
 	
 	if(i%4 !=0){
-		code=conversion_LittleEndian_vers_Big_Indian(code);
+		/*code=conversion_LittleEndian_vers_Big_Indian(code);*/
 		mon_code.donnee=code;
 		liste_binaire=ajout_tete_code(mon_code, liste_binaire);
 	}

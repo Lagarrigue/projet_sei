@@ -4,32 +4,21 @@ CC=`which gcc`
 LD=`which gcc`
 RM=`which rm` -f
 DOXYGEN=`which doxygen`
-
-SRCDIR=src
+ SRCDIR=src
 INCDIR=include
 TESTDIR=testing
 DOCDIR=doc
-
-GARBAGE=*~ $(SRCDIR)/*~ $(INCDIR)/*~ $(TESTDIR)/*~
-
-
-INCLUDE=-I$(INCDIR)
-
-# Pour activer les sorties INFO_MSG, ajouter -DVERBOSE aux CFLAGS 
+ GARBAGE=*~ $(SRCDIR)/*~ $(INCDIR)/*~ $(TESTDIR)/*~
+ INCLUDE=-I$(INCDIR)
+ # Pour activer les sorties INFO_MSG, ajouter -DVERBOSE aux CFLAGS 
 CFLAGS=-Wall -ansi $(INCLUDE)
 LFLAGS=-lm
-
-CFLAGS_DBG=$(CFLAGS) -g -DDEBUG -Wall
+ CFLAGS_DBG=$(CFLAGS) -g -DDEBUG -Wall
 CFLAGS_RLS=$(CFLAGS)
-
-SRC=$(wildcard $(SRCDIR)/*.c)
-
-OBJ_DBG=$(SRC:.c=.dbg)
+ SRC=$(wildcard $(SRCDIR)/*.c)
+ OBJ_DBG=$(SRC:.c=.dbg)
 OBJ_RLS=$(SRC:.c=.rls)
-
-TARGET=build/libpelf.so
-
-all : 
+ all : 
 	@echo "in " $(DIRNAME)
 	@echo ""
 	@echo "Usage:"
@@ -38,32 +27,19 @@ all :
 	@echo "make release => build RELEASE version"
 	@echo "make clean   => clean everything"
 	@echo "make archive => produce an archive for the deliverable"
-
-
-$(TARGET) : $(OBJ)
-	$(LD) $(LFLAGS) $^ -o $@
-
-debug   : $(OBJ_DBG)
+ debug   : $(OBJ_DBG)
 	$(LD) $^ $(LFLAGS) -o $(TARGET)
-
-release : $(OBJ_RLS)
+ release : $(OBJ_RLS)
 	$(LD) $^ $(LFLAGS) -o $(TARGET)
-
-%.dbg : %.c
+ %.dbg : %.c
 	$(CC) $< $(CFLAGS_DBG) -c -o $(basename $<).dbg
-
-%.rls : %.c
+ %.rls : %.c
 	$(CC) $< $(CFLAGS_RLS) -c -o $(basename $<).rls
-
-docu : 
+ docu : 
 	$(DOXYGEN)
-
-clean : 
+ clean : 
 	$(RM) $(TARGET) $(SRCDIR)/*.orig $(SRCDIR)/*.dbg $(SRCDIR)/*.rls $(GARBAGE)
 	$(RM) -r $(DOCDIR)/html $(DOCDIR)/latex
-
-archive : 
+ archive : 
 	make clean 
 	cd .. && tar -czvf as-mips-`whoami`-`date +%d-%m-%H-%M`.tgz $(DIRNAME) && cd $(DIRNAME) 
-
-

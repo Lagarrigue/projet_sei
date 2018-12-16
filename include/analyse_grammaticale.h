@@ -24,7 +24,9 @@ typedef struct bo {
 typedef struct etiq {
 	char nom[512] ;
 	char attendu[10] ;
-	int reloc ; } ETIQ ;
+	unsigned char reg ;
+	int reloc ;
+	int add ; } ETIQ ;
 
 typedef union {
 	unsigned char reg;
@@ -35,8 +37,8 @@ typedef union {
 	long tar ;
 	BASE_OFFSET base_offset ; } VAL_OPERANDE ;
 
- /* typedef enum { REG , IMM , SA , ETIQ , AD_REL , AD_ABS , OFFSET , BASE_OFF , TARGAET, ASCIIZ } TYPE_VAL_OPERANDE ; 
-		   1      2     3    4      5        6         7        8          9        10
+ /* typedef enum { REG , IMM , SA , ETIQ , AD_REL , AD_ABS , OFFSET , BASE_OFF , TARGAET, ASCIIZ, Bas_off } TYPE_VAL_OPERANDE ; 
+		   1      2     3    4      5        6         7        8          9        10      11
 */
 
 

@@ -2,6 +2,7 @@
 
 SYMB* p_symbole ( char etiq[512], SYMB* tab_etiq, int n) {
 	int i ;
+	puts("1a");
 	for (i=0 ; i<n ; i++ ){
 		if ( strcmp(etiq,tab_etiq[i].symbole)==0 ){
 			return (tab_etiq+i) ; 
@@ -105,7 +106,7 @@ OPERANDE replacement_operande( char type_attendu[10] , int dec, VAL_OPERANDE eti
 	return operande ;
 }
 
-void relocation(SYMB* tab_symb, int size, L_TEXT * pl_text, L_DATA * pl_data, L_RELOC* pl_rel_text, L_RELOC* pl_rel_data){
+SYMB* relocation(SYMB* tab_symb, int * size, L_TEXT * pl_text, L_DATA * pl_data, L_RELOC* pl_rel_text, L_RELOC* pl_rel_data){
 	/* *** Déclaration et initialisation des variables *** */
 	RELOC reloc ;
 	SYMB* p_symb = NULL ;
@@ -121,15 +122,15 @@ void relocation(SYMB* tab_symb, int size, L_TEXT * pl_text, L_DATA * pl_data, L_
 	while ( l_text != NULL ){
 		reloc.ad_rel = ((l_text)->val).decalage ;
 		for (i=0 ; i <(l_text)->val.nb_op ; i++){
-			if ( ((l_text)->val).t_operande[i].type == 4 ){
+			if ( (((l_text)->val).t_operande[i].type == 4) || (((l_text)->val).t_operande[i].type == 11 ) ){
 				/* Si le symbole est deja défini */
-				
-				if ( (p_symb = p_symbole ((l_text)->val.t_operande[i].val.etiq.nom,tab_symb, size)) != NULL ){ 
+				puts("1");
+				if ( (p_symb = p_symbole ((l_text)->val.t_operande[i].val.etiq.nom,tab_symb, *size)) != NULL ){ 
 					reloc.p_symb=p_symb ;
-					
+					puts("2");
 					/* Cas R_MIPS_26 */
 					if ( strcmp(((l_text)->val).type_instruction,"J") ==0 ){
-						reloc.ad_rel = (*p_symb).decalage ;
+						reloc.ad_rel = ((l_text)->val).decalage ;
 						strcpy(reloc.nom,charge_nom_rel(*p_symb,nom));
 						reloc.type = R_MIPS_26 ;
 						*pl_rel_text = ajout_tete_L_RELOC(reloc, *pl_rel_text) ;
@@ -139,11 +140,15 @@ void relocation(SYMB* tab_symb, int size, L_TEXT * pl_text, L_DATA * pl_data, L_
 					else if ( strcmp((l_text)->val.type_instruction,"I") ==0 ){
 						strcpy(reloc.nom,charge_nom_rel(*p_symb,nom));
 						if ( (l_text->val).t_operande[i].val.etiq.reloc == 1) {
+							(l_text->val).decalage -= 4;
+							(l_text->val).t_operande[i].val.etiq.add = ((l_text->val).decalage) ;
 							reloc.type = R_MIPS_HI16 ;
 							reloc.ad_rel = (l_text)->val.decalage ;
 							*pl_rel_text = ajout_tete_L_RELOC(reloc, *pl_rel_text) ;
 						}
 						else if ( (l_text->val).t_operande[i].val.etiq.reloc == 2) {
+							(l_text->val).decalage -= 4;
+							(l_text->val).t_operande[i].val.etiq.add = ((l_text->val).decalage-4)&0xFFFF ;
 							reloc.type = R_MIPS_LO16 ;
 							reloc.ad_rel = (l_text)->val.decalage ;
 							*pl_rel_text = ajout_tete_L_RELOC(reloc, *pl_rel_text) ;
@@ -180,7 +185,7 @@ void relocation(SYMB* tab_symb, int size, L_TEXT * pl_text, L_DATA * pl_data, L_
 				
 					text = (l_text)->val ;
 				
-					tab_symb = ajout_tab_symb (tab_symb,1,data,bss,text, &size,i) ;
+					tab_symb = ajout_tab_symb (tab_symb,1,data,bss,text, size,i) ;
 					strcpy(reloc.nom,(l_text)->val.t_operande[i].val.etiq.nom);
 					reloc.type = R_MIPS_26 ;
 					reloc.ad_rel = (l_text)->val.decalage ;
@@ -197,7 +202,7 @@ void relocation(SYMB* tab_symb, int size, L_TEXT * pl_text, L_DATA * pl_data, L_
 		if ( (l_data->val).operande.type == 4 ){
 			
 			/* Si le symbole est deja défini */
-			if ( (p_symb = p_symbole (l_data->val.operande.val.etiq.nom,tab_symb, size)) != NULL ){ 
+			if ( (p_symb = p_symbole (l_data->val.operande.val.etiq.nom,tab_symb, *size)) != NULL ){ 
 				reloc.p_symb=p_symb ;
 				strcpy(reloc.nom,charge_nom_rel(*p_symb,nom));
 				reloc.type = R_MIPS_32 ;
@@ -207,7 +212,7 @@ void relocation(SYMB* tab_symb, int size, L_TEXT * pl_text, L_DATA * pl_data, L_
 			/* Cas ou symbole défini ailleurs ou non défini */
 			else {
 				data = l_data->val ;
-				tab_symb = ajout_tab_symb (tab_symb,3,data,bss,text, &size,i) ;
+				tab_symb = ajout_tab_symb (tab_symb,3,data,bss,text, size,i) ;
 				strcpy(reloc.nom,l_data->val.operande.val.etiq.nom);
 				reloc.type = R_MIPS_26 ;
 				reloc.ad_rel = l_data->val.decalage ;
@@ -219,6 +224,7 @@ void relocation(SYMB* tab_symb, int size, L_TEXT * pl_text, L_DATA * pl_data, L_
 	
 	/* *** Gestion des etiquettes dans .bss *** */	
 	/* Rien à relloc dans cette section */
+	return tab_symb ;
 
 }	
 

@@ -46,32 +46,25 @@ int main ( int argc, char *argv[] ) {
     	char *file 	= NULL;
     
     /* -------- Initialisation des variables  -------  */
-    	
-	char nom[512],fichier[512] ; 
+    
+	char nom[512] ;
+	char fichier[512] ; 
 	char* p_nom = nom ;
 	char** sym_char  ;
-	strcpy(fichier,file);
-	strcat(fichier,".o");
-	
 	L_LEXEME l_lexeme = creer_liste() ;
 	L_TEXT l_text = creer_liste_L_TEXT() ;
 	L_BSS l_bss = creer_liste_L_BSS() ;
 	L_DATA l_data = creer_liste_L_DATA() ;
 	L_SYMB l_symb = creer_liste_L_SYMB() ;
 	L_SYMB l_attente = creer_liste_L_SYMB() ;
-	
 	L_PSEUDO_INSTRUCTION* dico_pseudo;
-    	
 	
 	L_RELOC l_rel_text = creer_liste_L_RELOC() ; 
 	L_RELOC l_rel_data = creer_liste_L_RELOC() ;
-	
 	L_INSTRUCTION* dictionnaire = lecture_dictionnaire(15) ; 
-	
 	SYMB* tab ; 
 	RELOC* rel_text ; 
 	RELOC* rel_data ; 
-	
 	L_CODE_32 l_bin_data;
 	L_CODE_32 l_bin_text;
 	
@@ -84,7 +77,6 @@ int main ( int argc, char *argv[] ) {
 	int section=0 ; 
 	int longueur_dico_pseudo=7;
 	int size_reloc ;
-	
     	if ( argc <2 ) {
         	print_usage(argv[0]);
         	exit( EXIT_FAILURE );
@@ -111,15 +103,19 @@ int main ( int argc, char *argv[] ) {
 		}
 	}
 
-
+	strcpy(fichier,file);
+	int p=0 ;
+	while ( fichier[p] != '.' ){
+		p++ ;
+	}
+	fichier[p+1]='o' ;	
     /* ---------------- Analyse lexicale -------------------*/
 	
 	l_lexeme=analyse_lexicale(file) ;
 	l_lexeme=ajuster_numero_lexeme(l_lexeme);
     	dico_pseudo=lecture_dictionnaire_pseudo(longueur_dico_pseudo);
         l_lexeme=verification_appartenance_pseudo_instruction(l_lexeme, dico_pseudo, longueur_dico_pseudo);
-	
-    
+
     /* ---------------- Analyse grammaticale ------------------*/
     	
     	a=0 ;
@@ -160,10 +156,10 @@ int main ( int argc, char *argv[] ) {
 		exit( EXIT_FAILURE );
 	}
 	
-    	relocation(tab, size, &l_text, &l_data, &l_rel_text, &l_rel_data) ;
+    	tab = relocation(tab, &size, &l_text, &l_data, &l_rel_text, &l_rel_data) ;
     	rel_text = liste_to_tab(l_rel_text, &size_rel_text);
     	rel_data = liste_to_tab(l_rel_data, &size_rel_data);
- 
+ puts("ICI");
    /* ----------------  Génération du binaire  -------------------*/
    	
 	l_bin_text=parcours_section_text(l_text, dictionnaire, 15);	

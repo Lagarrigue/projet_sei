@@ -7,15 +7,15 @@
 copy : .space 256 # some space to copy the strings
 
 .data # the 2 strings to copy with their length  
-text: .asciiz "bonjour!","au revoir"
-textb: .asciiz "il a dit, \"bonjour\" 'une fois' \n" 
-taille: .word 8
-tailleb: .word 32
+text1: .asciiz "bonjour!","au revoir"
+text2: .asciiz "il a dit, \"bonjour\" 'une fois' \n" 
+taille1: .word 8
+taille2: .word 32
 
 .text 
 j main # go to the main procedure
 nop
-copy:    
+copy_text:    
               # suppose that $t0 contains the @ of the destination space
               #              $t1 contains the size of the text to read
               #              $t2 contains the @ of the source text 
@@ -44,16 +44,18 @@ sortie:
 main:
 
 lw $t0,copy              # fill function arguments in 
-lw $t1,taille
+lw $t1,taille1
 addi $t1,$t1,1
-lw $t2,text
+lw $t2,text1
 addi $t3,$zero,0
-jal copy            # call copy_text on text1
+jal copytext            # call copy_text on text1
 nop
 addi $t1,$t1,1
 add $t0,$t0,$t1
-lw $t1,taille
-lw $t2,textb
+lw $t1,taille2
+lw $t2,text2
 addi $t3,$zero,0
-jal copy           # call copy_text on text2 
+jal copytext            # call copy_text on text2 
 nop
+
+

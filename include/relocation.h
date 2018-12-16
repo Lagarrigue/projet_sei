@@ -30,7 +30,7 @@ typedef struct maillon_reloc {
 */	
 	
 SYMB* p_symbole ( char etiq[512], SYMB* tab_etiq, int n ) ;
-void relocation(SYMB* tab_symb, int size, L_TEXT * pl_text, L_DATA * pl_data, L_RELOC* pl_rel_text, L_RELOC* pl_rel_data) ;
+SYMB* relocation(SYMB* tab_symb, int * size, L_TEXT * pl_text, L_DATA * pl_data, L_RELOC* pl_rel_text, L_RELOC* pl_rel_data) ;
 int existence_symbole (char etiq[512] ,L_SYMB l_symb) ;
 SYMB* ajout_tab_symb (SYMB* tab_symb,int section, DATA data, BSS bss,  TEXT text, int* size ,int j);
 char* charge_nom_rel (SYMB symb, char nom[512]) ;
