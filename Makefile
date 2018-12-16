@@ -27,6 +27,8 @@ SRC=$(wildcard $(SRCDIR)/*.c)
 OBJ_DBG=$(SRC:.c=.dbg)
 OBJ_RLS=$(SRC:.c=.rls)
 
+TARGET=build/libpelf.so
+
 all : 
 	@echo "in " $(DIRNAME)
 	@echo ""
@@ -36,6 +38,10 @@ all :
 	@echo "make release => build RELEASE version"
 	@echo "make clean   => clean everything"
 	@echo "make archive => produce an archive for the deliverable"
+
+
+$(TARGET) : $(OBJ)
+	$(LD) $(LFLAGS) $^ -o $@
 
 debug   : $(OBJ_DBG)
 	$(LD) $^ $(LFLAGS) -o $(TARGET)

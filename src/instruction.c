@@ -4,13 +4,6 @@
 #include <strings.h>
 #include "instruction.h"
 
-/* à changer : ajouter num ligne au lexeme */
-
-/* ajouter les \n */
-/* ajouter les , */
-
-/*le type d'instruction sera R, I, J ou P */
-
 
 
 int hash(char* nom, int l) /* fonction qui calcul l'indice d'un élément dans la table de hashage (basé sur le nom) */

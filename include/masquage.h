@@ -20,6 +20,9 @@ typedef struct code_32 {
 typedef struct maillon_code {
     CODE_32 val;
     struct maillon_code *suiv ; } * L_CODE_32 ;
+ 
+/* ********** GENERATION DE EFL ********** */
+void make_elf ( int * , int text_size , int *  , int data_size,char * sym_char[], int sym_size,char* name,L_BSS* pl_bss, SYMB* tab_symb, int symb_size,RELOC* rel_text,int rel_text_size, RELOC* rel_data, int rel_data_size  ) ;
 
 /* ********** FONCTION DE GENERATION BINAIRE********** */
 
@@ -36,6 +39,12 @@ int valeur_operande(OPERANDE op[3], int num, int cas_boff);
 L_CODE_32 operation_de_masquage_section_data(L_DATA section);
 void affichage_liste_binaire(L_CODE_32 liste);
 int taille_liste_binaire(L_CODE_32 liste);
-unsigned int* mise_en_memoire_listes_binaire(L_CODE_32 liste_binaire, int*);
+int* mise_en_memoire_listes_binaire(L_CODE_32 liste_binaire, int*);
+
+
+/* ********** GENERATION DE EFL ********** */
+void make_elf ( int text_prog[] , int text_size , int data_prog[] , int data_size,char * sym_char[], int sym_size,char* name,L_BSS* pl_bss, SYMB* tab_symb, int symb_size,RELOC* rel_text,int rel_text_size, RELOC* rel_data, int rel_data_size  ) ;
+
+
 
 #endif

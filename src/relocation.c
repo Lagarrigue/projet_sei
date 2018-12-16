@@ -98,21 +98,6 @@ OPERANDE replacement_operande( char type_attendu[10] , int dec, VAL_OPERANDE eti
 		operande.type = 7 ;
 		(operande.val).imm = valeur_offset(lex) ; 
 	}
-	/*
-	else if ( strcmp(etiq.etiq.attendu,"imm")==0 ) {
-		operande.type = 2 ;
-		(operande.val).imm = valeur_imm(lex) ; 
-	}
-	else if ( strcmp(etiq.etiq.attendu,"sa")==0 ) {
-		operande.type = 3 ;
-		(operande.val).sa = valeur_sa(lex) ;
-	}
-	
-	else if ( strcmp(etiq.etiq.attendu,"target")==0 ) {
-		operande.type = 9 ;
-		(operande.val).tar = valeur_target(lex) ; 
-	}
-	*/
 	else {
 		WARNING_MSG("L'etiquette '%s' ne pointe pas vers une operande valide pour un offset (EXIT OPERANDE)",etiq.etiq.nom);
 		exit( EXIT_FAILURE );
@@ -304,13 +289,73 @@ RELOC* liste_to_tab( L_RELOC l_reloc, int* size){
 
 
 
-
-
-
-
-
-
-
+char** range_symb (L_LEXEME liste, SYMB* tab_symb, int size){
+    	L_LEXEME p=liste ; 
+	char ** symb ;
+	int k ;
+	symb = malloc (size * sizeof(char *) ) ;
+	for (k = 0; k < size; k++) {
+    		symb[k] = malloc (512 * sizeof(char) );
+	}
+    	int i = 0 ;
+    	int j = 0 ;
+    	int n = 1 ; 
+    	if ( symb == NULL ) { exit(EXIT_FAILURE) ; }
+    	while(p != NULL){
+       	 	if(p->val.nom_type==7 || p->val.nom_type==3) {/* on regarde si on a du texte*/
+               		while ( i<size ) { /* on parcours notre tab de symbole deja existant */
+                		if ( strcmp(p->val.valeur, tab_symb[i].symbole)==0){ /* si texte==symbole */
+ 					while ( j != n ) { /* on regrde si on l'a pas deja ajouté à notre liste de char */
+ 						if ( n==1 ) {
+ 							strcpy(symb[0],tab_symb[i].symbole) ;
+ 							n++ ; }
+ 						else {
+ 							if ( strcmp(symb[j], tab_symb[i].symbole)==0) {
+ 								j=n ; 
+ 							}
+ 							else if ( j==(n-1) ) {
+ 								strcpy(symb[n-1],tab_symb[i].symbole) ;
+ 								n++ ;
+ 							}
+ 							else {
+ 								j++ ;
+ 							}
+ 						}
+ 					}
+ 					j=0 ;
+ 					i=size ;
+ 				}
+ 				else {
+ 					i++ ;
+ 				}
+ 			}
+ 			i=0 ;
+ 		}
+ 		p=p->suiv ;
+ 	}
+ 	if (size!=(n-1)) {
+ 		puts("Probleme de talle lors du rangement des symb") ;
+ 		exit (EXIT_FAILURE) ;
+ 	}
+ 	return symb ;
+ }
+ 		
+ 			
+ 				
+ 						
+ 				
+ 				
+ 				
+ 				
+ 				
+ 				
+ 				
+ 				
+ 				
+ 				
+ 				
+ 				
+                   
 
 
 

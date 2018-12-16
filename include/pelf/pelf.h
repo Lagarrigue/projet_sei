@@ -132,7 +132,6 @@ void elf64_endian_flip_Rela( Elf64_Rela *rel );
  ***** main function and personal functions
 */
 
-int elf ( int text_prog[] , int text_size , int data_prog[] , int data_size,char * sym_char[], int sym_size,char* name,L_BSS* pl_bss, SYMB* tab_symb, int symb_size,RELOC* rel_text,int rel_text_size, RELOC* rel_data, int rel_data_size  ) ;
 
 Elf32_Sym* charge_elf32_sym (SYMB* tab_symb, int symb_size, SECTION strtab, SECTION shstrtab) ;
 

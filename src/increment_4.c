@@ -263,7 +263,6 @@ L_CODE_32 parcours_section_text(L_TEXT section, L_INSTRUCTION* dicti, int longue
 		liste_binaire=operation_de_masquage_section_text(dicti, longueur_table, liste_binaire,p->val );
 		p=p->suiv;
 	}
-	affichage_liste_binaire(liste_binaire);
 	return liste_binaire;
 }
 
@@ -425,7 +424,6 @@ L_CODE_32 operation_de_masquage_section_data(L_DATA section)
 
 
 	liste_binaire=retournement_de_liste(liste_binaire);
-	affichage_liste_binaire(liste_binaire);
 	return liste_binaire; 
 }
 
@@ -456,12 +454,11 @@ int taille_liste_binaire(L_CODE_32 liste){
 }
 
 
-unsigned int* mise_en_memoire_listes_binaire(L_CODE_32 liste_binaire,int* taille){
+int* mise_en_memoire_listes_binaire(L_CODE_32 liste_binaire,int* taille){
 	*taille=taille_liste_binaire(liste_binaire);
 	
-	unsigned int* t=NULL;
+	int* t=NULL;
 	t=calloc(*taille, sizeof(*t));
-	puts("apres calloc");
 	int i=0;
 	
 	L_CODE_32 p;

@@ -14,6 +14,16 @@ typedef struct reloc {
 typedef struct l_reloc {
     	RELOC val ;
     	struct l_reloc *suiv ; } * L_RELOC ;
+ 
+ 
+   	
+typedef struct reloc_elf {
+	char nom_etiq[256];} RELOC_ELF;
+
+
+typedef struct maillon_reloc {
+    RELOC_ELF val;
+    struct maillon *suiv ; } * L_RELOC_ELF ;
 	
 /* attendu : { REG , IMM , SA , ETIQ , AD_REL , AD_ABS , OFFSET , BASE_OFF , TARGAET, ASCIIZ } SINON = 0
                1      2     3    4      5        6         7        8          9        10
@@ -29,6 +39,8 @@ OPERANDE replacement_operande( char type_attendu[10] , int dec, VAL_OPERANDE eti
 
 void lecture_tab_reloc(RELOC* tab, int size) ;
 
+char** range_symb (L_LEXEME liste, SYMB* tab_symb, int size) ;
+
 
 int liste_est_vide_L_RELOC(L_RELOC L ) ;
 L_RELOC creer_liste_L_RELOC(void);
@@ -38,4 +50,6 @@ void liberer_liste_L_RELOC(L_RELOC l) ;
 void lecture_liste_L_RELOC(L_RELOC* L) ;
 RELOC* liste_to_tab( L_RELOC l_reloc, int* size) ;
 
+ 
+ 
 #endif

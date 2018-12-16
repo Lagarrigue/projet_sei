@@ -18,17 +18,17 @@ void init (L_LEXEME* pl, int section, int** dec, L_TEXT* pl_text, L_BSS* pl_bss,
 	while ( l != NULL ) {
 		S=(l->val).nom_type ;
 		switch ( S ) {
-			case 6 : /* CAS DIRECTIVE */
+			
+		/* ***** DIRECTIVE ***** */
+			case 6 : 
 				if (strcmp(l->val.valeur,"space") == 0) {
 					pl_attente = maj_symbole(dec,section, pl_attente, pl_symb, 0 ) ;
 					l=charge_space (l, section , dec , pl_text , pl_bss , pl_data) ;
 				}
 				else if (strcmp(l->val.valeur,"set") == 0) {
 					if ( section != 0 ) {
-						/* Erreur car .set ne peut etre que au debut */
 						WARNING_MSG("(ligne %d) .set doit être au début du programme",l->val.numero_ligne); 
 						exit( EXIT_FAILURE );
-					/* A CORRIGER : si noredor suit le .set, il va etre lu dans case instruction */
 					}
 					else { 
 						pl_attente = maj_symbole(dec,section, pl_attente, pl_symb, 0 ) ;
@@ -62,9 +62,9 @@ void init (L_LEXEME* pl, int section, int** dec, L_TEXT* pl_text, L_BSS* pl_bss,
 				}
 				break ;
 	
-			case 7 : /* CAS INSTRUCTION */
+		/* ***** INSTRUCTION ***** */
+			case 7 : 
 				if (section != 1 ) { 
-				/* Erreur car les instructions doivent etre dans .text */
 					WARNING_MSG("(ligne %d) Les instructions doivent être dans la section .text",l->val.numero_ligne);
 					exit( EXIT_FAILURE );
 				}
@@ -79,8 +79,9 @@ void init (L_LEXEME* pl, int section, int** dec, L_TEXT* pl_text, L_BSS* pl_bss,
 					}
 				}
 				break ;
-	
-			case 3 : /* CAS ETIQUETTE (ou DEUX_PTS d'apres notre analyse lexicale */
+				
+		/* ***** ETIQUETTE ***** */
+			case 3 : 
 				if (section==0) { 
 					WARNING_MSG("(ligne %d) Les étiquettes doivent être dans une section ",l->val.numero_ligne);
 					exit( EXIT_FAILURE );
@@ -89,13 +90,17 @@ void init (L_LEXEME* pl, int section, int** dec, L_TEXT* pl_text, L_BSS* pl_bss,
 					l=charge_symbole( l, section, dec , pl_attente) ;
 				}	
 				break ;
-	
-			case 1 : /* CAS NL */
+				
+				
+		/* ***** COMMENTAIRE ET NL ***** */
+			case 1 : 
 				break ;
 			
-			case 4 : /* CAS COMMENTAIRE */
+			case 4 : 
 				break ;
 		}
+		
+		/* ***** on passe au suivant ***** */
 		if (l != NULL) {
 			l=l->suiv ;
 		}
@@ -105,7 +110,7 @@ void init (L_LEXEME* pl, int section, int** dec, L_TEXT* pl_text, L_BSS* pl_bss,
 
 
 
-/* CAS SYMBOLE */
+/* ---------- CAS SYMBOLE ---------- */
 
 L_LEXEME charge_symbole (L_LEXEME l, int section, int** dec, L_SYMB* pl_attente) {
 	LEXEME lexeme = l->val ;
@@ -151,7 +156,7 @@ L_SYMB* maj_symbole(int** dec, int section, L_SYMB* pl_attente, L_SYMB* pl_symb,
 	return pl_attente ;		
 }
 
-/* CAS DIRECTIVE */
+/* ---------- CAS DIRECTIVE ---------- */
  
 
 L_LEXEME charge_space (L_LEXEME l, int section, int** dec, L_TEXT* pl_text, L_BSS* pl_bss, L_DATA* pl_data ) {

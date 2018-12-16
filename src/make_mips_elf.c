@@ -238,42 +238,11 @@ SECTION make_rel32_section(char *relname, Elf32_Rel relocations[], int nb_reloc)
     return reltab;
 }
 
-/**
-* create the following program as an ELF object file :
-*
-*==========================
-*
-* .text
-* ADD $2, $3, $4
-* boucle : ADDI $2, $3, boucle
-* BEQ $2, $3, boucle
-* .data
-* .word tab
-* .bss
-* .space 0x10
-* tab: .space 8
-*
-*==========================
-*
-* expected symtab :
-*    .text
-*    .data
-*    .bss
-*    boucle @4 .text
-*    tab @16 .bss
-*
-* expected text_reloc :
-*    @4 R_MIPS_LO16 .text
-* expected data_reloc :
-*    @16 R_MIPS_32 .bss
-*
-*
-* the output binary is called exemple.o
-*/
+
+/* ************ FONCTION MAIN DE LA GENERATION ELF ************* */
 
 
-
-int elf ( int text_prog[] , int text_size , int data_prog[] , int data_size,char * sym_char[], int sym_size,char* name,L_BSS* pl_bss, SYMB* tab_symb, int symb_size,RELOC* rel_text,int rel_text_size, RELOC* rel_data, int rel_data_size  ) {
+void make_elf ( int * text_prog , int text_size , int *  data_prog , int data_size,char * sym_char[], int sym_size,char* name,L_BSS* pl_bss, SYMB* tab_symb, int symb_size,RELOC* rel_text,int rel_text_size, RELOC* rel_data, int rel_data_size  ) {
 
     /*
     ***** prepare sections ******
@@ -296,23 +265,11 @@ int elf ( int text_prog[] , int text_size , int data_prog[] , int data_size,char
 
     /*
     ***** make hard coded program data already in big endian *****
-    */
-    
-    /*
-    int text_prog[]= {0x20106400,0x04006220,0xFEFF4310};  
-    int text_size 
-    
-    int data_prog[]= {0x10000000};
-    int data_size
-    */
+    */   
 
     int bss_prog = bss_size( pl_bss) ; 
-        
-    /*char * sym_char[] = {"boucle","tab"};*/ /*FAIRE UNE FONCTION POUR RECUP LE TAB DE SYMB DANS l4ORDRE D'APPARITION*/  
-    /*int sym_size ;*/
-
     char* machine = "mips";        
-    /*char* name = "exemple.o"; */
+
     
     /* 
     ***** pelf options *****
@@ -329,19 +286,19 @@ int elf ( int text_prog[] , int text_size , int data_prog[] , int data_size,char
 
     if ( !text ) {
         fprintf( stderr, "Unable to write .text section (missing information).\n" );
-        return -1;
+        exit(EXIT_FAILURE) ;
     }
 
     data = make_data_section(data_prog, data_size);
     if ( !data ) {
         fprintf( stderr, "Unable to write .data section (missing information).\n" );
-        return -1;
+       exit(EXIT_FAILURE) ;
     }
 
     bss = make_bss_section(bss_prog);
     if ( !bss ) {
         fprintf( stderr, "Unable to write .bss section (missing information).\n" );
-        return -1;
+        exit(EXIT_FAILURE) ;
     }
 
     /* 
@@ -357,25 +314,10 @@ int elf ( int text_prog[] , int text_size , int data_prog[] , int data_size,char
     ***** "tab" is in strtab, has value (relative @) 16 and is defined in the bss section
     *****
     ***** => Remplir le tableau de symbole avec nom, ad_rel, size=0 (car inutile), 
-    *****    st_info (??Attributs sur le type et le binding du symbole ??) ,st_other=0 (inutile), st_shndx=indice section du symb
+    *****    st_info ,st_other=0 (inutile), st_shndx=indice section du symb
     */
 
-    Elf32_Sym* syms = charge_elf32_sym (tab_symb, symb_size, strtab, shstrtab) ;/* Fonction ajoutée : permet de remplir le tab de symb elf */
-    
-    /*Elf32_Sym syms[2]= {{0}};
-    syms[0].st_name = elf_get_string_offset( strtab->start, strtab->sz, sym_char[0] );
-    syms[0].st_size = 0;
-    syms[0].st_value = 4;
-    syms[0].st_info = ELF32_ST_INFO( STB_LOCAL, STT_NOTYPE );
-    syms[0].st_other = 0;
-    syms[0].st_shndx  = elf_get_string_index( shstrtab->start, shstrtab->sz, ".text" );
-    syms[1].st_name = elf_get_string_offset( strtab->start, strtab->sz, sym_char[1]);
-    syms[1].st_value = 16;
-    syms[1].st_size = 0;
-    syms[1].st_info = ELF32_ST_INFO( STB_LOCAL, STT_NOTYPE );
-    syms[1].st_other = 0;
-    syms[1].st_shndx = elf_get_string_index( shstrtab->start, shstrtab->sz, ".bss" );*/
-
+    Elf32_Sym* syms = charge_elf32_sym (tab_symb, symb_size, strtab, shstrtab) ; 
     symtab   = make_symtab_section( shstrtab, strtab, syms,symb_size);
 
 
@@ -392,15 +334,6 @@ int elf ( int text_prog[] , int text_size , int data_prog[] , int data_size,char
     Elf32_Rel* text_reloc = charge_elf32_rel(rel_text,rel_text_size, ".text", symtab, shstrtab, strtab) ;
     Elf32_Rel* data_reloc = charge_elf32_rel(rel_data,rel_data_size, ".data", symtab, shstrtab, strtab) ;
    
-    /*
-    Elf32_Rel text_reloc[1];
-    text_reloc[0].r_offset =4;
-    text_reloc[0].r_info=ELF32_R_INFO(elf_get_sym_index_from_name(symtab, shstrtab, strtab,".text"),R_MIPS_LO16);
-    Elf32_Rel data_reloc[1];
-    data_reloc[0].r_offset =0;
-    data_reloc[0].r_info=ELF32_R_INFO(elf_get_sym_index_from_name(symtab, shstrtab,strtab,".bss"),R_MIPS_32);
-    */
-
     reltext  = make_rel32_section( ".rel.text", text_reloc,rel_text_size);
     reldata  = make_rel32_section( ".rel.data", data_reloc,rel_data_size);
 
@@ -408,6 +341,7 @@ int elf ( int text_prog[] , int text_size , int data_prog[] , int data_size,char
     /*
     ***** write these sections in file
     */
+    
     elf_write_relocatable( name, machine, noreorder,
                            text->start, text->sz,
                            data->start, data->sz,
@@ -433,7 +367,5 @@ int elf ( int text_prog[] , int text_size , int data_prog[] , int data_size,char
     del_section(   symtab );
     del_section(  reltext );
     del_section(  reldata );
-
-    return 0;
 
 }
